@@ -1,0 +1,335 @@
+{
+    "name": "Apidae Tokens",
+    "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/APIDAE-logo.png",
+    "keywords": [
+        "polygon",
+        "defi"
+    ],
+    "version": {
+        "major": 0,
+        "minor": 0,
+        "patch": 0
+    },
+    "tokens": [
+
+        {
+            "chainId": 137,
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable",
+                "metaTx"
+            ],
+            "extensions": {
+                "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                "project": {
+                    "name": "-",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://weth.io/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Matic Token",
+            "symbol": "MATIC",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000001010",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/matic.svg",
+            "tags": [
+                "plasma",
+                "native",
+                "swapable"
+            ],
+            "extensions": {
+                "originTokenAddress": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+                "project": {
+                    "name": "Polygon",
+                    "summary": "-",
+                    "contact": "support@polygon.technology",
+                    "website": "https://polygon.technology"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "name": "Wrapped Matic",
+            "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+            "symbol": "WMATIC",
+            "decimals": 18,
+            "chainId": 137,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png"
+        },
+        {
+            "chainId": 137,
+            "name": "USD Coin",
+            "symbol": "USDC",
+            "decimals": 6,
+            "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable",
+                "metaTx",
+                "stablecoin"
+            ],
+            "extensions": {
+                "originTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "project": {
+                    "name": "Centre",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://www.centre.io"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Tether USD",
+            "symbol": "USDT",
+            "decimals": 6,
+            "address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/usdt.svg",
+            "tags": [
+                "pos",
+                "stablecoin",
+                "erc20",
+                "swapable",
+                "metaTx"
+            ],
+            "extensions": {
+                "originTokenAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+                "project": {
+                    "name": "Tether",
+                    "summary": "-",
+                    "contact": "support@tether.to",
+                    "website": "https://tether.to/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Dai",
+            "symbol": "DAI",
+            "decimals": 18,
+            "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/dai.svg",
+            "tags": [
+                "pos",
+                "stablecoin",
+                "erc20",
+                "swapable",
+                "metaTx"
+            ],
+            "extensions": {
+                "originTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+                "project": {
+                    "name": "-",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://makerdao.com/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "ChainLink Token",
+            "symbol": "LINK",
+            "decimals": 18,
+            "address": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/link.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable",
+                "metaTx"
+            ],
+            "extensions": {
+                "originTokenAddress": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+                "project": {
+                    "name": "ChainLink",
+                    "summary": "-",
+                    "contact": "support@chain.link",
+                    "website": "https://chain.link/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Wrapped BTC",
+            "symbol": "WBTC",
+            "decimals": 8,
+            "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/wbtc.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable",
+                "metaTx"
+            ],
+            "extensions": {
+                "originTokenAddress": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+                "project": {
+                    "name": "-",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://www.wbtc.network/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Quickswap - old",
+            "symbol": "QUICK",
+            "decimals": 18,
+            "address": "0x831753dd7087cac61ab5644b308642cc1c33dc13",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/quick.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable"
+            ],
+            "extensions": {
+                "originTokenAddress": "0x6c28AeF8977c9B773996d0e8376d2EE379446F2f",
+                "project": {
+                    "name": "Quickswap",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://quickswap.exchange/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "QuickSwap - new",
+            "symbol": "QUICK",
+            "decimals": 18,
+            "address": "0xB5C064F955D8e7F38fE0460C556a72987494eE17",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/quick.svg",
+            "tags": [
+                "pos",
+                "erc20"
+            ],
+            "extensions": {
+                "originTokenAddress": "0xd2bA23dE8a19316A638dc1e7a9ADdA1d74233368",
+                "project": {
+                    "name": "Quickswap",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://quickswap.exchange/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Aavegotchi GHST Token",
+            "symbol": "GHST",
+            "decimals": 18,
+            "address": "0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7",
+            "logoURI": "https://polygonscan.com/token/images/aavegotchighst_32.png",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable",
+                "metaTx"
+            ],
+            "extensions": {
+                "originTokenAddress": "0x3F382DbD960E3a9bbCeaE22651E88158d2791550",
+                "project": {
+                    "name": "Aavegotchi",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://www.aavegotchi.com/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Balancer",
+            "symbol": "BAL",
+            "decimals": 18,
+            "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/bal.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable"
+            ],
+            "extensions": {
+                "originTokenAddress": "0xba100000625a3754423978a60c9317c58a424e3d",
+                "project": {
+                    "name": "-",
+                    "summary": "-",
+                    "contact": "-",
+                    "website": "https://balancer.finance/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Staked MATIC",
+            "symbol": "stMATIC",
+            "decimals": 18,
+            "address": "0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4",
+            "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/stMATIC.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "swapable"
+            ],
+            "extensions": {
+                "originTokenAddress": "0x9ee91f9f426fa633d227f7a9b000e28b9dfd8599",
+                "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "Liquid Staked Matic by Stader",
+            "symbol": "MaticX",
+            "decimals": 18,
+            "address": "0xfa68fb4628dff1028cfec22b4162fccd0d45efb6",
+            "logoURI": "https://user-images.githubusercontent.com/19915413/198746681-bcfd16fd-72e5-41b3-bcb8-5494d77195e0.svg",
+            "tags": [
+                "pos",
+                "erc20"
+            ],
+            "extensions": {
+                "originTokenAddress": "0xf03a7eb46d01d9ecaa104558c732cf82f6b6b645",
+                "project": {
+                    "name": "Stader",
+                    "summary": "-",
+                    "contact": "gm@staderlabs.com",
+                    "website": "https://staderlabs.com/"
+                },
+                "originTokenNetwork": 0
+            }
+        },
+
+        {
+            "chainId": 137,
+            "address": "0x5eb9f3d24fe25c582fcec2a32aeb774ea8d47ae8",
+            "decimals": 18,
+            "name": "Apidae",
+            "symbol": "APD",
+            "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png"
+        }
+    ],
+    "timestamp": "2024-02-01T12:00:00+00:00"
+}

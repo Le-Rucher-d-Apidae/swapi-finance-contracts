@@ -1,0 +1,39 @@
+{
+  "name": "@swapi-finance/contracts-local",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@openzeppelin/contracts": "3.4.1",
+    "chai": "^4.2.0",
+    "ethereum-waffle": "^3.2.1",
+    "ethereumjs-tx": "^2.1.2",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.19.4",
+    "hardhat-deploy": "^0.11.45"
+  },
+  "version": "0.0.1",
+  "description": "Contracts for Swapi Finance 🐝",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Le-Rucher-d-Apidae/swapi-finance-contracts.git"
+  },
+  "author": "Worker bee <dev@rucherapidae@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf ./build/ && rimraf ./artifacts/ && rimraf ./cache/",
+    "precompile": "rimraf ./build/",
+    "compile": "npx hardhat compile",
+    "pretest": "yarn compile",
+    "test": "npx hardhat test",
+    "lint": "prettier ./test/**/*.ts --check",
+    "prepublishOnly": "yarn test"
+  },
+  "bugs": {
+    "url": "https://github.com/Le-Rucher-d-Apidae/swapi-finance-contracts/issues"
+  },
+  "homepage": "https://www.swapi.finance",
+  "dependencies": {
+    "abi-decoder": "^2.4.0",
+    "base-58": "0.0.1"
+  }
+}
