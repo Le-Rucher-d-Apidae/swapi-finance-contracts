@@ -79,7 +79,7 @@
             "decimals": 18,
             "name": "Baguette",
             "symbol": "BAG",
-            "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png"
+            "logoURI": "https://raw.githubusercontent.com/baguette-exchange/contracts/master/tokenlist/logos/baguette.png"
         }
     ],
     "timestamp": "2024-02-01T12:00:00+00:00"
