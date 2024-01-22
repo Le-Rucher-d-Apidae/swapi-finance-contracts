@@ -1,0 +1,86 @@
+{
+    "name": "Apidae Tokens TESTNET",
+    "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/main/tokenlist/logos/apidae.png",
+    "keywords": [
+        "Mumbai",
+        "TESTTNET"
+    ],
+    "version": {
+        "major": 0,
+        "minor": 0,
+        "patch": 0
+    },
+    "tokens": [
+
+        {
+            "chainId": 80001,
+            "name": "Ether - PoS",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+            "tags": ["pos", "erc20", "swapable"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "Matic",
+            "symbol": "MATIC",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000001010",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/matic.svg",
+            "tags": ["plasma", "native", "swapable"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "Dummy ERC20",
+            "symbol": "DERC20",
+            "decimals": 18,
+            "address": "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+            "tags": ["pos", "erc20", "swapable"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0x655F2166b0709cd575202630952D71E2bB0d61Af"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "Test Token",
+            "symbol": "TST",
+            "decimals": 18,
+            "address": "0xa0d9f8282cd48d22fd875e43be32793124f8ed47",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+            "tags": ["pos", "erc20", "swapable"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0x3f152b63ec5ca5831061b2dccfb29a874c317502"
+            }
+        },
+
+        {
+            "chainId": 80001,
+            "address": "0xCB120D92f6F5eb076579598487976b6BBC1963f7",
+            "decimals": 18,
+            "name": "Apidae 01",
+            "symbol": "APD",
+            "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png"
+        },
+        {
+            "chainId": 80001,
+            "address": "0x6dc9e2C3Fb8330075B36AE6100ebAA2d5bB1B482",
+            "decimals": 18,
+            "name": "Baguette",
+            "symbol": "BAG",
+            "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png"
+        }
+    ],
+    "timestamp": "2024-02-01T12:00:00+00:00"
+}
