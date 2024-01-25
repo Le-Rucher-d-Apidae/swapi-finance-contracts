@@ -22,7 +22,8 @@ library BaguetteLibrary {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                hex'81dbf51ab39dc634785936a3b34def28bf8007e6dfa30d4284c4b8547cb47a51' // init code hash
+                // hex'81dbf51ab39dc634785936a3b34def28bf8007e6dfa30d4284c4b8547cb47a51' // init code hash
+                hex'ce77f6bcd5997f0c469e2c41b88b633b4a59edecc2ff41ee9559c5e17484a70b' // Mumbai init code hash
             ))));
     }
 
