@@ -55,7 +55,7 @@
             "chainId": 80001,
             "name": "USDC.e",
             "symbol": "USDC",
-            "decimals": 18,
+            "decimals": 6,
             "address": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
             "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
@@ -68,7 +68,7 @@
             "chainId": 80001,
             "name": "USDT",
             "symbol": "USDT",
-            "decimals": 18,
+            "decimals": 6,
             "address": "0x3813e82e6f7098b9583FC0F33a962D02018B6803",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdt.svg",
             "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
@@ -90,20 +90,6 @@
                 "originTokenAddress": "0x655F2166b0709cd575202630952D71E2bB0d61Af"
             }
         },
-        {
-            "chainId": 80001,
-            "name": "Test Token",
-            "symbol": "TST",
-            "decimals": 18,
-            "address": "0xa0d9f8282cd48d22fd875e43be32793124f8ed47",
-            "logoURI": "https://assets.polygon.technology/tokenAssets/pan.svg",
-            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
-            "extensions": {
-                "originTokenNetwork": 0,
-                "originTokenAddress": "0x3f152b63ec5ca5831061b2dccfb29a874c317502"
-            }
-        },
-
         {
             "chainId": 80001,
             "address": "0xCB120D92f6F5eb076579598487976b6BBC1963f7",
