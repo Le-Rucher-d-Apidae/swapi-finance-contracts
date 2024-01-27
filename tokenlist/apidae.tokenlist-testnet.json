@@ -19,7 +19,7 @@
             "decimals": 18,
             "address": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
             "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
-            "tags": ["pos", "erc20", "swapable"],
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
             "extensions": {
                 "originTokenNetwork": 0,
                 "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
@@ -32,7 +32,7 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000001010",
             "logoURI": "https://assets.polygon.technology/tokenAssets/matic.svg",
-            "tags": ["plasma", "native", "swapable"],
+            "tags": ["plasma", "native", "swapable", "testnet", "mumbai"],
             "extensions": {
                 "originTokenNetwork": 0,
                 "originTokenAddress": "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae"
@@ -45,19 +45,46 @@
             "decimals": 18,
             "address": "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889",
             "logoURI": "https://polygonscan.com/token/images/wMatic_32.png",
-            "tags": ["plasma", "native", "swapable"],
+            "tags": ["plasma", "erc20", "swapable", "testnet", "mumbai"],
             "extensions": {
                 "originTokenNetwork": 0,
                 "originTokenAddress": "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae"
             }
-        },        {
+        },
+        {
+            "chainId": 80001,
+            "name": "USDC.e",
+            "symbol": "USDC",
+            "decimals": 18,
+            "address": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0x655F2166b0709cd575202630952D71E2bB0d61Af"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "USDT",
+            "symbol": "USDT",
+            "decimals": 18,
+            "address": "0x3813e82e6f7098b9583FC0F33a962D02018B6803",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/usdt.svg",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0x655F2166b0709cd575202630952D71E2bB0d61Af"
+            }
+        },
+        {
             "chainId": 80001,
             "name": "Dummy ERC20",
             "symbol": "DERC20",
             "decimals": 18,
             "address": "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
             "logoURI": "https://assets.polygon.technology/tokenAssets/unn.svg",
-            "tags": ["pos", "erc20", "swapable"],
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
             "extensions": {
                 "originTokenNetwork": 0,
                 "originTokenAddress": "0x655F2166b0709cd575202630952D71E2bB0d61Af"
@@ -70,7 +97,7 @@
             "decimals": 18,
             "address": "0xa0d9f8282cd48d22fd875e43be32793124f8ed47",
             "logoURI": "https://assets.polygon.technology/tokenAssets/pan.svg",
-            "tags": ["pos", "erc20", "swapable"],
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"],
             "extensions": {
                 "originTokenNetwork": 0,
                 "originTokenAddress": "0x3f152b63ec5ca5831061b2dccfb29a874c317502"
@@ -81,9 +108,10 @@
             "chainId": 80001,
             "address": "0xCB120D92f6F5eb076579598487976b6BBC1963f7",
             "decimals": 18,
-            "name": "Apidae 01",
-            "symbol": "APD",
-            "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png"
+            "name": "APIDAE01",
+            "symbol": "APD01",
+            "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"]
         },
         {
             "chainId": 80001,
@@ -91,7 +119,8 @@
             "decimals": 18,
             "name": "Baguette",
             "symbol": "BAG",
-            "logoURI": "https://raw.githubusercontent.com/baguette-exchange/contracts/master/tokenlist/logos/baguette.png"
+            "logoURI": "https://raw.githubusercontent.com/baguette-exchange/contracts/master/tokenlist/logos/baguette.png",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"]
         }
     ],
     "timestamp": "2024-02-01T12:00:00+00:00"
