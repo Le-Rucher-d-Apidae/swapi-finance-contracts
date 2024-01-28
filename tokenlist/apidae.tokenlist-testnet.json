@@ -14,6 +14,72 @@
 
         {
             "chainId": 80001,
+            "name": "WBTC - PoS (AAVE testnet)",
+            "symbol": "WBTC",
+            "decimals": 18,
+            "address": "0x2Fa2e7a6dEB7bb51B625336DBe1dA23511914a8A",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/wbtc.svg",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai", "aave"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "WEther - PoS (AAVE testnet)",
+            "symbol": "WETH",
+            "decimals": 18,
+            "address": "0xc199807AF4fEDB02EE567Ed0FeB814A077de4802",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/weth.svg",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai", "aave"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "USDC - PoS (AAVE testnet)",
+            "symbol": "USDC",
+            "decimals": 18,
+            "address": "0x52D800ca262522580CeBAD275395ca6e7598C014",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai", "aave"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "USDT - PoS (AAVE testnet)",
+            "symbol": "USDT",
+            "decimals": 18,
+            "address": "0x1fdE0eCc619726f4cD597887C9F3b4c8740e19e2",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/usdt.svg",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai", "aave"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            }
+        },
+        {
+            "chainId": 80001,
+            "name": "DAI - PoS (AAVE testnet)",
+            "symbol": "DAI",
+            "decimals": 18,
+            "address": "0xc8c0Cf9436F4862a8F60Ce680Ca5a9f0f99b5ded",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/dai.svg",
+            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai", "aave"],
+            "extensions": {
+                "originTokenNetwork": 0,
+                "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            }
+        },
+
+        {
+            "chainId": 80001,
             "name": "Ether - PoS",
             "symbol": "ETH",
             "decimals": 18,
@@ -25,19 +91,7 @@
                 "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
             }
         },
-        {
-            "chainId": 80001,
-            "name": "Matic",
-            "symbol": "MATIC",
-            "decimals": 18,
-            "address": "0x0000000000000000000000000000000000001010",
-            "logoURI": "https://assets.polygon.technology/tokenAssets/matic.svg",
-            "tags": ["plasma", "native", "swapable", "testnet", "mumbai"],
-            "extensions": {
-                "originTokenNetwork": 0,
-                "originTokenAddress": "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae"
-            }
-        },
+
         {
             "chainId": 80001,
             "name": "Wrapped Matic",
