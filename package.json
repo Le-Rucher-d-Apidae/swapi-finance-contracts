@@ -16,7 +16,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Le-Rucher-d-Apidae/swapi-finance-contracts.git"
+    "url": "git+ssh://git@github.com/Le-Rucher-d-Apidae/swapi-finance-contracts.git"
   },
   "author": "Worker bee <dev@rucherapidae@gmail.com>",
   "license": "MIT",
