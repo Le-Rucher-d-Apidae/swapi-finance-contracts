@@ -1,5 +1,5 @@
 {
-  "name": "@swapi-finance/contracts-local",
+  "name": "@swapi-finance/contracts",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@openzeppelin/contracts": "3.4.1",

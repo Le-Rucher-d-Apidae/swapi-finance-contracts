@@ -3,11 +3,16 @@ This repo contains all of the smart contracts used to run [Swapi](https://www.sw
 
 ## Deployed Contracts
 
-### Fuji Testnet
+### Polygon Mumbai Testnet
 
-Factory address: `0xBB6e8C136ca537874a6808dBFC5DaebEd9a57554`
+Factory address:
+0x15a34fd98dbf1c0116bdf740d501f735fca2891b
+https://mumbai.polygonscan.com/address/0x15a34fd98dbf1c0116bdf740d501f735fca2891b
 
-Router address: `0xC386631E7D35c7231bE146b14cf4430b4A524F8A`
+Router address:
+0xFb89BAD7ee7Db9B8F8d3546D3cB361F3C2f6C3Ef
+https://mumbai.polygonscan.com/tx/0x995db7cc49b48212bf6bdb84b37e9ee9a7a3d37f43c73f1791c28dd2405db962
+0x15A34Fd98DbF1c0116BDf740D501f735fCa2891B, 0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889
 
 ## Running
 These contracts are compiled and deployed using [Hardhat](https://hardhat.org/). They can also be run using the Remix IDE.
