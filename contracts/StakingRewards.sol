@@ -130,10 +130,8 @@ contract StakingRewards is ReentrancyGuard, Ownable {
         }
     }
 
-    // TODO: check is this has a bug
     function exit() external {
-        // withdraw(_balances[msg.sender]);
-        earned(msg.sender);
+        withdraw(_balances[msg.sender]);
         getReward();
     }
 
