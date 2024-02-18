@@ -92,3 +92,4 @@ library SafeERC20Namer {
         return name;
     }
 }
+// compare
