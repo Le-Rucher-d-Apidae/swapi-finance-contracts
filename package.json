@@ -11,7 +11,7 @@
     "hardhat": "^2.19.4",
     "hardhat-deploy": "^0.11.45"
   },
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Contracts for Swapi Finance 🐝",
   "main": "index.js",
   "repository": {
@@ -27,13 +27,16 @@
     "pretest": "yarn compile",
     "test": "npx hardhat test",
     "lint": "prettier ./test/**/*.ts --check",
-    "prepublishOnly": "yarn test"
+    "prepublishOnly": "yarn test",
+    "publish": "yarn publish --access public",
+    "PUBLISH": "yarn run clean && yarn run compile && yarn run publish"
   },
   "bugs": {
     "url": "https://github.com/Le-Rucher-d-Apidae/swapi-finance-contracts/issues"
   },
   "homepage": "https://www.swapi.finance",
   "dependencies": {
+    "@uniswap/v2-core": "^1.0.1",
     "abi-decoder": "^2.4.0",
     "base-58": "0.0.1"
   }
