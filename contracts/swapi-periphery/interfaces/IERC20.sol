@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.5.0;
 
 interface IERC20 {
@@ -16,3 +15,4 @@ interface IERC20 {
     function transfer(address to, uint value) external returns (bool);
     function transferFrom(address from, address to, uint value) external returns (bool);
 }
+// Compare
