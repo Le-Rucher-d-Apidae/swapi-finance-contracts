@@ -146,20 +146,11 @@
         },
         {
             "chainId": 80001,
-            "address": "0xCB120D92f6F5eb076579598487976b6BBC1963f7",
+            "address": "0xa67c2d46D7150a8633e3e50bcBdE8c6ab8284463",
             "decimals": 18,
-            "name": "APIDAE01",
-            "symbol": "APD01",
+            "name": "APIDAE02",
+            "symbol": "APT02",
             "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png",
-            "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"]
-        },
-        {
-            "chainId": 80001,
-            "address": "0x6dc9e2C3Fb8330075B36AE6100ebAA2d5bB1B482",
-            "decimals": 18,
-            "name": "Baguette",
-            "symbol": "BAG",
-            "logoURI": "https://raw.githubusercontent.com/baguette-exchange/contracts/master/tokenlist/logos/baguette.png",
             "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"]
         }
     ],
