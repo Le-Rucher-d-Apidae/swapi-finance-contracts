@@ -1,9 +1,9 @@
 pragma solidity =0.5.16;
 
-import './interfaces/IBaguetteERC20.sol';
+import './interfaces/IUniswapV2ERC20.sol';
 import './libraries/SafeMath.sol';
 
-contract BaguetteERC20 is IBaguetteERC20 {
+contract UniswapV2ERC20 is IUniswapV2ERC20 {
     using SafeMath for uint;
 
     string public constant name = 'Baguette Liquidity';

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.5.0;
 
-import '../../swapi-core/interfaces/IBaguettePair.sol';
-import '../../swapi-lib/libraries/FixedPoint.sol';
+import '../../../Uniswap/v2-core/interfaces/IUniswapV2Pair.sol';
+import '../../../Uniswap/solidity-lib/libraries/FixedPoint.sol';
 
 // library with helper methods for oracles that are concerned with computing average prices
 library BaguetteOracleLibrary {
@@ -18,11 +18,11 @@ library BaguetteOracleLibrary {
         address pair
     ) internal view returns (uint price0Cumulative, uint price1Cumulative, uint32 blockTimestamp) {
         blockTimestamp = currentBlockTimestamp();
-        price0Cumulative = IBaguettePair(pair).price0CumulativeLast();
-        price1Cumulative = IBaguettePair(pair).price1CumulativeLast();
+        price0Cumulative = IUniswapV2Pair(pair).price0CumulativeLast();
+        price1Cumulative = IUniswapV2Pair(pair).price1CumulativeLast();
 
         // if time has elapsed since the last update on the pair, mock the accumulated price values
-        (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast) = IBaguettePair(pair).getReserves();
+        (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast) = IUniswapV2Pair(pair).getReserves();
         if (blockTimestampLast != blockTimestamp) {
             // subtraction overflow is desired
             uint32 timeElapsed = blockTimestamp - blockTimestampLast;

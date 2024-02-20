@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 // import "@openzeppelin/contracts@3.4.1/utils/ReentrancyGuard.sol";
 
 
-import "./swapi-core/interfaces/IBaguetteERC20.sol";
+import "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
 
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
@@ -96,7 +96,7 @@ contract StakingRewards is ReentrancyGuard, Ownable {
         _balances[msg.sender] = _balances[msg.sender].add(amount);
 
         // permit
-        IBaguetteERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
+        IUniswapV2ERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
 
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         emit Staked(msg.sender, amount);

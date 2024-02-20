@@ -13,12 +13,12 @@ import "@openzeppelin/contracts-5.0.1/access/AccessControl.sol";
 import "@openzeppelin/contracts-5.0.1/token/ERC20/extensions/ERC20Permit.sol";
 
 
-contract APD is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
+contract APT is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     constructor(address defaultAdmin, address minter)
-        ERC20("APIDAE01", "APD01")
-        ERC20Permit("APIDAE01")
+        ERC20("APIDAE02", "APT02")
+        ERC20Permit("APIDAE02")
     {
         _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
         _grantRole(MINTER_ROLE, minter);
