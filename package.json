@@ -11,7 +11,7 @@
     "hardhat": "^2.19.4",
     "hardhat-deploy": "^0.11.45"
   },
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Contracts for Swapi Finance 🐝",
   "main": "index.js",
   "repository": {
