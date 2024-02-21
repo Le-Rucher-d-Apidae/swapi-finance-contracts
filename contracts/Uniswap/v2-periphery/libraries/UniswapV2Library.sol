@@ -22,8 +22,8 @@ library UniswapV2Library {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                hex'cbf346c7f49de34d678edea9fd74010be820789c7ab31de24ff690ef3237e6b9' // Mumbai init code hash: UniswapV2Pair init code hash
-                // hex'96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f' // Polygon init code hash: legacy UniswapV2Pair init code hash
+                // hex'cbf346c7f49de34d678edea9fd74010be820789c7ab31de24ff690ef3237e6b9' // Mumbai init code hash: UniswapV2Pair init code hash
+                hex'96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f' // Polygon init code hash: legacy UniswapV2Pair init code hash
             ))));
     }
 

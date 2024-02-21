@@ -6,8 +6,8 @@ import './UniswapV2Pair.sol';
 contract UniswapV2Factory is IUniswapV2Factory {
     address public feeTo;
     address public feeToSetter;
-    bytes32 public INIT_CODE_HASH = keccak256(abi.encodePacked(type(UniswapV2Pair).creationCode)); // custom UniswapV2Pair init code hash
-    // bytes32 public INIT_CODE_HASH = hex'96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f'; // legacy UniswapV2Pair init code hash
+    // bytes32 public INIT_CODE_HASH = keccak256(abi.encodePacked(type(UniswapV2Pair).creationCode)); // custom UniswapV2Pair init code hash
+    bytes32 public INIT_CODE_HASH = hex'96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f'; // legacy UniswapV2Pair init code hash
 
     mapping(address => mapping(address => address)) public getPair;
     address[] public allPairs;
