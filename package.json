@@ -27,7 +27,9 @@
     "pretest": "yarn compile",
     "test": "npx hardhat test",
     "lint": "prettier ./test/**/*.ts --check",
-    "prepublishOnly": "yarn test"
+    "prepublishOnly": "yarn test",
+    "publish": "yarn publish --access public",
+    "PUBLISH": "yarn run clean && yarn run compile && yarn run publish"
   },
   "bugs": {
     "url": "https://github.com/Le-Rucher-d-Apidae/swapi-finance-contracts/issues"
