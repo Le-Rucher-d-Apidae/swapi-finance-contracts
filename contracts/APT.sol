@@ -17,8 +17,8 @@ contract APT is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     constructor(address defaultAdmin, address minter)
-        ERC20("APIDAE", "APT")
-        ERC20Permit("APIDAE")
+        ERC20("APIDAE02", "APT02")
+        ERC20Permit("APIDAE02")
     {
         _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
         _grantRole(MINTER_ROLE, minter);

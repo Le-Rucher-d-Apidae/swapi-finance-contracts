@@ -14,8 +14,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 // import "@openzeppelin/contracts@3.4.1/utils/ReentrancyGuard.sol";
 
 
-import "@uniswap/v2-core/contracts/interfaces/IUniswapV2ERC20.sol";
-
+import "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
 contract StakingRewards is ReentrancyGuard, Ownable {
