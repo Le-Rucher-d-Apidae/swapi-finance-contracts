@@ -16,7 +16,6 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 import "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
-
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
 contract StakingRewards is ReentrancyGuard, Ownable {
     using SafeMath for uint256;

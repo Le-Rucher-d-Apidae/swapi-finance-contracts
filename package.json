@@ -36,6 +36,7 @@
   },
   "homepage": "https://www.swapi.finance",
   "dependencies": {
+    "@uniswap/v2-core": "^1.0.1",
     "abi-decoder": "^2.4.0",
     "base-58": "0.0.1"
   }
