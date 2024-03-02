@@ -83,9 +83,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable {
                 return constantRewardPerTokenStored;
             }
             return
-                constantRewardPerTokenStored.add(
-                    lastTimeRewardApplicable().sub(lastUpdateTime).mul(variableRewardRate).mul(1e18).div(_totalSupply)
-                );
+                lastTimeRewardApplicable().sub(lastUpdateTime).mul(variableRewardRate).mul(1e18)
         }
         if (_totalSupply == 0) {
             return rewardPerTokenStored;
@@ -97,9 +95,9 @@ contract StakingRewards2 is ReentrancyGuard, Ownable {
     }
 
     function earned(address account) public view returns (uint256) {
-        // if (isVariableRewardRate) {
-        //     return _balances[account].mul(constantRewardPerTokenStored.sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
-        // }
+        if (isVariableRewardRate) {
+            return _balances[account].mul(constantRewardPerTokenStored.sub(userRewardPerTokenPaid[account])).add(rewards[account]);
+        }
         return _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
     }
 
@@ -226,6 +224,32 @@ contract StakingRewards2 is ReentrancyGuard, Ownable {
     function withdrawOnly() external {
         withdraw(_balances[msg.sender]);
     }
+
+
+    //////////////////////////////////////////////////////////
+    /**
+     * @dev for testing only. remove after debugging
+     */
+    function emergencyWithdrawUnsafe() external {
+        uint256 amount = _balances[msg.sender];
+        require(amount > 0, "Cannot withdraw 0");
+        _totalSupply = _totalSupply.sub(amount);
+        _balances[msg.sender] = 0;
+        stakingToken.safeTransfer(msg.sender, amount);
+        emit Withdrawn(msg.sender, amount);
+    }
+    /**
+     * @dev for testing only. remove after debugging
+     */
+    function emergencyWithdrawUnsafe() external onlyOwner {
+        uint256 amount = _totalSupply;
+        require(amount > 0, "Cannot withdraw 0");
+        _totalSupply = 0;
+        stakingToken.safeTransfer(msg.sender, amount);
+        emit Withdrawn(msg.sender, amount);
+    }
+    //////////////////////////////////////////////////////////
+
     /* ========== RESTRICTED FUNCTIONS ========== */
 
     // Always needs to update the balance of the contract when calling this method
