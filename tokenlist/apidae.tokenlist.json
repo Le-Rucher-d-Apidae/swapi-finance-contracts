@@ -1,17 +1,13 @@
 {
     "name": "Apidae Tokens",
     "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/main/tokenlist/logos/apidae.png",
-    "keywords": [
-        "polygon",
-        "defi"
-    ],
+    "keywords": ["polygon", "defi"],
     "version": {
         "major": 0,
         "minor": 0,
         "patch": 0
     },
     "tokens": [
-
         {
             "chainId": 137,
             "name": "Ether",
@@ -19,12 +15,7 @@
             "decimals": 18,
             "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
             "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable",
-                "metaTx"
-            ],
+            "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
                 "originTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
                 "project": {
@@ -43,11 +34,7 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000001010",
             "logoURI": "https://assets.polygon.technology/tokenAssets/matic.svg",
-            "tags": [
-                "plasma",
-                "native",
-                "swapable"
-            ],
+            "tags": ["plasma", "native", "swapable"],
             "extensions": {
                 "originTokenAddress": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
                 "project": {
@@ -74,13 +61,7 @@
             "decimals": 6,
             "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable",
-                "metaTx",
-                "stablecoin"
-            ],
+            "tags": ["pos", "erc20", "swapable", "metaTx", "stablecoin"],
             "extensions": {
                 "originTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
                 "project": {
@@ -99,13 +80,7 @@
             "decimals": 6,
             "address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdt.svg",
-            "tags": [
-                "pos",
-                "stablecoin",
-                "erc20",
-                "swapable",
-                "metaTx"
-            ],
+            "tags": ["pos", "stablecoin", "erc20", "swapable", "metaTx"],
             "extensions": {
                 "originTokenAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
                 "project": {
@@ -124,13 +99,7 @@
             "decimals": 18,
             "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
             "logoURI": "https://assets.polygon.technology/tokenAssets/dai.svg",
-            "tags": [
-                "pos",
-                "stablecoin",
-                "erc20",
-                "swapable",
-                "metaTx"
-            ],
+            "tags": ["pos", "stablecoin", "erc20", "swapable", "metaTx"],
             "extensions": {
                 "originTokenAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
                 "project": {
@@ -149,12 +118,7 @@
             "decimals": 18,
             "address": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
             "logoURI": "https://assets.polygon.technology/tokenAssets/link.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable",
-                "metaTx"
-            ],
+            "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
                 "originTokenAddress": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
                 "project": {
@@ -173,12 +137,7 @@
             "decimals": 8,
             "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
             "logoURI": "https://assets.polygon.technology/tokenAssets/wbtc.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable",
-                "metaTx"
-            ],
+            "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
                 "originTokenAddress": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
                 "project": {
@@ -197,11 +156,7 @@
             "decimals": 18,
             "address": "0x831753dd7087cac61ab5644b308642cc1c33dc13",
             "logoURI": "https://assets.polygon.technology/tokenAssets/quick.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable"
-            ],
+            "tags": ["pos", "erc20", "swapable"],
             "extensions": {
                 "originTokenAddress": "0x6c28AeF8977c9B773996d0e8376d2EE379446F2f",
                 "project": {
@@ -220,10 +175,7 @@
             "decimals": 18,
             "address": "0xB5C064F955D8e7F38fE0460C556a72987494eE17",
             "logoURI": "https://assets.polygon.technology/tokenAssets/quick.svg",
-            "tags": [
-                "pos",
-                "erc20"
-            ],
+            "tags": ["pos", "erc20"],
             "extensions": {
                 "originTokenAddress": "0xd2bA23dE8a19316A638dc1e7a9ADdA1d74233368",
                 "project": {
@@ -242,12 +194,7 @@
             "decimals": 18,
             "address": "0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7",
             "logoURI": "https://polygonscan.com/token/images/aavegotchighst_32.png",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable",
-                "metaTx"
-            ],
+            "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
                 "originTokenAddress": "0x3F382DbD960E3a9bbCeaE22651E88158d2791550",
                 "project": {
@@ -266,11 +213,7 @@
             "decimals": 18,
             "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
             "logoURI": "https://assets.polygon.technology/tokenAssets/bal.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable"
-            ],
+            "tags": ["pos", "erc20", "swapable"],
             "extensions": {
                 "originTokenAddress": "0xba100000625a3754423978a60c9317c58a424e3d",
                 "project": {
@@ -289,11 +232,7 @@
             "decimals": 18,
             "address": "0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4",
             "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/stMATIC.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "swapable"
-            ],
+            "tags": ["pos", "erc20", "swapable"],
             "extensions": {
                 "originTokenAddress": "0x9ee91f9f426fa633d227f7a9b000e28b9dfd8599",
                 "originTokenNetwork": 0
@@ -306,10 +245,7 @@
             "decimals": 18,
             "address": "0xfa68fb4628dff1028cfec22b4162fccd0d45efb6",
             "logoURI": "https://user-images.githubusercontent.com/19915413/198746681-bcfd16fd-72e5-41b3-bcb8-5494d77195e0.svg",
-            "tags": [
-                "pos",
-                "erc20"
-            ],
+            "tags": ["pos", "erc20"],
             "extensions": {
                 "originTokenAddress": "0xf03a7eb46d01d9ecaa104558c732cf82f6b6b645",
                 "project": {

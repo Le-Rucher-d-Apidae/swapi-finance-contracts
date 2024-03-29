@@ -1,17 +1,13 @@
 {
     "name": "Apidae Tokens TESTNET",
     "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/main/tokenlist/logos/apidae.png",
-    "keywords": [
-        "Mumbai",
-        "TESTTNET"
-    ],
+    "keywords": ["Mumbai", "TESTTNET"],
     "version": {
         "major": 0,
         "minor": 0,
         "patch": 0
     },
     "tokens": [
-
         {
             "chainId": 80001,
             "name": "WBTC - PoS (AAVE testnet)",
