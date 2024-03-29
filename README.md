@@ -1,10 +1,11 @@
-# Baguette Smart Contracts
+# Swapi Smart Contracts
 This repo contains all of the smart contracts used to run [Swapi](https://www.swapi.finance/).
 
 ## Deployed Contracts
-none
+none on mainnet.
 
 ## Used Contracts
+Frontend uses Quickswap already deployed contracts
 
 ### Polygon Mumbai Testnet
 
@@ -30,3 +31,25 @@ If you need to use any of the contract ABIs, you can install this repo as an npm
 These contracts were adapted from these repos:
 My Baker baguette-exchange : [contracts] (https://github.com/baguette-exchange/contracts)
 Uniswap : [uniswap-v2-core](https://github.com/solidity-uniswap-lib/uniswap-v2-core), [uniswap-v2-periphery](https://github.com/solidity-uniswap-lib/uniswap-v2-core), and [uniswap-lib](https://github.com/solidity-uniswap-lib/uniswap-lib).
+
+Synthetix's StakingRewards:
+https://github.com/Synthetixio/synthetix/blob/v2.98.2/contracts/StakingRewards.sol
+Tests:
+https://github.com/Synthetixio/synthetix/blob/v2.98.2/test/contracts/StakingRewards.js
+
+vittominacori (Vittorio Minacori)'sETH Token Recover:
+https://vittominacori.github.io/eth-token-recover/
+https://github.com/vittominacori/eth-token-recover
+
+
+# Warning
+
+## Tests
+
+tests contracts compilation takes up to 20+ Gb of RAM, so be sure to have enough memory available before doing so.
+
+Github actions for running tests are disabled for now, as they are not able to compile the contracts due to the memory limit (12-16 Gb).
+```
+
+Tests currently nor working:
+ - test/eth-token-recover

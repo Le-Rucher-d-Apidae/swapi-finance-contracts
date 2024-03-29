@@ -1,7 +1,29 @@
-contracts/TestERC20.sol
-contracts/WAVAX.sol
-scripts/
-test/
-cache/
-node_modules/
-artifacts/
+# directories
+cache
+hardhat-cache
+hardhat-artifacts
+
+coverage
+node_modules
+out
+
+# files
+*.env
+*.log
+.DS_Store
+.pnp.*
+lcov.info
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# broadcasts
+!broadcast
+broadcast/*
+broadcast/*/31337/
+
+# vscode
+*workspace
+
+# exclude tmp folder
+tmp

@@ -1,20 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.7.6;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/math/Math.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+// pragma solidity ^0.7.6;
+pragma solidity <=0.8.0;
 
-// import "@openzeppelin/contracts@3.4.1/access/Ownable.sol";
-// import "@openzeppelin/contracts@3.4.1/math/Math.sol";
-// import "@openzeppelin/contracts@3.4.1/math/SafeMath.sol";
-// import "@openzeppelin/contracts@3.4.1/token/ERC20/SafeERC20.sol";
-// import "@openzeppelin/contracts@3.4.1/utils/ReentrancyGuard.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/math/Math.sol";
+// import "@openzeppelin/contracts/math/SafeMath.sol";
+// import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+// import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+import { Ownable } from "@openzeppelin/contracts@3.4.1/access/Ownable.sol";
+import { Math } from "@openzeppelin/contracts@3.4.1/math/Math.sol";
+import { SafeMath } from "@openzeppelin/contracts@3.4.1/math/SafeMath.sol";
+import { IERC20, SafeERC20 } from "@openzeppelin/contracts@3.4.1/token/ERC20/SafeERC20.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts@3.4.1/utils/ReentrancyGuard.sol";
 
-import "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
+import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
 contract StakingRewards is ReentrancyGuard, Ownable {
@@ -39,10 +40,7 @@ contract StakingRewards is ReentrancyGuard, Ownable {
 
     /* ========== CONSTRUCTOR ========== */
 
-    constructor(
-        address _rewardsToken,
-        address _stakingToken
-    ) {
+    constructor(address _rewardsToken, address _stakingToken) {
         rewardsToken = IERC20(_rewardsToken);
         stakingToken = IERC20(_stakingToken);
     }
@@ -65,14 +63,15 @@ contract StakingRewards is ReentrancyGuard, Ownable {
         if (_totalSupply == 0) {
             return rewardPerTokenStored;
         }
-        return
-            rewardPerTokenStored.add(
-                lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18).div(_totalSupply)
-            );
+        return rewardPerTokenStored.add(
+            lastTimeRewardApplicable().sub(lastUpdateTime).mul(rewardRate).mul(1e18).div(_totalSupply)
+        );
     }
 
     function earned(address account) public view returns (uint256) {
-        return _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
+        return _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(
+            rewards[account]
+        );
     }
 
     function getRewardForDuration() external view returns (uint256) {
@@ -89,7 +88,17 @@ contract StakingRewards is ReentrancyGuard, Ownable {
         emit Staked(msg.sender, amount);
     }
 
-    function stakeWithPermit(uint256 amount, uint deadline, uint8 v, bytes32 r, bytes32 s) external nonReentrant updateReward(msg.sender) {
+    function stakeWithPermit(
+        uint256 amount,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    )
+        external
+        nonReentrant
+        updateReward(msg.sender)
+    {
         require(amount > 0, "Cannot stake 0");
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
@@ -150,7 +159,7 @@ contract StakingRewards is ReentrancyGuard, Ownable {
         // This keeps the reward rate in the right range, preventing overflows due to
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-        uint balance = rewardsToken.balanceOf(address(this));
+        uint256 balance = rewardsToken.balanceOf(address(this));
         require(rewardRate <= balance.div(rewardsDuration), "Provided reward too high");
 
         lastUpdateTime = block.timestamp;
@@ -195,4 +204,3 @@ contract StakingRewards is ReentrancyGuard, Ownable {
     event RewardsDurationUpdated(uint256 newDuration);
     event Recovered(address token, uint256 amount);
 }
-

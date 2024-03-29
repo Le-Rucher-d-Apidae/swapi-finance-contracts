@@ -1,5 +1,3 @@
-contracts/TestERC20.sol
-contracts/WAVAX.sol
 scripts/
 test/
 cache/
