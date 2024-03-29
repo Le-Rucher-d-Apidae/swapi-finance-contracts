@@ -1,43 +1,81 @@
 {
   "name": "@swapi-finance/contracts",
   "devDependencies": {
+    "@nomicfoundation/hardhat-foundry": "^1.1.1",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@openzeppelin/contracts": "3.4.1",
-    "@openzeppelin/contracts-5.0.1": "npm:@openzeppelin/contracts@5.0.1",
-    "chai": "^4.2.0",
-    "ethereum-waffle": "^3.2.1",
-    "ethereumjs-tx": "^2.1.2",
-    "ethers": "^5.7.2",
-    "hardhat": "^2.19.4",
-    "hardhat-deploy": "^0.11.45"
+    "@nomiclabs/hardhat-truffle5": "^2.0.7",
+    "@openzeppelin/test-helpers": "^0.5.16",
+    "@prb/test": "^0.6.4",
+    "chai": "4.3.10",
+    "forge-std": "github:foundry-rs/forge-std#v1.7.5",
+    "hardhat": "^2.21.0",
+    "hardhat-deploy": "^0.12.1",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.5",
+    "solhint": "^3.6.2"
   },
-  "version": "0.0.6",
+  "dependencies": {
+    "@openzeppelin/contracts-3.4.1": "npm:@openzeppelin/contracts@3.4.1",
+    "@openzeppelin/contracts-5.0.2": "npm:@openzeppelin/contracts@5.0.2"
+  },
+  "version": "0.0.7",
   "description": "Contracts for Swapi Finance 🐝",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Le-Rucher-d-Apidae/swapi-finance-contracts.git"
   },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "forge",
+    "foundry",
+    "smart-contracts",
+    "solidity"
+  ],
   "author": "Worker bee <dev@rucherapidae@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf ./build/ && rimraf ./artifacts/ && rimraf ./cache/",
+    "cleanForge": "rm -rf cache out",
+    "clean:cache": "rimraf ./build/ && rimraf ./artifacts/ && rimraf ./cache/",
+    "clean": "pnpm run clean:cache && pnpm run cleanForge",
+    "clean:node": "rimraf ./node_modules/",
+    "clean:HH": "rimraf hardhat-artifacts && rimraf hardhat-cache",
+    "cleanAll": "pnpm run clean && pnpm run clean:HH  && pnpm run clean:node",
+    "build": "forge build --skip test",
+    "build:All": "forge build",
+    "build:CI": "forge build --optimize --sizes --skip test",
+    "lint": "pnpm run lint:sol:check && pnpm run prettier:check",
+    "lint:sol:check": "forge fmt --check && pnpm solhint {script,src,test}/**/*.sol",
+    "lint:sol:write": "forge fmt && pnpm solhint {script,src,test}/**/*.sol",
+    "lint:ts": "prettier --check ./test/**/*.ts --check",
+    "prettier:check": "prettier --check **/*.{json,md,yml} --ignore-path=.prettierignore",
+    "prettier:write": "prettier --write **/*.{json,md,yml} --ignore-path=.prettierignore",
+    "forge:test": "forge test",
+    "hardhat:test": "hardhat test test/eth-token-recover/*",
+    "hardhat:testT": "hardhat test --show-stack-traces test/eth-token-recover/*",
+    "forgeTestAll": "forge test -vv",
+    "forgeTestMyERC20": "forge test -vvv --match-path test/sampleTests/MyERC20.t.sol",
+    "forgeTestBwsErc20": "forge test -vvv --match-path test/BwsErc20.t.sol",
+    "forgeTestStakingRewards2": "forge test -vvv --match-path test/StakingRewards2.t.sol",
+    "forgeTestStakingRewards2c": "forge test -vvv --match-path test/StakingRewards2_constantReward.t.sol",
+    "forgeTest": "forge test ",
+    "test:coverage": "forge coverage",
+    "test:coverage:report": "forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage",
     "precompile": "rimraf ./build/",
     "compile": "npx hardhat compile",
-    "pretest": "yarn compile",
-    "test": "npx hardhat test",
-    "lint": "prettier ./test/**/*.ts --check",
-    "prepublishOnly": "yarn test",
-    "publishPublic": "yarn publish --access public",
-    "PUBLISH": "yarn run clean && yarn run compile && yarn run publishPublic"
+    "COMPILE": "npx hardhat compile --force",
+    "pretest": "pnpm compile",
+    "test": "npm run forgeTestAll",
+    "testHH": "npm run hardhat:test",
+    "testF": "npm run forge:test",
+    "prepublishOnly": "pnpm test",
+    "publishPublic": "pnpm publish --access public",
+    "PUBLISH": "pnpm run clean && yarn run compile && yarn run publishPublic"
   },
   "bugs": {
     "url": "https://github.com/Le-Rucher-d-Apidae/swapi-finance-contracts/issues"
   },
-  "homepage": "https://www.swapi.finance",
-  "dependencies": {
-    "@uniswap/v2-core": "^1.0.1",
-    "abi-decoder": "^2.4.0",
-    "base-58": "0.0.1"
-  }
+  "homepage": "https://www.swapi.finance"
 }
