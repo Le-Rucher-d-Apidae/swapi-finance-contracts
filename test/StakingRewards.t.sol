@@ -22,3 +22,4 @@ contract UsersSetup is Test {
         console.log("TODO");
 }
 
+}
