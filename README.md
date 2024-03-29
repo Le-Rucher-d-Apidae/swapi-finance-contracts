@@ -44,6 +44,21 @@ https://github.com/vittominacori/eth-token-recover
 
 # Warning
 
+## First Forge tests compilation
+In case compilation fails with the following error:
+```
+[⠊] Compiling...
+Error:
+Encountered invalid solc version in test/StakingRewards.t.sol: Failed to parse solidity version >= 0.6.0 <=0.8.0: unexpected character ',' while parsing major version number
+```
+
+Set the solc version by adding in foundry.toml:
+```
+  auto_detect_solc = false
+  solc = "0.8.23"
+```
+run once then revert the changes.
+
 ## Tests
 
 tests contracts compilation takes up to 20+ Gb of RAM, so be sure to have enough memory available before doing so.
