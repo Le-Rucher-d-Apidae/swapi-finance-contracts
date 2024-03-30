@@ -2,3 +2,13 @@ scripts/
 test/
 cache/
 node_modules/
+out/
+.gitattributes
+hardhat.config.js
+hardhat-cache
+hardhat-artifacts
+.vscode/
+remappings.txt
+script/
+/.*
+foundry.toml
