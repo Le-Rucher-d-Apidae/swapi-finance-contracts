@@ -142,10 +142,10 @@
         },
         {
             "chainId": 80001,
-            "address": "0xa67c2d46D7150a8633e3e50bcBdE8c6ab8284463",
+            "address": "0xA8ba2F145022beF46126BD2160d457cA10C46812",
             "decimals": 18,
-            "name": "APIDAE02",
-            "symbol": "APT02",
+            "name": "BeeWiseTst",
+            "symbol": "BWSTST",
             "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png",
             "tags": ["pos", "erc20", "swapable", "testnet", "mumbai"]
         }

@@ -260,10 +260,10 @@
 
         {
             "chainId": 137,
-            "address": "0x5d47bAbA0d66083C52009271faF3F50DCc01023C",
+            "address": "0x01024b5D8CB02A12966D96A7b1Ea94C34085630B",
             "decimals": 18,
-            "name": "Apidae",
-            "symbol": "APD",
+            "name": "BeeWise",
+            "symbol": "BWS",
             "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/apidae.png"
         }
     ],
