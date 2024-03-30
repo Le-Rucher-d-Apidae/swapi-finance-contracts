@@ -72,7 +72,7 @@
     "testF": "npm run forge:test",
     "prepublishOnly": "pnpm test",
     "publishPublic": "pnpm publish --access public",
-    "PUBLISH": "pnpm run clean && yarn run compile && yarn run publishPublic"
+    "PUBLISH": "pnpm run clean && pnpm run compile && pnpm run publishPublic"
   },
   "bugs": {
     "url": "https://github.com/Le-Rucher-d-Apidae/swapi-finance-contracts/issues"
