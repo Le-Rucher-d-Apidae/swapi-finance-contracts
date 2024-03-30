@@ -6,7 +6,7 @@ out/
 .gitattributes
 hardhat.config.js
 hardhat-cache
-hardhat-artifacts
+hardhat-artifacts/@openzeppelin
 .vscode/
 remappings.txt
 script/
