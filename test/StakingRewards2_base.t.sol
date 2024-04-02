@@ -9,6 +9,7 @@ import { stdMath } from "forge-std/src/StdMath.sol";
 import { Utils } from "./utils/Utils.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
+import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { IERC20 } from "../src/contracts/Uniswap/v2-core/interfaces/IERC20.sol";
 
@@ -440,7 +441,7 @@ abstract contract StakingPreSetup is /* TestLog, */ StakingPreSetup0 {
                 expectedStakingRewards(_stakeAmount, stakingElapsedTime, REWARD_INITIAL_DURATION);
             vm.prank(_user);
             vm.expectEmit(true, true, false, false, address(stakingRewards2));
-            emit StakingRewards2.RewardPaid(_user, expectedRewards);
+            emit StakingRewards2Events.RewardPaid(_user, expectedRewards);
             stakingRewards2.getReward();
             // Check user rewards balance before/after claim
             uint256 rewardErc20UserBalanceAfterClaim = rewardErc20.balanceOf(_user);
@@ -499,7 +500,7 @@ abstract contract StakingPreSetup is /* TestLog, */ StakingPreSetup0 {
         debugLog("withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal);
         // Check emitted event
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2.Withdrawn(_user, _amount);
+        emit StakingRewards2Events.Withdrawn(_user, _amount);
         vm.prank(_user);
         stakingRewards2.withdraw(_amount);
         uint256 balanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_user);
