@@ -10,6 +10,7 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts@5.0.2/utils/ReentrancyGuard.sol";
 
 import { IStakingRewards2Errors } from "./IStakingRewards2Errors.sol";
+import { StakingRewards2Events } from "./StakingRewards2Events.sol";
 
 import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
@@ -17,7 +18,7 @@ import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.so
 // import { console } from "forge-std/src/console.sol";
 
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
-contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, IStakingRewards2Errors {
+contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, IStakingRewards2Errors, StakingRewards2Events {
     uint256 constant ONE_TOKEN = 1e18;
 
     using SafeERC20 for IERC20;
@@ -388,16 +389,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
         // Let everyone know that our pause state has changed.
         // Events Paused/Unpaused emmited by _pause()/_un_pause()
     }
-    /* ========== EVENTS ========== */
-
-    event RewardAdded(uint256 reward);
-    event RewardAddedPerTokenStored(uint256 rewardPerTokenStored);
-    event MaxTotalSupply(uint256 maxTotalSupply);
-    event Staked(address indexed user, uint256 amount);
-    event Withdrawn(address indexed user, uint256 amount);
-    event RewardPaid(address indexed user, uint256 reward);
-    event RewardsDurationUpdated(uint256 newDuration);
-    event Recovered(address token, uint256 amount);
 
     //////////////////////////////////////////////////////////
 
