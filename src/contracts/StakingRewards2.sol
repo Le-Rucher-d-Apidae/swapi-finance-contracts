@@ -14,11 +14,14 @@ import { StakingRewards2Events } from "./StakingRewards2Events.sol";
 
 import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
-// DEBUG
-// import { console } from "forge-std/src/console.sol";
-
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
-contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, IStakingRewards2Errors, StakingRewards2Events {
+contract StakingRewards2 is
+    ReentrancyGuard,
+    Ownable(msg.sender),
+    Pausable,
+    IStakingRewards2Errors,
+    StakingRewards2Events
+{
     uint256 constant ONE_TOKEN = 1e18;
 
     using SafeERC20 for IERC20;
@@ -88,34 +91,9 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
 
     function earned(address account) public view returns (uint256) {
         if (isVariableRewardRate) {
-            // forgefmt: disable-next-line
-            // console.log( "earned: isVariableRewardRate" );
-            // console.log( "earned: account = ", account );
-            // console.log( "earned: _balances[account] = ", _balances[account] );
-            // console.log( "earned: constantRewardRatePerTokenStored = ", constantRewardRatePerTokenStored );
-            // console.log( "earned: lastTimeRewardApplicable() = ", lastTimeRewardApplicable() );
-            // console.log( "earned: userLastUpdateTime[account] = ", userLastUpdateTime[account] );
-            // console.log( "earned: rewards[account] = ", rewards[account] );
-            // console.log( "earned: = ", _balances[account] * constantRewardRatePerTokenStored *
-            // (lastTimeRewardApplicable() - userLastUpdateTime[account]) / ONE_TOKEN + rewards[account] );
-            // uint256 _earned = _balances[account] * constantRewardRatePerTokenStored * (lastTimeRewardApplicable() -
-            // userLastUpdateTime[account]) / ONE_TOKEN + rewards[account];
-            // return _earned;
             return _balances[account] * constantRewardRatePerTokenStored
                 * (lastTimeRewardApplicable() - userLastUpdateTime[account]) / ONE_TOKEN + rewards[account];
         }
-
-        // uint256 _earned = _balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account]) / ONE_TOKEN +
-        // rewards[account];
-        // console.log( "earned: ! isVariableRewardRate" );
-        // console.log( "earned: _balances[account] = ", _balances[account] );
-        // console.log( "earned: rewardPerToken() = ", rewardPerToken() );
-        // console.log( "earned: userRewardPerTokenPaid[account] = ", userRewardPerTokenPaid[account] );
-        // console.log( "earned: rewards[account] = ", rewards[account] );
-        // console.log( "earned: _balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account]) / ONE_TOKEN
-        // = ", _balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account]) / ONE_TOKEN );
-        // console.log( "earned: = ", _earned );
-        // return _earned;
         return
             _balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account]) / ONE_TOKEN + rewards[account];
     }
@@ -181,24 +159,16 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
     }
 
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
-        // console.log( "withdraw: amount = ", amount );
         if (amount == 0) revert WithdrawZero();
         if (_balances[msg.sender] == 0) revert NothingToWithdraw();
         if (amount > _balances[msg.sender]) revert NotEnoughToWithdraw(amount, _balances[msg.sender]);
 
-        // console.log( "withdraw: after 0 amount check" );
         _totalSupply = _totalSupply - amount;
-        // console.log( "withdraw: _totalSupply = ", _totalSupply );
-        // console.log( "withdraw: current _balances[msg.sender] = ", _balances[msg.sender] );
         _balances[msg.sender] = _balances[msg.sender] - amount;
-        // console.log( "withdraw: new _balances[msg.sender] = ", _balances[msg.sender] );
         stakingToken.safeTransfer(msg.sender, amount);
-        // console.log( "withdraw: after safeTransfer" );
         if (isVariableRewardRate) {
             // Update variable reward rate
             variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
-            // console.log( "withdraw: ISVARIABLEREWARDRATE" );
-            // console.log( "withdraw: variableRewardRate = ", variableRewardRate );
         }
         emit Withdrawn(msg.sender, amount);
     }
@@ -224,7 +194,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
         // total supply updated
         if (isVariableRewardRate) {
             // Prevents compounding if total supply exceeds max
-            // require(_totalSupply <= variableRewardMaxTotalSupply, "Total supply exceeds current allowed max");
             if (_totalSupply > variableRewardMaxTotalSupply) {
                 revert CompounedTotalSupplyExceedsAllowedMax(_totalSupply, variableRewardMaxTotalSupply);
             }
@@ -258,15 +227,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
-        // console.log( "notifyVariableRewardAmount: balance = ", balance );
-        // console.log( "notifyVariableRewardAmount: variableRewardMaxTotalSupply  = ", variableRewardMaxTotalSupply );
-        // console.log( "notifyVariableRewardAmount: _constantRewardRatePerTokenStored = ",
-        // _constantRewardRatePerTokenStored );
-        // console.log( "notifyVariableRewardAmount: rewardsDuration = ", rewardsDuration );
-        // console.log( "notifyVariableRewardAmount: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored
-        // = ", variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored );
-        // console.log( "notifyVariableRewardAmount: balance / rewardsDuration = ", balance / rewardsDuration );
-
         if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored > balance / rewardsDuration) {
             revert ProvidedVariableRewardTooHigh(
                 _constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply, balance
@@ -297,16 +257,11 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
     function notifyRewardAmount(uint256 reward) external onlyOwner updateReward(address(0)) {
         isVariableRewardRate = false;
 
-        // console.log( "notifyRewardAmount: block.timestamp = ", block.timestamp );
         if (block.timestamp >= periodFinish) {
-            // console.log( "notifyRewardAmount: block.timestamp >= periodFinish");
             rewardRate = reward / rewardsDuration;
         } else {
-            // console.log( "notifyRewardAmount: block.timestamp < periodFinish");
             uint256 remaining = periodFinish - block.timestamp;
-            // console.log( "notifyRewardAmount: remaining = ", remaining );
             uint256 leftover = remaining * rewardRate;
-            // console.log( "notifyRewardAmount: leftover = ", leftover );
             rewardRate = (reward + leftover) / rewardsDuration;
         }
         // Ensure the provided reward amount is not more than the balance in the contract.
@@ -314,10 +269,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
-        // console.log( "notifyRewardAmount: reward = ", reward );
-        // console.log( "notifyRewardAmount: rewardRate = ", rewardRate );
-        // console.log( "notifyRewardAmount: balance = ", balance );
-        // console.log( "notifyRewardAmount: rewardsDuration = ", rewardsDuration );
         if (rewardRate > balance / rewardsDuration) revert ProvidedRewardTooHigh(reward, balance, rewardsDuration);
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + rewardsDuration;
@@ -340,16 +291,12 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
     /* ========== MODIFIERS ========== */
 
     modifier updateReward(address account) {
-        // console.log( "updateReward: account = ", account );
         if (isVariableRewardRate) {
-            // console.log( "updateReward: isVariableRewardRate" );
             // Update variable reward rate
             rewardPerTokenStored = constantRewardRatePerTokenStored;
 
             if (account != address(0)) {
-                // console.log( "updateReward: earned(account) = ", earned(account) );
                 rewards[account] = earned(account);
-                // console.log( "updateReward: rewardPerTokenStored = ", rewardPerTokenStored );
                 userLastUpdateTime[account] = lastTimeRewardApplicable();
             }
 
@@ -358,12 +305,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
         } else {
             rewardPerTokenStored = rewardPerToken();
             lastUpdateTime = lastTimeRewardApplicable();
-            // console.log( "updateReward: ! isVariableRewardRate" );
-            // console.log( "updateReward: rewardPerTokenStored = ", rewardPerTokenStored );
-            // console.log( "updateReward: lastUpdateTime = ", lastUpdateTime );
             if (account != address(0)) {
-                // console.log( "updateReward: earned(account) = ", earned(account) );
-                // console.log( "updateReward: rewardPerTokenStored = ", rewardPerTokenStored );
                 rewards[account] = earned(account);
                 userRewardPerTokenPaid[account] = rewardPerTokenStored;
             }
@@ -389,38 +331,4 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, ISta
         // Let everyone know that our pause state has changed.
         // Events Paused/Unpaused emmited by _pause()/_un_pause()
     }
-
-    //////////////////////////////////////////////////////////
-
-    /* ========== DEBUG ========== */
-
-    // DELETE all the following functions after debugging
-    /*
-    //  * @dev Withdraw without caring about rewards. EMERGENCY ONLY.
-    function withdrawAllOnly() external {
-        withdraw(_balances[msg.sender]);
-    }
-
-    //  * @dev for testing only. remove after debugging
-
-    function emergencyWithdrawUnsafe() external {
-        uint256 amount = _balances[msg.sender];
-        require(amount > 0, "Cannot withdraw 0");
-        _totalSupply = _totalSupply - amount;
-        _balances[msg.sender] = 0;
-        stakingToken.safeTransfer(msg.sender, amount);
-        emit Withdrawn(msg.sender, amount);
-    }
-
-    //  * @dev for testing only. remove after debugging
-
-    function emergencyWithdrawAllUnsafe() external onlyOwner {
-        uint256 amount = _totalSupply;
-        require(amount > 0, "Cannot withdraw 0");
-        _totalSupply = 0;
-        stakingToken.safeTransfer(msg.sender, amount);
-        emit Withdrawn(msg.sender, amount);
-    }
-    */
-    //////////////////////////////////////////////////////////
 }
