@@ -19,7 +19,7 @@
     "@openzeppelin/contracts-3.4.1": "npm:@openzeppelin/contracts@3.4.1",
     "@openzeppelin/contracts-5.0.2": "npm:@openzeppelin/contracts@5.0.2"
   },
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Contracts for Swapi Finance 🐝",
   "main": "index.js",
   "repository": {
@@ -42,7 +42,7 @@
     "clean": "pnpm run clean:cache && pnpm run cleanForge",
     "clean:node": "rimraf ./node_modules/",
     "clean:HH": "rimraf hardhat-artifacts && rimraf hardhat-cache",
-    "cleanAll": "pnpm run clean && pnpm run clean:HH  && pnpm run clean:node",
+    "clean:ALL": "pnpm run clean && pnpm run clean:HH  && pnpm run clean:node",
     "build": "forge build --skip test",
     "build:All": "forge build",
     "build:CI": "forge build --optimize --sizes --skip test",
