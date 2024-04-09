@@ -9,6 +9,7 @@ import "./StakingRewards2_base.t.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import { IStakingRewards2Errors } from "../src/contracts/IStakingRewards2Errors.sol";
+import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
@@ -197,7 +198,7 @@ contract DepositSetup1 is StakingSetup1 {
         vm.startPrank(userAlice);
         stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
         vm.stopPrank();
         TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
@@ -215,12 +216,12 @@ contract DepositSetup2 is StakingSetup2 {
         vm.startPrank(userAlice);
         stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
         vm.startPrank(userBob);
         stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
         stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
         vm.stopPrank();
         TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT + BOB_STAKINGERC20_STAKEDAMOUNT;
@@ -238,17 +239,17 @@ contract DepositSetup3 is StakingSetup3 {
         vm.startPrank(userAlice);
         stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
         vm.startPrank(userBob);
         stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
         stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
         vm.startPrank(userCherry);
         stakingERC20.approve(address(stakingRewards2), CHERRY_STAKINGERC20_STAKEDAMOUNT);
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2.Staked(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
+        emit StakingRewards2Events.Staked(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
         stakingRewards2.stake(CHERRY_STAKINGERC20_STAKEDAMOUNT);
         vm.stopPrank();
         TOTAL_STAKED_AMOUNT =
@@ -1453,7 +1454,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.prank(userStakingRewardAdmin);
         // Check emitted event
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2.RewardAdded(1);
+        emit StakingRewards2Events.RewardAdded(1);
         stakingRewards2.notifyRewardAmount(1);
         verboseLog("Staking contract: Only owner can notifyRewardAmount of ", 1);
         verboseLog("Staking contract: Event RewardAdded emitted");
@@ -1463,7 +1464,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.prank(userStakingRewardAdmin);
         // Check emitted event
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2.RewardAdded(0);
+        emit StakingRewards2Events.RewardAdded(0);
         stakingRewards2.notifyRewardAmount(0);
         verboseLog("Staking contract: Only owner can notifyRewardAmount of ", 0);
         verboseLog("Staking contract: Event RewardAdded emitted");
@@ -1475,7 +1476,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.prank(userStakingRewardAdmin);
         // Check emitted event
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2.RewardAdded(rewardAmountToAddForRaisingError - 1);
+        emit StakingRewards2Events.RewardAdded(rewardAmountToAddForRaisingError - 1);
         stakingRewards2.notifyRewardAmount(rewardAmountToAddForRaisingError - 1);
         verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError - 1);
         verboseLog("Staking contract: Event RewardAdded emitted");
@@ -1490,7 +1491,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.prank(userStakingRewardAdmin);
         // Check emitted event
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2.RewardAdded(additionnalRewardAmount);
+        emit StakingRewards2Events.RewardAdded(additionnalRewardAmount);
         stakingRewards2.notifyRewardAmount(additionnalRewardAmount);
         verboseLog("Staking contract: Only owner can notifyRewardAmount of an additionnal ", additionnalRewardAmount);
         verboseLog("Staking contract: Event RewardAdded emitted");
@@ -1558,7 +1559,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.prank(userStakingRewardAdmin);
         // Check emitted event
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2.RewardsDurationUpdated(1);
+        emit StakingRewards2Events.RewardsDurationUpdated(1);
         stakingRewards2.setRewardsDuration(1);
         verboseLog("Staking contract: Only owner can setRewardsDuration");
         verboseLog("Staking contract: Event RewardsDurationUpdated emitted");
