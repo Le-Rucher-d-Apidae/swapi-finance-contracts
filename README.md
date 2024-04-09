@@ -66,5 +66,5 @@ tests contracts compilation takes up to 20+ Gb of RAM, so be sure to have enough
 Github actions for running tests are disabled for now, as they are not able to compile the contracts due to the memory limit (12-16 Gb).
 ```
 
-Tests currently nor working:
+Tests currently not working:
  - test/eth-token-recover
