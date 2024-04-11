@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // pragma solidity ^0.8.23;
-// pragma solidity >=0.8.20 < 0.9.0;
-pragma solidity ^0.8.4;
+pragma solidity >=0.8.20 < 0.9.0;
 
 import { IERC20, SafeERC20 } from "@openzeppelin/contracts@5.0.2/token/ERC20/utils/SafeERC20.sol";
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
