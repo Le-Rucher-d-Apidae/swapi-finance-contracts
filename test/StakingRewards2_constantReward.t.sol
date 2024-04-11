@@ -960,9 +960,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.startPrank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                RewardPeriodInProgress.selector,
-                block.timestamp,
-                STAKING_START_TIME + REWARD_INITIAL_DURATION
+                RewardPeriodInProgress.selector, block.timestamp, STAKING_START_TIME + REWARD_INITIAL_DURATION
             )
         );
         // vm.expectRevert( bytes(_MMPOR000) );
@@ -972,9 +970,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
         vm.expectRevert(
             abi.encodeWithSelector(
-                RewardPeriodInProgress.selector,
-                block.timestamp,
-                STAKING_START_TIME + REWARD_INITIAL_DURATION
+                RewardPeriodInProgress.selector, block.timestamp, STAKING_START_TIME + REWARD_INITIAL_DURATION
             )
         );
         stakingRewards2.setRewardsDuration(1);

@@ -16,12 +16,7 @@ import { StakingRewards2Events } from "./StakingRewards2Events.sol";
 import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
-contract StakingRewards2 is
-    ReentrancyGuard,
-    Ownable(msg.sender),
-    Pausable,
-    StakingRewards2Events
-{
+contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, StakingRewards2Events {
     uint256 constant ONE_TOKEN = 1e18;
 
     using SafeERC20 for IERC20;
@@ -114,8 +109,8 @@ contract StakingRewards2 is
         if (isVariableRewardRate) {
             if (_totalSupply > variableRewardMaxTotalSupply) {
                 revert StakeTotalSupplyExceedsAllowedMax({
-                        newTotalSupply: _totalSupply,
-                        variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
+                    newTotalSupply: _totalSupply,
+                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
                 });
             }
         }
@@ -167,10 +162,9 @@ contract StakingRewards2 is
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
         if (amount == 0) revert WithdrawZero();
         if (_balances[msg.sender] == 0) revert NothingToWithdraw();
-        if (amount > _balances[msg.sender]) revert NotEnoughToWithdraw({
-                                                        amountToWithdraw: amount,
-                                                        currentBalance: _balances[msg.sender]
-                                                    });
+        if (amount > _balances[msg.sender]) {
+            revert NotEnoughToWithdraw({ amountToWithdraw: amount, currentBalance: _balances[msg.sender] });
+        }
 
         _totalSupply = _totalSupply - amount;
         _balances[msg.sender] = _balances[msg.sender] - amount;
@@ -306,11 +300,9 @@ contract StakingRewards2 is
         if (stakingToken == rewardsToken) {
             balance = balance - _totalSupply;
         }
-        if (rewardRate > balance / rewardsDuration) revert ProvidedRewardTooHigh({
-                reward: reward,
-                rewardBalance: balance,
-                rewardsDuration: rewardsDuration
-            });
+        if (rewardRate > balance / rewardsDuration) {
+            revert ProvidedRewardTooHigh({ reward: reward, rewardBalance: balance, rewardsDuration: rewardsDuration });
+        }
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + rewardsDuration;
         emit RewardAdded(reward);
@@ -324,10 +316,9 @@ contract StakingRewards2 is
     }
 
     function setRewardsDuration(uint256 _rewardsDuration) external onlyOwner {
-        if (block.timestamp <= periodFinish) revert RewardPeriodInProgress({
-                currentTimestamp: block.timestamp,
-                periodFinish: periodFinish
-            });
+        if (block.timestamp <= periodFinish) {
+            revert RewardPeriodInProgress({ currentTimestamp: block.timestamp, periodFinish: periodFinish });
+        }
         rewardsDuration = _rewardsDuration;
         emit RewardsDurationUpdated(rewardsDuration);
     }
