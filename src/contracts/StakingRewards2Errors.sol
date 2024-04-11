@@ -22,7 +22,9 @@ error CantWithdrawStakingToken();
 
 /**
  * @dev Provided reward too high (insufficient balance in staking contract).
- * @param reward amount.
+ * @param reward.
+ * @param rewardBalance.
+ * @param rewardsDuration.
  */
 error ProvidedRewardTooHigh(uint256 reward, uint256 rewardBalance, uint256 rewardsDuration);
 
@@ -53,6 +55,8 @@ error CompoundDifferentTokens();
 
 /**
  * @dev Withdraw : Cannot withdraw more than deposited
+ * @param amountToWithdraw.
+ * @param currentBalance.
  */
 error NotEnoughToWithdraw(uint256 amountToWithdraw, uint256 currentBalance);
 /**
@@ -64,6 +68,9 @@ error NothingToWithdraw();
 
 /**
  * @dev Provided reward too high (insufficient balance in staking contract).
+ * @param constantRewardPerTokenStored.
+ * @param variableRewardMaxTotalSupply.
+ * @param rewardBalance.
  */
 error ProvidedVariableRewardTooHigh(
     uint256 constantRewardPerTokenStored, uint256 variableRewardMaxTotalSupply, uint256 rewardBalance
@@ -91,6 +98,7 @@ error NotVariableRewardRater();
 /**
  * @dev Insufficient reward balance after Max total supply increase.
  * More reward than available balance amount could be spent.
- * @param variableRewardMaxTotalSupply .
+ * @param variableRewardMaxTotalSupply.
+ * @param rewardsBalance.
  */
 error UpdateVariableRewardMaxTotalSupply(uint256 variableRewardMaxTotalSupply, uint256 rewardsBalance);
