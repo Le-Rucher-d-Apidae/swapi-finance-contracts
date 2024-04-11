@@ -8,7 +8,7 @@ import { stdMath } from "forge-std/src/StdMath.sol";
 import "./StakingRewards2_base.t.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
-import { IStakingRewards2Errors } from "../src/contracts/IStakingRewards2Errors.sol";
+import "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
@@ -970,7 +970,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         // Check revert
         vm.expectRevert(
             abi.encodeWithSelector(
-                IStakingRewards2Errors.ProvidedRewardTooHigh.selector,
+                ProvidedRewardTooHigh.selector,
                 rewardAmountToAddForRaisingError,
                 REWARD_INITIAL_AMOUNT,
                 REWARD_INITIAL_DURATION
@@ -992,7 +992,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         // Check revert
         vm.expectRevert(
             abi.encodeWithSelector(
-                IStakingRewards2Errors.ProvidedRewardTooHigh.selector,
+                ProvidedRewardTooHigh.selector,
                 rewardAmountToAddForRaisingError * 2,
                 REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError,
                 REWARD_INITIAL_DURATION
@@ -1035,7 +1035,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.startPrank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                IStakingRewards2Errors.RewardPeriodInProgress.selector,
+                RewardPeriodInProgress.selector,
                 block.timestamp,
                 STAKING_START_TIME + REWARD_INITIAL_DURATION
             )
@@ -1047,7 +1047,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
         vm.expectRevert(
             abi.encodeWithSelector(
-                IStakingRewards2Errors.RewardPeriodInProgress.selector,
+                RewardPeriodInProgress.selector,
                 block.timestamp,
                 STAKING_START_TIME + REWARD_INITIAL_DURATION
             )

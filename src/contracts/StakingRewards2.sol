@@ -10,7 +10,7 @@ import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts@5.0.2/utils/ReentrancyGuard.sol";
 
-import { IStakingRewards2Errors } from "./IStakingRewards2Errors.sol";
+import "./StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "./StakingRewards2Events.sol";
 
 import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
@@ -20,7 +20,6 @@ contract StakingRewards2 is
     ReentrancyGuard,
     Ownable(msg.sender),
     Pausable,
-    IStakingRewards2Errors,
     StakingRewards2Events
 {
     uint256 constant ONE_TOKEN = 1e18;
@@ -114,7 +113,10 @@ contract StakingRewards2 is
         _totalSupply = _totalSupply + amount;
         if (isVariableRewardRate) {
             if (_totalSupply > variableRewardMaxTotalSupply) {
-                revert StakeTotalSupplyExceedsAllowedMax(_totalSupply, variableRewardMaxTotalSupply);
+                revert StakeTotalSupplyExceedsAllowedMax({
+                        newTotalSupply: _totalSupply,
+                        variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
+                });
             }
         }
         _balances[msg.sender] = _balances[msg.sender] + amount;
@@ -143,7 +145,10 @@ contract StakingRewards2 is
         _totalSupply = _totalSupply + amount;
         if (isVariableRewardRate) {
             if (_totalSupply > variableRewardMaxTotalSupply) {
-                revert StakeTotalSupplyExceedsAllowedMax(_totalSupply, variableRewardMaxTotalSupply);
+                revert StakeTotalSupplyExceedsAllowedMax({
+                    newTotalSupply: _totalSupply,
+                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
+                });
             }
         }
         _balances[msg.sender] = _balances[msg.sender] + amount;
@@ -162,7 +167,10 @@ contract StakingRewards2 is
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
         if (amount == 0) revert WithdrawZero();
         if (_balances[msg.sender] == 0) revert NothingToWithdraw();
-        if (amount > _balances[msg.sender]) revert NotEnoughToWithdraw(amount, _balances[msg.sender]);
+        if (amount > _balances[msg.sender]) revert NotEnoughToWithdraw({
+                                                        amountToWithdraw: amount,
+                                                        currentBalance: _balances[msg.sender]
+                                                    });
 
         _totalSupply = _totalSupply - amount;
         _balances[msg.sender] = _balances[msg.sender] - amount;
@@ -196,7 +204,10 @@ contract StakingRewards2 is
         if (isVariableRewardRate) {
             // Prevents compounding if total supply exceeds max
             if (_totalSupply > variableRewardMaxTotalSupply) {
-                revert CompounedTotalSupplyExceedsAllowedMax(_totalSupply, variableRewardMaxTotalSupply);
+                revert CompounedTotalSupplyExceedsAllowedMax({
+                    newTotalSupply: _totalSupply,
+                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
+                });
             }
             // Update variable reward rate
             variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
@@ -233,13 +244,18 @@ contract StakingRewards2 is
             balance = balance - _totalSupply;
         }
         if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored > balance / rewardsDuration) {
-            revert ProvidedVariableRewardTooHigh(
-                constantRewardRatePerTokenStored, variableRewardMaxTotalSupply, balance
-            );
+            revert ProvidedVariableRewardTooHigh({
+                constantRewardPerTokenStored: constantRewardRatePerTokenStored,
+                variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+                rewardBalance: balance
+            });
         }
         // Guard: in case already existing deposits exceed max cap
         if (_totalSupply > variableRewardMaxTotalSupply) {
-            revert StakeTotalSupplyExceedsAllowedMax(_totalSupply, _variableRewardMaxTotalSupply);
+            revert StakeTotalSupplyExceedsAllowedMax({
+                newTotalSupply: _totalSupply,
+                variableRewardMaxTotalSupply: _variableRewardMaxTotalSupply
+            });
         }
 
         emit MaxTotalSupply(variableRewardMaxTotalSupply);
@@ -262,7 +278,10 @@ contract StakingRewards2 is
             balance = balance - _totalSupply;
         }
         if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored > balance / rewardsDuration) {
-            revert UpdateVariableRewardMaxTotalSupply(variableRewardMaxTotalSupply, balance);
+            revert UpdateVariableRewardMaxTotalSupply({
+                variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+                rewardsBalance: balance
+            });
         }
         emit MaxTotalSupply(variableRewardMaxTotalSupply);
         lastUpdateTime = block.timestamp; // not useful for rewards computations
@@ -287,7 +306,11 @@ contract StakingRewards2 is
         if (stakingToken == rewardsToken) {
             balance = balance - _totalSupply;
         }
-        if (rewardRate > balance / rewardsDuration) revert ProvidedRewardTooHigh(reward, balance, rewardsDuration);
+        if (rewardRate > balance / rewardsDuration) revert ProvidedRewardTooHigh({
+                reward: reward,
+                rewardBalance: balance,
+                rewardsDuration: rewardsDuration
+            });
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + rewardsDuration;
         emit RewardAdded(reward);
@@ -301,7 +324,10 @@ contract StakingRewards2 is
     }
 
     function setRewardsDuration(uint256 _rewardsDuration) external onlyOwner {
-        if (block.timestamp <= periodFinish) revert RewardPeriodInProgress(block.timestamp, periodFinish);
+        if (block.timestamp <= periodFinish) revert RewardPeriodInProgress({
+                currentTimestamp: block.timestamp,
+                periodFinish: periodFinish
+            });
         rewardsDuration = _rewardsDuration;
         emit RewardsDurationUpdated(rewardsDuration);
     }

@@ -6,7 +6,7 @@ pragma solidity >=0.8.20 < 0.9.0;
 /**
  * @dev StakingRewards2 Errors
  */
-interface IStakingRewards2Errors {
+
     /**
      * @dev Previous rewards period must be complete before changing the duration for the new period
      * @param currentTimestamp.
@@ -24,7 +24,6 @@ interface IStakingRewards2Errors {
      * @dev Provided reward too high (insufficient balance in staking contract).
      * @param reward amount.
      */
-    // error ProvidedRewardTooHigh(uint256 reward);
     error ProvidedRewardTooHigh(uint256 reward, uint256 rewardBalance, uint256 rewardsDuration);
 
     /**
@@ -95,4 +94,4 @@ interface IStakingRewards2Errors {
      * @param variableRewardMaxTotalSupply .
      */
     error UpdateVariableRewardMaxTotalSupply(uint256 variableRewardMaxTotalSupply, uint256 rewardsBalance);
-}
+

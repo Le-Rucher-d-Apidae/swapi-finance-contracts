@@ -7,7 +7,7 @@ import { stdMath } from "forge-std/src/StdMath.sol";
 
 import "./StakingRewards2_base.t.sol";
 
-import { IStakingRewards2Errors } from "../src/contracts/IStakingRewards2Errors.sol";
+import "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
@@ -912,7 +912,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.prank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                IStakingRewards2Errors.ProvidedVariableRewardTooHigh.selector,
+                ProvidedVariableRewardTooHigh.selector,
                 CONSTANT_REWARDRATE_PERTOKENSTORED,
                 VARIABLE_REWARD_MAXTOTALSUPPLY + 1,
                 REWARD_INITIAL_AMOUNT
@@ -960,7 +960,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.startPrank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                IStakingRewards2Errors.RewardPeriodInProgress.selector,
+                RewardPeriodInProgress.selector,
                 block.timestamp,
                 STAKING_START_TIME + REWARD_INITIAL_DURATION
             )
@@ -972,7 +972,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
         vm.expectRevert(
             abi.encodeWithSelector(
-                IStakingRewards2Errors.RewardPeriodInProgress.selector,
+                RewardPeriodInProgress.selector,
                 block.timestamp,
                 STAKING_START_TIME + REWARD_INITIAL_DURATION
             )
