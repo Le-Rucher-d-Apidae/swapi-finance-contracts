@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // pragma solidity ^0.8.23;
-pragma solidity >=0.8.20 < 0.9.0;
+// pragma solidity >=0.8.20 < 0.9.0;
+pragma solidity ^0.8.4;
 
 import { IERC20, SafeERC20 } from "@openzeppelin/contracts@5.0.2/token/ERC20/utils/SafeERC20.sol";
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
@@ -227,16 +228,25 @@ contract StakingRewards2 is
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
+        // Substract total supply if staking token is the same as rewards token
+        if (stakingToken == rewardsToken) {
+            balance = balance - _totalSupply;
+        }
         if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored > balance / rewardsDuration) {
             revert ProvidedVariableRewardTooHigh(
-                _constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply, balance
+                constantRewardRatePerTokenStored, variableRewardMaxTotalSupply, balance
             );
         }
+        // Guard: in case already existing deposits exceed max cap
+        if (_totalSupply > variableRewardMaxTotalSupply) {
+            revert StakeTotalSupplyExceedsAllowedMax(_totalSupply, _variableRewardMaxTotalSupply);
+        }
+
         emit MaxTotalSupply(variableRewardMaxTotalSupply);
 
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + rewardsDuration;
-        emit RewardAddedPerTokenStored(_constantRewardRatePerTokenStored);
+        emit RewardAddedPerTokenStored(constantRewardRatePerTokenStored);
     }
 
     function updateVariableRewardMaxTotalSupply(uint256 _variableRewardMaxTotalSupply) external onlyOwner {
@@ -247,6 +257,10 @@ contract StakingRewards2 is
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
+        // Substract total supply if staking token is the same as rewards token
+        if (stakingToken == rewardsToken) {
+            balance = balance - _totalSupply;
+        }
         if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored > balance / rewardsDuration) {
             revert UpdateVariableRewardMaxTotalSupply(variableRewardMaxTotalSupply, balance);
         }
@@ -269,6 +283,10 @@ contract StakingRewards2 is
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
+        // Substract total supply if staking token is the same as rewards token
+        if (stakingToken == rewardsToken) {
+            balance = balance - _totalSupply;
+        }
         if (rewardRate > balance / rewardsDuration) revert ProvidedRewardTooHigh(reward, balance, rewardsDuration);
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + rewardsDuration;
