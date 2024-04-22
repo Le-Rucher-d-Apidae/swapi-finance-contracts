@@ -56,7 +56,7 @@
         },
         {
             "chainId": 137,
-            "name": "USD Coin",
+            "name": "USD Coin (Bridged)",
             "symbol": "USDC",
             "decimals": 6,
             "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
@@ -71,6 +71,25 @@
                     "website": "https://www.centre.io"
                 },
                 "originTokenNetwork": 0
+            }
+        },
+        {
+            "chainId": 137,
+            "name": "USD Coin (Native)",
+            "symbol": "USDC",
+            "decimals": 6,
+            "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+            "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+            "tags": [
+                "pos",
+                "erc20",
+                "noDeposit",
+                "noWithdraw",
+                "swapable",
+                "stablecoin"
+            ],
+            "extensions": {
+                "rootAddress": "0x0000000000000000000000000000000000000000"
             }
         },
         {
