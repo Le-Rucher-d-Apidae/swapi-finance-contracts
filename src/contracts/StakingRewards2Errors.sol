@@ -70,18 +70,29 @@ error NothingToWithdraw();
  * @dev Provided reward too high (insufficient balance in staking contract).
  * @param constantRewardPerTokenStored.
  * @param variableRewardMaxTotalSupply.
- * @param rewardBalance.
+ * @param minRewardBalance.
+ * @param currentRewardBalance.
  */
 error ProvidedVariableRewardTooHigh(
-    uint256 constantRewardPerTokenStored, uint256 variableRewardMaxTotalSupply, uint256 rewardBalance
+    uint256 constantRewardPerTokenStored,
+    uint256 variableRewardMaxTotalSupply,
+    uint256 minRewardBalance, // = constantRewardPerTokenStored * variableRewardMaxTotalSupply * rewardsDuration
+    uint256 currentRewardBalance // = rewardsToken.balanceOf(address(this)) - deposits
 );
 
 /**
  * @dev Total supply exceeds allowed max
- * @param newTotalSupply amount after deposit.
+ * @param newTotalSupply totalSupply amount after deposit.
  * @param variableRewardMaxTotalSupply current cap amount.
+ * @param depositAmount amount to deposit.
+ * @param totalSupply current total supply.
  */
-error StakeTotalSupplyExceedsAllowedMax(uint256 newTotalSupply, uint256 variableRewardMaxTotalSupply);
+error StakeTotalSupplyExceedsAllowedMax(
+    uint256 newTotalSupply,
+    uint256 variableRewardMaxTotalSupply,
+    uint256 depositAmount,
+    uint256 currentTotalSupply
+);
 
 /**
  * @dev After compounding total supply would exceeds allowed max

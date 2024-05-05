@@ -109,7 +109,9 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
             if (_totalSupply > variableRewardMaxTotalSupply) {
                 revert StakeTotalSupplyExceedsAllowedMax({
                     newTotalSupply: _totalSupply,
-                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
+                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+                    depositAmount: amount,
+                    totalSupply: _totalSupply - amount
                 });
             }
         }
@@ -141,7 +143,9 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
             if (_totalSupply > variableRewardMaxTotalSupply) {
                 revert StakeTotalSupplyExceedsAllowedMax({
                     newTotalSupply: _totalSupply,
-                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
+                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+                    depositAmount: amount,
+                    totalSupply: _totalSupply - amount
                 });
             }
         }
@@ -245,20 +249,58 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         if (stakingToken == rewardsToken) {
             balance = balance - _totalSupply;
         }
-        // if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored > balance / rewardsDuration) {
+
+        // if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance) {
+        //     revert ProvidedVariableRewardTooHigh({
+        //         constantRewardPerTokenStored: constantRewardRatePerTokenStored,
+        //         variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+        //         rewardBalance: balance
+        //     });
+        // }
+
+        // balance / rewardsDuration = max. reward rate per second
+
+        // if (variableRewardMaxTotalSupply < ONE_TOKEN) {
+
+        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN) {
+        //         revert ProvidedVariableRewardTooHigh({
+        //             constantRewardPerTokenStored: constantRewardRatePerTokenStored,
+        //             variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+        //             variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
+        //             rewardBalance: balance
+        //         });
+        //     }
+
+        // } else {
+
+        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration > balance) {
+        //         revert ProvidedVariableRewardTooHigh({
+        //             constantRewardPerTokenStored: constantRewardRatePerTokenStored,
+        //             variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+        //             variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
+        //             rewardBalance: balance
+        //         });
+        //     }
+
+        // }
+
         if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration > balance) {
             revert ProvidedVariableRewardTooHigh({
                 constantRewardPerTokenStored: constantRewardRatePerTokenStored,
                 variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+                variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
                 rewardBalance: balance
             });
         }
-        // Guard: in case already existing deposits exceed max cap
+
+
+        // Guard: in case already existing deposits exceed max. cap
         if (_totalSupply > variableRewardMaxTotalSupply) {
-        // if (_totalSupply / ONE_TOKEN > variableRewardMaxTotalSupply) {
             revert StakeTotalSupplyExceedsAllowedMax({
                 newTotalSupply: _totalSupply,
-                variableRewardMaxTotalSupply: _variableRewardMaxTotalSupply
+                variableRewardMaxTotalSupply: _variableRewardMaxTotalSupply,
+                depositAmount: 0,
+                currentTotalSupply: _totalSupply
             });
         }
 
