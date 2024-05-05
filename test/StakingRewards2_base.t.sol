@@ -87,7 +87,7 @@ contract TestLog is Test {
     function verboseLogTime(string memory _msg, address _address) public view {
         if (verbose) console.log(_msg, _address, " ts: ", block.timestamp);
     }
-}
+} // TestLog
 
 // ----------------
 
@@ -117,7 +117,7 @@ contract UsersSetup1 is TestLog {
         vm.label(userAlice, "Alice");
         debugLog("UsersSetup1 setUp() end");
     }
-}
+} // UsersSetup1
 
 contract UsersSetup2 is TestLog {
     address payable[] internal users;
@@ -148,7 +148,7 @@ contract UsersSetup2 is TestLog {
         vm.label(userBob, "Bob");
         debugLog("UsersSetup2 setUp() end");
     }
-}
+} // UsersSetup2
 
 // ----------------
 
@@ -185,11 +185,12 @@ contract UsersSetup3 is TestLog {
 
         debugLog("UsersSetup3 setUp() end");
     }
-}
+} // UsersSetup3
 
 // ------------------------------------
 
 contract Erc20Setup1 is UsersSetup1 {
+
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
     uint256 constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
@@ -205,9 +206,10 @@ contract Erc20Setup1 is UsersSetup1 {
         vm.stopPrank();
         debugLog("Erc20Setup1 setUp() end");
     }
-}
+} // Erc20Setup1
 
 contract Erc20Setup2 is UsersSetup2 {
+
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
     uint256 constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
@@ -225,9 +227,10 @@ contract Erc20Setup2 is UsersSetup2 {
         vm.stopPrank();
         debugLog("Erc20Setup2 setUp() end");
     }
-}
+} // Erc20Setup2
 
 contract Erc20Setup3 is UsersSetup3 {
+
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
     uint256 constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
@@ -247,7 +250,7 @@ contract Erc20Setup3 is UsersSetup3 {
         vm.stopPrank();
         debugLog("Erc20Setup3 setUp() end");
     }
-}
+} // Erc20Setup3
 
 // --------------------------------------------------------
 
@@ -268,7 +271,7 @@ abstract contract StakingPreSetup0 is TestLog {
         view
         virtual
         returns (uint256 expectedRewardsAmount);
-}
+} // StakingPreSetup0
 
 abstract contract StakingPreSetup is StakingPreSetup0 {
     StakingRewards2 internal stakingRewards2;
@@ -548,4 +551,4 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         verboseLog("getRewardedStakingDuration: rewardedStakingDuration = ", rewardedStakingDuration);
         return rewardedStakingDuration;
     }
-}
+} // StakingPreSetup
