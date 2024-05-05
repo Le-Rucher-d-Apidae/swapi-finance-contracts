@@ -270,7 +270,7 @@ abstract contract StakingPreSetup0 is TestLog {
         returns (uint256 expectedRewardsAmount);
 }
 
-abstract contract StakingPreSetup is /* TestLog, */ StakingPreSetup0 {
+abstract contract StakingPreSetup is StakingPreSetup0 {
     StakingRewards2 internal stakingRewards2;
     uint256 immutable STAKING_START_TIME = block.timestamp;
 
@@ -324,7 +324,7 @@ abstract contract StakingPreSetup is /* TestLog, */ StakingPreSetup0 {
             debugLog("checkRewardPerToken: stakingRewardsRewardPerToken = ", stakingRewardsRewardPerToken);
             if (_expectedRewardPerToken == 0) {
                 fail(
-                    "StakingPreSetup0: checkRewardPerToken: stakingReward != expected && _expectedRewardPerToken == 0"
+                    "StakingPreSetup: checkRewardPerToken: stakingReward != expected && _expectedRewardPerToken == 0"
                 );
             }
             uint256 percentDelta = stdMath.percentDelta(stakingRewardsRewardPerToken, _expectedRewardPerToken);
