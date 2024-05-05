@@ -911,8 +911,6 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
 
-// TODO: check StakeTotalSupplyExceedsAllowedMax error : amount already deposited
-
     function testStakingnotifyVariableRewardAmountFail() public {
         vm.prank(userStakingRewardAdmin);
         vm.expectRevert(
@@ -989,39 +987,90 @@ contract CheckStakingPermissions2 is StakingSetup2 {
 }
 
 
-contract CheckStakingConstantRewardLimits is StakingPreSetup0 {
-    function setUp() public virtual override {
-        // console.log("CheckStakingPermissions2 setUp()");
-        debugLog("CheckStakingPermissions2 setUp() start");
-        StakingSetup2.setUp();
-        debugLog("CheckStakingPermissions2 setUp() end");
+contract CheckStakingConstantRewardLimits is StakingPreSetup {
+
+    RewardERC20 internal rewardErc20;
+    StakingERC20 internal stakingERC20;
+    address internal userAlice;
+
+
+    function setUp() public virtual override(Erc20Setup1, StakingSetup) {
+        debugLog("CheckStakingConstantRewardLimits setUp() start");
+        verboseLog("StakingSetup1");
+        StakingPreSetup.setUp();
+
+        // Erc20 Setup
+        vm.startPrank(erc20Minter);
+        rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
+        stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+        vm.stopPrank();
+
+        vm.prank(userStakingRewardAdmin);
+        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+        // vm.prank(userStakingRewardAdmin);
+        // stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
+
+        // vm.prank(erc20Minter);
+        // rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
+        // vm.prank(userStakingRewardAdmin);
+        // // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
+        // stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, VARIABLE_REWARD_MAXTOTALSUPPLY);
+
+        // TODO : check event MaxTotalSupply(variableRewardMaxTotalSupply;
+        // TODO : check event RewardAddedPerTokenStored( _constantRewardRatePerTokenStored );
+
+        debugLog("CheckStakingConstantRewardLimits setUp() end");
     }
 
-// TODO : add some fuzzing
-// TODO : add some fuzzing
-// TODO : add some fuzzing
-// TODO : add some fuzzing
-
-    function testStakingNotifyVariableRewardAmountSuccess1() public {
-
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
+    function testStakingNotifyVariableRewardAmountFail0() public {
 
         // Test some arbitrary values
-        // Smallest amount (1,1)
+        // Smallest amount (1,1), 0 reward minted
 
-        // Mint 100 / 10^18 token as reward
+        // Mint 99 / 10^18 token as reward
         vm.prank(erc20Minter);
-        rewardErc20.mint( address(stakingRewards2), 100 );
+        // rewardErc20.mint( address(stakingRewards2), 0 );
+        vm.startPrank(userStakingRewardAdmin);
         stakingRewards2.setRewardsDuration( 100 ) // 100 s.
 
         // Set 1 unit (1 = 10^-18) of token as reward per token deposit
         // and max deposit of 1 / 1^18 token
 
-        vm.prank(userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ProvidedVariableRewardTooHigh.selector,
+                1,
+                1,
+                100, // Min. expected balance
+                0 // Current balance
+            )
+        );
+        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+        // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
+        // available reward should be at least 1 * 1 * 100 = 100
+        stakingRewards2.notifyVariableRewardAmount( 1, 1);
+        vm.stopPrank();
+        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    }
+
+    function testStakingNotifyVariableRewardAmountSuccess1() public {
+
+        // Test some arbitrary values
+        // Smallest amount (1,1), sufficient reward minted
+
+        // Mint 100 / 10^18 token as reward
+        vm.prank(erc20Minter);
+        rewardErc20.mint( address(stakingRewards2), 100 );
+        vm.startPrank(userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration( 100 ) // 100 s.
+
+        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
+        // and max deposit of 1 / 1^18 token
+
         // Check emitted event
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.MaxTotalSupply( 1 );
@@ -1030,30 +1079,22 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup0 {
         // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
         // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
         stakingRewards2.notifyVariableRewardAmount( 1, 1);
+        vm.stopPrank();
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
 
 
+
     function testStakingNotifyVariableRewardAmountFail1() public {
 
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-
         // Test some arbitrary values
-        // Smallest amount (1,1)
+        // Smallest amount (1,1), unsufficient reward minted
 
         // Mint 99 / 10^18 token as reward
         vm.prank(erc20Minter);
         rewardErc20.mint( address(stakingRewards2), 99 );
-        stakingRewards2.setRewardsDuration( 100 ) // 100 s.
-
-        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
-        // and max deposit of 1 / 1^18 token
-
         vm.prank(userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration( 100 ) // 100 s.
         // Check emitted event
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -1064,40 +1105,88 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup0 {
                 99 // Current balance
             )
         );
+        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
+        // and max deposit of 1 / 1^18 token
         // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
         // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
         // available reward should be at least 1 * 1 * 100 = 100
         stakingRewards2.notifyVariableRewardAmount( 1, 1);
+        vm.stopPrank();
+        verboseLog("Staking contract: Events MaxTotalSupply, ProvidedVariableRewardTooHigh emitted");
+    }
+
+    function testStakingnotifyVariableRewardAmountSuccess2() public {
+
+        // Reward rate : 10% yearly
+        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN
+        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
+        uint256 REWARD_DURATION = 31536000; // 31 536 000 s. = 1 year
+        uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+
+
+        // Mint 0.1 * 10^18 token as reward
+        vm.prank(erc20Minter);
+        rewardErc20.mint( address(stakingRewards2), REWARD_AMOUNT);
+        vm.startPrank(userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration( REWARD_DURATION )
+
+
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.MaxTotalSupply( ONE_TOKEN );
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAddedPerTokenStored( REWARD_PER_TOKEN_STORED );
+        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+        // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
+        stakingRewards2.notifyVariableRewardAmount( REWARD_PER_TOKEN_STORED, ONE_TOKEN );
+        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+        stakingRewards2.notifyVariableRewardAmount(
+            CONSTANT_REWARDRATE_PERTOKENSTORED, VARIABLE_REWARD_MAXTOTALSUPPLY + 1
+        );
+        vm.stopPrank();
+
+        verboseLog(
+            "Staking contract: Only owner can notifyVariableRewardAmount of ",
+            CONSTANT_REWARDRATE_PERTOKENSTORED * VARIABLE_REWARD_MAXTOTALSUPPLY
+        );
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
 
     function testStakingnotifyVariableRewardAmountFail2() public {
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-            // TODO : VARIABLE_REWARD_MAXTOTALSUPPLY
-        vm.prank(userStakingRewardAdmin);
+
+        // Reward rate : 10% yearly
+        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN;
+        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
+        uint256 REWARD_DURATION = 31536000; // 31 536 000 s. = 1 year
+        uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION + 1 ; // Round up
+
+
+        // Mint 0.1 * 10^18 token as reward
+        vm.prank(erc20Minter);
+        rewardErc20.mint( address(stakingRewards2), REWARD_AMOUNT);
+        vm.startPrank(userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration( REWARD_DURATION )
+        // Check emitted event
         vm.expectRevert(
             abi.encodeWithSelector(
                 ProvidedVariableRewardTooHigh.selector,
-                CONSTANT_REWARDRATE_PERTOKENSTORED, // constantRewardRatePerTokenStored
-                VARIABLE_REWARD_MAXTOTALSUPPLY + 1, // Max. total supply
-                    ,// Min. expected balance
-                REWARD_INITIAL_AMOUNT // Current balance
+                1,
+                1,
+                100, // Min. expected balance
+                99 // Current balance
             )
         );
+        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
+        // and max deposit of 1 / 1^18 token
+        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+        // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
+        // available reward should be at least 1 * 1 * 100 = 100
+        stakingRewards2.notifyVariableRewardAmount( REWARD_PER_TOKEN_STORED, ONE_TOKEN );
+        verboseLog("Staking contract: Events MaxTotalSupply, ProvidedVariableRewardTooHigh emitted");
+
+
         stakingRewards2.notifyVariableRewardAmount(
             CONSTANT_REWARDRATE_PERTOKENSTORED, VARIABLE_REWARD_MAXTOTALSUPPLY + 1
         );
@@ -1107,6 +1196,170 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup0 {
             CONSTANT_REWARDRATE_PERTOKENSTORED * VARIABLE_REWARD_MAXTOTALSUPPLY
         );
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    }
+
+// TODO: check StakeTotalSupplyExceedsAllowedMax error : amount already deposited
+    function testStakingnotifyVariableRewardAmountSuccess3() public {
+
+        // Reward rate : 10% yearly
+        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN;
+        uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
+        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
+        uint256 REWARD_DURATION = 31536000; // 31 536 000 s. = 1 year
+        uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+
+        // Mint 0.1 * 10^18 token as reward
+        vm.startPrank(erc20Minter);
+        rewardErc20.mint( address(stakingRewards2), REWARD_AMOUNT);
+        stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
+
+        // Deposit 1 token BEFORE starting rewards
+        vm.startPrank(userAlice);
+        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
+
+        vm.startPrank(userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration( REWARD_DURATION )
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.MaxTotalSupply( ONE_TOKEN );
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAddedPerTokenStored( REWARD_PER_TOKEN_STORED );
+        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+        // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
+        stakingRewards2.notifyVariableRewardAmount( REWARD_PER_TOKEN_STORED, ONE_TOKEN );
+        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+        stakingRewards2.notifyVariableRewardAmount(
+            CONSTANT_REWARDRATE_PERTOKENSTORED, VARIABLE_REWARD_MAXTOTALSUPPLY + 1
+        );
+        vm.stopPrank();
+
+        verboseLog(
+            "Staking contract: Only owner can notifyVariableRewardAmount of ",
+            CONSTANT_REWARDRATE_PERTOKENSTORED * VARIABLE_REWARD_MAXTOTALSUPPLY
+        );
+        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    }
+
+// TODO: check StakeTotalSupplyExceedsAllowedMax error : excessive amount already deposited
+    function testStakingnotifyVariableRewardAmountFail3() public {
+
+        // Reward rate : 10% yearly
+        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN;
+        uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT * 2;
+        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
+        uint256 REWARD_DURATION = 31536000; // 31 536 000 s. = 1 year
+        uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+
+        // Mint 0.1 * 10^18 token as reward
+        vm.startPrank(erc20Minter);
+        rewardErc20.mint( address(stakingRewards2), REWARD_AMOUNT);
+        stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
+
+        // Deposit 1 token BEFORE starting rewards
+        vm.startPrank(userAlice);
+        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
+
+        vm.startPrank(userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration( REWARD_DURATION )
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.MaxTotalSupply( ONE_TOKEN );
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAddedPerTokenStored( REWARD_PER_TOKEN_STORED );
+        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+        // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
+        stakingRewards2.notifyVariableRewardAmount( REWARD_PER_TOKEN_STORED, ONE_TOKEN );
+        // Check emitted event
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ProvidedVariableRewardTooHigh.selector,
+                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+                ONE_TOKEN, // variableRewardMaxTotalSupply
+                2 * ONE_TOKEN, // Min. expected balance
+                ONE_TOKEN // Current balance
+            )
+        );
+        vm.stopPrank();
+
+        verboseLog(
+            "Staking contract: Only owner can notifyVariableRewardAmount of ",
+            CONSTANT_REWARDRATE_PERTOKENSTORED * VARIABLE_REWARD_MAXTOTALSUPPLY
+        );
+        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    }
+
+// TODO: check StakeTotalSupplyExceedsAllowedMax error : amount already deposited And 0 mint to staking contract
+    function testStakingnotifyVariableRewardAmountFail4() public {
+
+        // Reward rate : 10% yearly
+        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        uint256 MAX_DEPOSIT_AMOUNT = 10 // ONE_TOKEN;
+        uint256 ALICE_DEPOSIT_AMOUNT = 1; // MAX_DEPOSIT_AMOUNT * 2;
+        // uint256 REWARD_AMOUNT = 0; // MAX_DEPOSIT_AMOUNT / 10;
+        uint256 REWARD_DURATION = 100; // 31536000; // 31 536 000 s. = 1 year
+        uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+
+        // Mint 0.1 * 10^18 token as reward
+        vm.startPrank(erc20Minter);
+        // rewardErc20.mint( address(stakingRewards2), 0);
+        stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
+
+        // Deposit 1 token BEFORE starting rewards
+        vm.startPrank(userAlice);
+        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
+
+        vm.startPrank(userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration( REWARD_DURATION )
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.MaxTotalSupply( ONE_TOKEN );
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAddedPerTokenStored( REWARD_PER_TOKEN_STORED );
+        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+        // notifyVariableRewardAmount(_constantRewardRatePerTokenStored,_variableRewardMaxTotalSupply)
+        stakingRewards2.notifyVariableRewardAmount( REWARD_PER_TOKEN_STORED, ONE_TOKEN );
+        // Check emitted event
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                ProvidedVariableRewardTooHigh.selector,
+                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+                MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+                MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
+                0 // Current balance
+            )
+        );
+        vm.stopPrank();
+
+        verboseLog(
+            "Staking contract: Only owner can notifyVariableRewardAmount of ",
+            CONSTANT_REWARDRATE_PERTOKENSTORED * VARIABLE_REWARD_MAXTOTALSUPPLY
+        );
+        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    }
+
+// TODO : add some fuzzing
+// TODO : add some fuzzing
+// TODO : add some fuzzing
+// TODO : add some fuzzing
+    function testStakingnotifyVariableRewardAmountFuzz() public {
+        vm.prank(userStakingRewardAdmin);
     }
 }
 
