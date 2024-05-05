@@ -7,7 +7,6 @@ import "./StakingRewards2_constantReward.t.sol";
 // ----------------------------------------------------------------------------
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
-// TODO: test claim rewards
 // 42 tests
 // /*
 contract DuringStaking1_WithWithdral__0 is DuringStaking1_WithWithdral(PERCENT_0, PERCENT_0) { }
@@ -98,7 +97,6 @@ contract DuringStaking1_WithWithdral__220__99 is DuringStaking1_WithWithdral(PER
 
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
-// TODO: test claim rewards
 // 42 tests
 // /*
 contract DuringStaking2_WithWithdral__0 is DuringStaking2_WithWithdral(PERCENT_0, PERCENT_0) { }
@@ -189,7 +187,6 @@ contract DuringStaking2_WithWithdral__220__99 is DuringStaking2_WithWithdral(PER
 
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
-// TODO: test claim rewards
 // 22 tests
 // 42 tests
 
