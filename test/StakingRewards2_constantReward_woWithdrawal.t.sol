@@ -7,7 +7,6 @@ import "./StakingRewards2_constantReward.t.sol";
 // ----------------------------------------------------------------------------
 
 // 1 staker deposits right after staking starts and keeps staked amount until the end of staking period
-// TODO: test claim rewards
 // 42 tests
 // /*
 contract DuringStaking1_WithoutWithdral_0 is DuringStaking1_WithoutWithdral(PERCENT_0, PERCENT_0) { }
@@ -97,7 +96,6 @@ contract DuringStaking1_WithoutWithdral_220__99 is DuringStaking1_WithoutWithdra
 // ------------------------------------
 
 // 2 stakers deposit right after staking starts and keep staked amount until the end of staking period
-// TODO: test claim rewards
 // 42 tests
 // /*
 contract DuringStaking2_WithoutWithdral_0__0 is DuringStaking2_WithoutWithdral(PERCENT_0, PERCENT_0) { }
@@ -189,7 +187,6 @@ contract DuringStaking2_WithoutWithdral_220__99 is DuringStaking2_WithoutWithdra
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and keep staked amount until the end of staking period
-// TODO: test claim rewards
 // 42 tests
 // /*
 contract DuringStaking3_WithoutWithdral_0 is DuringStaking3_WithoutWithdral(PERCENT_0, PERCENT_0) { }
