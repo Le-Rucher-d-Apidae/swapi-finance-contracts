@@ -214,7 +214,15 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
     /* ========== RESTRICTED FUNCTIONS ========== */
 
-    // Always needs to update the balance of the contract when calling this method
+    
+    /*
+     * @dev Notify a new reward amount for the current reward period.
+     * Can only be called by the owner.
+     * @param _constantRewardRatePerTokenStored The amount of reward token to be distributed.
+     * @param _variableRewardMaxTotalSupply The max amount of token deposited in the contract.
+     * @notice _variableRewardMaxTotalSupply is the LP amount count * 10^18 unit.
+     *         e.g. if max LP is 10, 10 * 10^18 must be provided
+     */
     function notifyVariableRewardAmount(
         uint256 _constantRewardRatePerTokenStored,
         uint256 _variableRewardMaxTotalSupply
@@ -226,6 +234,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         constantRewardRatePerTokenStored = _constantRewardRatePerTokenStored;
         variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
         variableRewardMaxTotalSupply = _variableRewardMaxTotalSupply; // Set max LP cap ; if 0, no cap
+        
 
         // Ensure the provided reward amount is not more than the balance in the contract.
         // This keeps the reward rate in the right range, preventing overflows due to
@@ -236,7 +245,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         if (stakingToken == rewardsToken) {
             balance = balance - _totalSupply;
         }
-        if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored > balance / rewardsDuration) {
+        // if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored > balance / rewardsDuration) {
+        if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration > balance) {
             revert ProvidedVariableRewardTooHigh({
                 constantRewardPerTokenStored: constantRewardRatePerTokenStored,
                 variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
@@ -245,6 +255,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         }
         // Guard: in case already existing deposits exceed max cap
         if (_totalSupply > variableRewardMaxTotalSupply) {
+        // if (_totalSupply / ONE_TOKEN > variableRewardMaxTotalSupply) {
             revert StakeTotalSupplyExceedsAllowedMax({
                 newTotalSupply: _totalSupply,
                 variableRewardMaxTotalSupply: _variableRewardMaxTotalSupply
