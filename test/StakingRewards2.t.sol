@@ -73,7 +73,9 @@ contract StakingSetup is StakingPreSetupCRR {
 }
 
 contract StakingSetup1 is Erc20Setup1, StakingSetup {
-    uint256 constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+    /* solhint-disable var-name-mixedcase */
+    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+    /* solhint-enable var-name-mixedcase */
 
     function setUp() public virtual override(Erc20Setup1, StakingSetup) {
         debugLog("StakingSetup1 setUp() start");
@@ -106,8 +108,10 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
 // ----------------
 
 contract StakingSetup2 is Erc20Setup2, StakingSetup {
-    uint256 constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+    /* solhint-disable var-name-mixedcase */
+    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+    /* solhint-enable var-name-mixedcase */
 
     function setUp() public virtual override(Erc20Setup2, StakingSetup) {
         debugLog("StakingSetup2 setUp() start");
@@ -147,9 +151,11 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
 // ----------------
 
 contract StakingSetup3 is Erc20Setup3, StakingSetup {
-    uint256 constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
-    uint256 constant CHERRY_STAKINGERC20_STAKEDAMOUNT = CHERRY_STAKINGERC20_MINTEDAMOUNT;
+    /* solhint-disable var-name-mixedcase */
+    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant CHERRY_STAKINGERC20_STAKEDAMOUNT = CHERRY_STAKINGERC20_MINTEDAMOUNT;
+    /* solhint-enable var-name-mixedcase */
 
     function setUp() public virtual override(Erc20Setup3, StakingSetup) {
         debugLog("StakingSetup3 setUp() start");
@@ -262,23 +268,23 @@ contract DepositSetup3 is StakingSetup3 {
 
 // ----------------------------------------------------------------------------
 
-contract DuringStaking1_WithoutWithdral is DepositSetup1 {
+contract DuringStaking1WithoutWithdral is DepositSetup1 {
     /**
      * @param _stakingPercentageDuration : 0 - infinite
      * @param _claimPercentageDuration : 0 - 100
      */
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1_WithoutWithdral:
+        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking1_WithoutWithdral setUp() start");
+        debugLog("DuringStaking1WithoutWithdral setUp() start");
         DepositSetup1.setUp();
-        verboseLog("DuringStaking1_WithoutWithdral");
-        debugLog("DuringStaking1_WithoutWithdral setUp() end");
+        verboseLog("DuringStaking1WithoutWithdral");
+        debugLog("DuringStaking1WithoutWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -330,19 +336,19 @@ contract DuringStaking1_WithoutWithdral is DepositSetup1 {
 
 // ------------------------------------
 
-contract DuringStaking2_WithoutWithdral is DepositSetup2 {
+contract DuringStaking2WithoutWithdral is DepositSetup2 {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1_WithoutWithdral:
+        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking2WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking2_WithoutWithdral setUp() start");
+        debugLog("DuringStaking2WithoutWithdral setUp() start");
         DepositSetup2.setUp();
-        verboseLog("DuringStaking2_WithoutWithdral");
-        debugLog("DuringStaking2_WithoutWithdral setUp() end");
+        verboseLog("DuringStaking2WithoutWithdral");
+        debugLog("DuringStaking2WithoutWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -404,19 +410,19 @@ contract DuringStaking2_WithoutWithdral is DepositSetup2 {
 
 // ------------------------------------
 
-contract DuringStaking3_WithoutWithdral is DepositSetup3 {
+contract DuringStaking3WithoutWithdral is DepositSetup3 {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1_WithoutWithdral:
+        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking3WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking3_WithoutWithdral setUp() start");
+        debugLog("DuringStaking3WithoutWithdral setUp() start");
         DepositSetup3.setUp();
-        verboseLog("DuringStaking3_WithoutWithdral");
-        debugLog("DuringStaking3_WithoutWithdral setUp() end");
+        verboseLog("DuringStaking3WithoutWithdral");
+        debugLog("DuringStaking3WithoutWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -508,24 +514,26 @@ contract DuringStaking3_WithoutWithdral is DepositSetup3 {
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
-contract DuringStaking1_WithWithdral is DepositSetup1 {
+contract DuringStaking1WithWithdral is DepositSetup1 {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
-    uint8 immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    /* solhint-disable var-name-mixedcase */
+    uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    /* solhint-enable var-name-mixedcase */
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking1_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking1WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking1_WithWithdral setUp() start");
+        debugLog("DuringStaking1WithWithdral setUp() start");
         DepositSetup1.setUp();
-        verboseLog("DuringStaking1_WithWithdral");
-        debugLog("DuringStaking1_WithWithdral setUp() end");
+        verboseLog("DuringStaking1WithWithdral");
+        debugLog("DuringStaking1WithWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -534,7 +542,7 @@ contract DuringStaking1_WithWithdral is DepositSetup1 {
 
     function testUsersStakingRewards() public {
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking1_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking1WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
             return;
         }
 
@@ -600,28 +608,34 @@ contract DuringStaking1_WithWithdral is DepositSetup1 {
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking2_WithWithdral is DepositSetup2 {
+contract DuringStaking2WithWithdral is DepositSetup2 {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
-    uint8 immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    /* solhint-disable var-name-mixedcase */
+    uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    /* solhint-enable var-name-mixedcase */
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
+        /* solhint-disable reason-string */
+        /* solhint-disable custom-errors */
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking2_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking2WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         require(
             _claimPercentageDuration <= (_stakingPercentageDuration / DIVIDE),
-            "DuringStaking1_WithoutWithdral: _claimPercentageDuration > _stakingPercentageDuration / DIVIDE"
+            "DuringStaking2WithoutWithdral: _claimPercentageDuration > _stakingPercentageDuration / DIVIDE"
         );
+        /* solhint-enable custom-errors */
+        /* solhint-enable reason-string */
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking2_WithWithdral setUp() start");
+        debugLog("DuringStaking2WithWithdral setUp() start");
         DepositSetup2.setUp();
-        verboseLog("DuringStaking2_WithWithdral");
-        debugLog("DuringStaking2_WithWithdral setUp() end");
+        verboseLog("DuringStaking2WithWithdral");
+        debugLog("DuringStaking2WithWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -631,7 +645,7 @@ contract DuringStaking2_WithWithdral is DepositSetup2 {
 
     function testUsersStakingRewards() public {
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking2_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking2WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
             return;
         }
 
@@ -706,26 +720,28 @@ contract DuringStaking2_WithWithdral is DepositSetup2 {
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking3_WithWithdral is DepositSetup3 {
+contract DuringStaking3WithWithdral is DepositSetup3 {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
-    uint8 immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    /* solhint-disable var-name-mixedcase */
+    uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    /* solhint-enable var-name-mixedcase */
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking3_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking3WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1_WithoutWithdral:
+        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking3WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking3_WithWithdral setUp() start");
+        debugLog("DuringStaking3WithWithdral setUp() start");
         DepositSetup3.setUp();
-        verboseLog("DuringStaking3_WithWithdral");
-        debugLog("DuringStaking3_WithWithdral setUp() end");
+        verboseLog("DuringStaking3WithWithdral");
+        debugLog("DuringStaking3WithWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -736,7 +752,7 @@ contract DuringStaking3_WithWithdral is DepositSetup3 {
 
     function testUsersStakingRewards() public {
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking3_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking3WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
             return;
         }
 

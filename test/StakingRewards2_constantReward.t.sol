@@ -9,7 +9,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 import { StakingPreSetup } from "./StakingRewards2_base.t.sol";
 
 // import "../src/contracts/StakingRewards2Errors.sol";
-import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
+import { RewardPeriodInProgress } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
@@ -71,7 +71,7 @@ contract StakingSetup is StakingPreSetupVRR {
 }
 
 contract StakingSetup1 is Erc20Setup1, StakingSetup {
-    uint256 constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
 
     function setUp() public virtual override(Erc20Setup1, StakingSetup) {
         debugLog("StakingSetup1 setUp() start");
@@ -107,8 +107,8 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
 // ----------------
 
 contract StakingSetup2 is Erc20Setup2, StakingSetup {
-    uint256 constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
 
     function setUp() public virtual override(Erc20Setup2, StakingSetup) {
         debugLog("StakingSetup2 setUp() start");
@@ -153,9 +153,9 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
 // ----------------
 
 contract StakingSetup3 is Erc20Setup3, StakingSetup {
-    uint256 constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
-    uint256 constant CHERRY_STAKINGERC20_STAKEDAMOUNT = CHERRY_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+    uint256 internal constant CHERRY_STAKINGERC20_STAKEDAMOUNT = CHERRY_STAKINGERC20_MINTEDAMOUNT;
 
     function setUp() public virtual override(Erc20Setup3, StakingSetup) {
         // console.log("StakingSetup3 setUp()");
@@ -278,19 +278,19 @@ contract DepositSetup3 is StakingSetup3 {
 
 // ----------------------------------------------------------------------------
 
-contract DuringStaking1_WithoutWithdral is DepositSetup1 {
+contract DuringStaking1WithoutWithdral is DepositSetup1 {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1_WithoutWithdral:
+        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking1_WithoutWithdral setUp() start");
+        debugLog("DuringStaking1WithoutWithdral setUp() start");
         DepositSetup1.setUp();
-        verboseLog("DuringStaking1_WithoutWithdral");
-        debugLog("DuringStaking1_WithoutWithdral setUp() end");
+        verboseLog("DuringStaking1WithoutWithdral");
+        debugLog("DuringStaking1WithoutWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -337,19 +337,19 @@ contract DuringStaking1_WithoutWithdral is DepositSetup1 {
 
 // ------------------------------------
 
-contract DuringStaking2_WithoutWithdral is DepositSetup2 {
+contract DuringStaking2WithoutWithdral is DepositSetup2 {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1_WithoutWithdral:
+        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking2WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking2_WithoutWithdral setUp() start");
+        debugLog("DuringStaking2WithoutWithdral setUp() start");
         DepositSetup2.setUp();
-        verboseLog("DuringStaking2_WithoutWithdral");
-        debugLog("DuringStaking2_WithoutWithdral setUp() end");
+        verboseLog("DuringStaking2WithoutWithdral");
+        debugLog("DuringStaking2WithoutWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -406,19 +406,19 @@ contract DuringStaking2_WithoutWithdral is DepositSetup2 {
 
 // ------------------------------------
 
-contract DuringStaking3_WithoutWithdral is DepositSetup3 {
+contract DuringStaking3WithoutWithdral is DepositSetup3 {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1_WithoutWithdral:
+        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking3WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking3_WithoutWithdral setUp() start");
+        debugLog("DuringStaking3WithoutWithdral setUp() start");
         DepositSetup3.setUp();
-        verboseLog("DuringStaking3_WithoutWithdral");
-        debugLog("DuringStaking3_WithoutWithdral setUp() end");
+        verboseLog("DuringStaking3WithoutWithdral");
+        debugLog("DuringStaking3WithoutWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -487,24 +487,24 @@ contract DuringStaking3_WithoutWithdral is DepositSetup3 {
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
-contract DuringStaking1_WithWithdral is DepositSetup1 {
+contract DuringStaking1WithWithdral is DepositSetup1 {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
-    uint8 immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking1_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking1WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking1_WithWithdral setUp() start");
+        debugLog("DuringStaking1WithWithdral setUp() start");
         DepositSetup1.setUp();
-        verboseLog("DuringStaking1_WithWithdral");
-        debugLog("DuringStaking1_WithWithdral setUp() end");
+        verboseLog("DuringStaking1WithWithdral");
+        debugLog("DuringStaking1WithWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -561,24 +561,24 @@ contract DuringStaking1_WithWithdral is DepositSetup1 {
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking2_WithWithdral is DepositSetup2 {
+contract DuringStaking2WithWithdral is DepositSetup2 {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
-    uint8 immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking2_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking2WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking2_WithWithdral setUp() start");
+        debugLog("DuringStaking2WithWithdral setUp() start");
         DepositSetup2.setUp();
-        verboseLog("DuringStaking2_WithWithdral");
-        debugLog("DuringStaking2_WithWithdral setUp() end");
+        verboseLog("DuringStaking2WithWithdral");
+        debugLog("DuringStaking2WithWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -653,24 +653,24 @@ contract DuringStaking2_WithWithdral is DepositSetup2 {
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking3_WithWithdral is DepositSetup3 {
+contract DuringStaking3WithWithdral is DepositSetup3 {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
-    uint8 immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
+    uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
-            fail("DuringStaking3_WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
+            fail("DuringStaking3WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
-        debugLog("DuringStaking3_WithWithdral setUp() start");
+        debugLog("DuringStaking3WithWithdral setUp() start");
         DepositSetup3.setUp();
-        verboseLog("DuringStaking3_WithWithdral");
-        debugLog("DuringStaking3_WithWithdral setUp() end");
+        verboseLog("DuringStaking3WithWithdral");
+        debugLog("DuringStaking3WithWithdral setUp() end");
     }
 
     function checkUsersStake() public {
@@ -1111,10 +1111,12 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup {
     function testStakingnotifyVariableRewardAmountSuccess2() public {
         // Reward rate : 10% yearly
         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        /* solhint-disable var-name-mixedcase */
         uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN;
         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
         uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+        /* solhint-enable var-name-mixedcase */
 
         // Mint 0.1 * 10^18 token as reward
         vm.prank(erc20Minter);
@@ -1146,10 +1148,12 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup {
     function testStakingnotifyVariableRewardAmountFail2() public {
         // Reward rate : 10% yearly
         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        /* solhint-disable var-name-mixedcase */
         uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN;
         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
         uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION + 1; // Round up
+        /* solhint-enable var-name-mixedcase */
 
         // Mint 0.1 * 10^18 token as reward
         vm.prank(erc20Minter);
@@ -1189,11 +1193,13 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup {
     function testStakingnotifyVariableRewardAmountSuccess3() public {
         // Reward rate : 10% yearly
         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        /* solhint-disable var-name-mixedcase */
         uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN;
         uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
         uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+        /* solhint-enable var-name-mixedcase */
 
         // Mint 0.1 * 10^18 token as reward
         vm.startPrank(erc20Minter);
@@ -1236,11 +1242,13 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup {
     function testStakingnotifyVariableRewardAmountFail3() public {
         // Reward rate : 10% yearly
         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        /* solhint-disable var-name-mixedcase */
         uint256 MAX_DEPOSIT_AMOUNT = ONE_TOKEN;
         uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT * 2;
         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / 10;
         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
         uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+        /* solhint-enable var-name-mixedcase */
 
         // Mint 0.1 * 10^18 token as reward
         vm.startPrank(erc20Minter);
@@ -1289,11 +1297,13 @@ contract CheckStakingConstantRewardLimits is StakingPreSetup {
     function testStakingnotifyVariableRewardAmountFail4() public {
         // Reward rate : 10% yearly
         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+        /* solhint-disable var-name-mixedcase */
         uint256 MAX_DEPOSIT_AMOUNT = 10; // ONE_TOKEN;
         uint256 ALICE_DEPOSIT_AMOUNT = 1; // MAX_DEPOSIT_AMOUNT * 2;
         // uint256 REWARD_AMOUNT = 0; // MAX_DEPOSIT_AMOUNT / 10;
         uint256 REWARD_DURATION = 100; // 31536000; // 31 536 000 s. = 1 year
         uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / REWARD_DURATION;
+        /* solhint-enable var-name-mixedcase */
 
         // Mint 0.1 * 10^18 token as reward
         vm.startPrank(erc20Minter);
