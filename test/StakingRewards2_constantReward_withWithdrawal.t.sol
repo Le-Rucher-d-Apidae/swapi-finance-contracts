@@ -5,10 +5,13 @@ pragma solidity >= 0.8.0 < 0.9.0;
 import "./StakingRewards2_constantReward.t.sol";
 
 // ----------------------------------------------------------------------------
+/* solhint-disable no-empty-blocks */
+/* solhint-disable contract-name-camelcase */
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 // 42 tests
 // /*
+
 contract DuringStaking1_WithWithdral__0 is DuringStaking1_WithWithdral(PERCENT_0, PERCENT_0) { }
 
 contract DuringStaking1_WithWithdral__1_0_1 is DuringStaking1_WithWithdral(PERCENT_1, PERCENT_0_1) { }
@@ -275,4 +278,7 @@ contract DuringStaking3_WithWithdral__220__0 is DuringStaking3_WithWithdral(PERC
 
 contract DuringStaking3_WithWithdral__220__99 is DuringStaking3_WithWithdral(PERCENT_220, PERCENT_99) { }
 // */
+
+/* solhint-enable no-empty-blocks */
+/* solhint-enable contract-name-camelcase */
 // --------------------------------------------------------

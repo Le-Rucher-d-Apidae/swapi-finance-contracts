@@ -3,7 +3,8 @@
 pragma solidity >= 0.8.0 < 0.9.0;
 
 import { console } from "forge-std/src/console.sol";
-import { stdStorage, StdStorage, Test } from "forge-std/src/Test.sol";
+// import { stdStorage, StdStorage, Test } from "forge-std/src/Test.sol";
+import { Test } from "forge-std/src/Test.sol";
 import { stdMath } from "forge-std/src/StdMath.sol";
 
 import { Utils } from "./utils/Utils.sol";
@@ -11,17 +12,30 @@ import { Utils } from "./utils/Utils.sol";
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
-import { IERC20 } from "../src/contracts/Uniswap/v2-core/interfaces/IERC20.sol";
+// import { IERC20 } from "../src/contracts/Uniswap/v2-core/interfaces/IERC20.sol";
 
 import { RewardERC20 } from "./contracts/RewardERC20.sol";
 import { StakingERC20 } from "./contracts/StakingERC20.sol";
 
-import "./TestsConstants.sol";
+import {
+    PERCENT_1,
+    PERCENT_5,
+    PERCENT_10,
+    PERCENT_90,
+    PERCENT_95,
+    PERCENT_100,
+    DELTA_0_015,
+    DELTA_0_08,
+    DELTA_0_4,
+    DELTA_0_5,
+    DELTA_5,
+    ONE_TOKEN
+} from "./TestsConstants.sol";
 
 // TODO : move to utils
 contract TestLog is Test {
-    bool debug = false;
-    bool verbose = false;
+    bool internal debug = false;
+    bool internal verbose = false;
     Utils internal utils;
 
     function debugLog(string memory _msg) public view {
@@ -190,10 +204,9 @@ contract UsersSetup3 is TestLog {
 // ------------------------------------
 
 contract Erc20Setup1 is UsersSetup1 {
-
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
-    uint256 constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
+    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
 
     function setUp() public virtual override {
         debugLog("Erc20Setup1 setUp() start");
@@ -209,11 +222,10 @@ contract Erc20Setup1 is UsersSetup1 {
 } // Erc20Setup1
 
 contract Erc20Setup2 is UsersSetup2 {
-
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
-    uint256 constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
-    uint256 constant BOB_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
+    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
+    uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
 
     function setUp() public virtual override {
         debugLog("Erc20Setup2 setUp() start");
@@ -230,12 +242,11 @@ contract Erc20Setup2 is UsersSetup2 {
 } // Erc20Setup2
 
 contract Erc20Setup3 is UsersSetup3 {
-
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
-    uint256 constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
-    uint256 constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
-    uint256 constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
+    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
+    uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
+    uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
 
     function setUp() public virtual override {
         debugLog("Erc20Setup3 setUp() start");
@@ -258,9 +269,11 @@ abstract contract StakingPreSetup0 is TestLog {
     // Rewards constants
 
     // Duration of the rewards program
+    /* solhint-disable var-name-mixedcase */
     uint256 internal constant REWARD_INITIAL_DURATION = 10_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
 
     uint256 internal REWARD_INITIAL_AMOUNT;
+    /* solhint-enable var-name-mixedcase */
 
     function expectedStakingRewards(
         uint256 _stakedAmount,
@@ -275,11 +288,13 @@ abstract contract StakingPreSetup0 is TestLog {
 
 abstract contract StakingPreSetup is StakingPreSetup0 {
     StakingRewards2 internal stakingRewards2;
-    uint256 immutable STAKING_START_TIME = block.timestamp;
+    /* solhint-disable var-name-mixedcase */
+    uint256 internal immutable STAKING_START_TIME = block.timestamp;
 
     uint256 /* constant */ internal TOTAL_STAKED_AMOUNT;
-    uint256 /* immutable */ STAKING_PERCENTAGE_DURATION;
-    uint256 /* immutable */ CLAIM_PERCENTAGE_DURATION;
+    uint256 /* immutable */ internal STAKING_PERCENTAGE_DURATION;
+    uint256 /* immutable */ internal CLAIM_PERCENTAGE_DURATION;
+    /* solhint-enable var-name-mixedcase */
 
     function checkStakingTotalSupplyStaked() internal {
         debugLog("checkStakingTotalSupplyStaked");

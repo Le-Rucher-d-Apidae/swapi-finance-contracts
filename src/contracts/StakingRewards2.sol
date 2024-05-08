@@ -9,14 +9,31 @@ import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts@5.0.2/utils/ReentrancyGuard.sol";
 
-import "./StakingRewards2Errors.sol";
+// import "./StakingRewards2Errors.sol";
+import {
+    RewardPeriodInProgress,
+    CantWithdrawStakingToken,
+    ProvidedRewardTooHigh,
+    RewardTokenZeroAddress,
+    StakingTokenZeroAddress,
+    StakeZero,
+    WithdrawZero,
+    CompoundDifferentTokens,
+    NotEnoughToWithdraw,
+    NothingToWithdraw,
+    ProvidedVariableRewardTooHigh,
+    StakeTotalSupplyExceedsAllowedMax,
+    CompounedTotalSupplyExceedsAllowedMax,
+    NotVariableRewardRate,
+    UpdateVariableRewardMaxTotalSupply
+} from "./StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "./StakingRewards2Events.sol";
 
 import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.sol";
 
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
 contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, StakingRewards2Events {
-    uint256 constant ONE_TOKEN = 1e18;
+    uint256 internal constant ONE_TOKEN = 1e18;
 
     using SafeERC20 for IERC20;
 
@@ -111,7 +128,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
                     newTotalSupply: _totalSupply,
                     variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
                     depositAmount: amount,
-                    totalSupply: _totalSupply - amount
+                    currentTotalSupply: _totalSupply - amount
                 });
             }
         }
@@ -145,7 +162,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
                     newTotalSupply: _totalSupply,
                     variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
                     depositAmount: amount,
-                    totalSupply: _totalSupply - amount
+                    currentTotalSupply: _totalSupply - amount
                 });
             }
         }
@@ -218,7 +235,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
     /* ========== RESTRICTED FUNCTIONS ========== */
 
-    
     /*
      * @dev Notify a new reward amount for the current reward period.
      * Can only be called by the owner.
@@ -238,7 +254,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         constantRewardRatePerTokenStored = _constantRewardRatePerTokenStored;
         variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
         variableRewardMaxTotalSupply = _variableRewardMaxTotalSupply; // Set max LP cap ; if 0, no cap
-        
 
         // Ensure the provided reward amount is not more than the balance in the contract.
         // This keeps the reward rate in the right range, preventing overflows due to
@@ -262,7 +277,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
         // if (variableRewardMaxTotalSupply < ONE_TOKEN) {
 
-        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN) {
+        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance *
+        // ONE_TOKEN) {
         //         revert ProvidedVariableRewardTooHigh({
         //             constantRewardPerTokenStored: constantRewardRatePerTokenStored,
         //             variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
@@ -273,7 +289,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
         // } else {
 
-        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration > balance) {
+        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration >
+        // balance) {
         //         revert ProvidedVariableRewardTooHigh({
         //             constantRewardPerTokenStored: constantRewardRatePerTokenStored,
         //             variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
@@ -284,15 +301,15 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
         // }
 
-        if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration > balance) {
+        if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration > balance)
+        {
             revert ProvidedVariableRewardTooHigh({
                 constantRewardPerTokenStored: constantRewardRatePerTokenStored,
                 variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
-                variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
-                rewardBalance: balance
+                minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
+                currentRewardBalance: balance
             });
         }
-
 
         // Guard: in case already existing deposits exceed max. cap
         if (_totalSupply > variableRewardMaxTotalSupply) {
@@ -312,7 +329,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     }
 
     function updateVariableRewardMaxTotalSupply(uint256 _variableRewardMaxTotalSupply) external onlyOwner {
-        if (!isVariableRewardRate) revert NotVariableRewardRater();
+        if (!isVariableRewardRate) revert NotVariableRewardRate();
         variableRewardMaxTotalSupply = _variableRewardMaxTotalSupply; // Set max LP cap ; if 0, no cap
         // Ensure the provided reward amount is not more than the balance in the contract.
         // This keeps the reward rate in the right range, preventing overflows due to

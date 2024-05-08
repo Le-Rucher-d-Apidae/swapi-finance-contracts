@@ -4,8 +4,9 @@ pragma solidity >= 0.8.0 < 0.9.0;
 
 import "./StakingRewards2_constantReward.t.sol";
 
+/* solhint-disable no-empty-blocks */
+/* solhint-disable contract-name-camelcase */
 // ----------------------------------------------------------------------------
-
 // 1 staker deposits right after staking starts and keeps staked amount until the end of staking period
 // 42 tests
 // /*
@@ -273,4 +274,6 @@ contract DuringStaking3_WithoutWithdral_220__0 is DuringStaking3_WithoutWithdral
 
 contract DuringStaking3_WithoutWithdral_220__99 is DuringStaking3_WithoutWithdral(PERCENT_220, PERCENT_99) { }
 // */
+/* solhint-enable no-empty-blocks */
+/* solhint-enable contract-name-camelcase */
 // ------------------------------------

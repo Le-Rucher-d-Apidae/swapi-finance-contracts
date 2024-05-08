@@ -2,13 +2,15 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { console } from "forge-std/src/console.sol";
-import { stdMath } from "forge-std/src/StdMath.sol";
+// import { console } from "forge-std/src/console.sol";
+// import { stdMath } from "forge-std/src/StdMath.sol";
 
-import "./StakingRewards2_base.t.sol";
+// import "./StakingRewards2_base.t.sol";
+import { StakingPreSetup } from "./StakingRewards2_base.t.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
-import "../src/contracts/StakingRewards2Errors.sol";
+// import "../src/contracts/StakingRewards2Errors.sol";
+import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";

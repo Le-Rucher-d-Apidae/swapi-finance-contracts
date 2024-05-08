@@ -60,7 +60,7 @@ error CompoundDifferentTokens();
  */
 error NotEnoughToWithdraw(uint256 amountToWithdraw, uint256 currentBalance);
 /**
- * @dev Nothing deposited: Cannot withdraw. = NotEnoughToWithdraw ( , 0 )
+ * @dev Nothing deposited: Cannot withdraw. = NotEnoughToWithdraw ( 0, 0 )
  */
 error NothingToWithdraw();
 
@@ -85,13 +85,10 @@ error ProvidedVariableRewardTooHigh(
  * @param newTotalSupply totalSupply amount after deposit.
  * @param variableRewardMaxTotalSupply current cap amount.
  * @param depositAmount amount to deposit.
- * @param totalSupply current total supply.
+ * @param currentTotalSupply current total supply.
  */
 error StakeTotalSupplyExceedsAllowedMax(
-    uint256 newTotalSupply,
-    uint256 variableRewardMaxTotalSupply,
-    uint256 depositAmount,
-    uint256 currentTotalSupply
+    uint256 newTotalSupply, uint256 variableRewardMaxTotalSupply, uint256 depositAmount, uint256 currentTotalSupply
 );
 
 /**
@@ -104,7 +101,7 @@ error CompounedTotalSupplyExceedsAllowedMax(uint256 newTotalSupply, uint256 vari
 /**
  * @dev Variable reward rate must be enabled
  */
-error NotVariableRewardRater();
+error NotVariableRewardRate();
 
 /**
  * @dev Insufficient reward balance after Max total supply increase.
