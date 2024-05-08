@@ -80,14 +80,7 @@
             "decimals": 6,
             "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
-            "tags": [
-                "pos",
-                "erc20",
-                "noDeposit",
-                "noWithdraw",
-                "swapable",
-                "stablecoin"
-            ],
+            "tags": ["pos", "erc20", "noDeposit", "noWithdraw", "swapable", "stablecoin"],
             "extensions": {
                 "rootAddress": "0x0000000000000000000000000000000000000000"
             }
