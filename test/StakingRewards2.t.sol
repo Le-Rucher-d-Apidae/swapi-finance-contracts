@@ -6,7 +6,17 @@ pragma solidity >= 0.8.0 < 0.9.0;
 // import { stdMath } from "forge-std/src/StdMath.sol";
 
 // import "./StakingRewards2_base.t.sol";
-import { StakingPreSetup } from "./StakingRewards2_base.t.sol";
+import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_base.t.sol";
+import {
+    DELTA_0_015,
+    DELTA_0_31,
+    PERCENT_1,
+    PERCENT_5,
+    PERCENT_90,
+    PERCENT_100,
+    DELTA_0,
+    ONE_TOKEN
+} from "./TestsConstants.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 // import "../src/contracts/StakingRewards2Errors.sol";
@@ -25,7 +35,7 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
     // Duration of the rewards program
     // see StakingPreSetup0
 
-    function setUp() public virtual /* override */ {
+    function setUp() public virtual override {
         debugLog("StakingPreSetupCRR setUp() start");
 
         // Constant reward amount allocated to the staking program during the reward duration
@@ -35,6 +45,14 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
 
         verboseLog("StakingPreSetupCRR setUp()");
         debugLog("StakingPreSetupCRR setUp() end");
+    }
+
+    // All stakers share reward budget, the more staked amount, the less rewards for each staker
+    // Reward rate is constant, same reward amount is "distributed" at each block, shared between stakers
+    // All budget is spent during the reward duration
+    function checkRewardForDuration() internal virtual override {
+        debugLog("StakingPreSetupVRR: checkRewardForDuration");
+        _checkRewardForDuration();
     }
 }
 

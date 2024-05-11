@@ -3,7 +3,6 @@
 pragma solidity >= 0.8.0 < 0.9.0;
 
 import { console } from "forge-std/src/console.sol";
-// import { stdStorage, StdStorage, Test } from "forge-std/src/Test.sol";
 import { Test } from "forge-std/src/Test.sol";
 import { stdMath } from "forge-std/src/StdMath.sol";
 
@@ -11,8 +10,6 @@ import { Utils } from "./utils/Utils.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
-
-// import { IERC20 } from "../src/contracts/Uniswap/v2-core/interfaces/IERC20.sol";
 
 import { RewardERC20 } from "./contracts/RewardERC20.sol";
 import { StakingERC20 } from "./contracts/StakingERC20.sol";
@@ -34,8 +31,8 @@ import {
 
 // TODO : move to utils
 contract TestLog is Test {
-    bool internal debug = false;
-    bool internal verbose = false;
+    bool internal debug = true;
+    bool internal verbose = true; // TODO : set to false
     Utils internal utils;
 
     function debugLog(string memory _msg) public view {
@@ -105,18 +102,16 @@ contract TestLog is Test {
 
 // ----------------
 
-contract UsersSetup1 is TestLog {
+contract UsersSetup0 is TestLog {
     address payable[] internal users;
 
     address internal erc20Admin;
     address internal erc20Minter;
     address internal userStakingRewardAdmin;
 
-    address internal userAlice;
-
     function setUp() public virtual {
-        verboseLog("UsersSetup1 setUp()");
-        debugLog("UsersSetup1 setUp() start");
+        verboseLog("UsersSetup0 setUp()");
+        debugLog("UsersSetup0 setUp() start");
         utils = new Utils();
         users = utils.createUsers(5);
 
@@ -126,6 +121,31 @@ contract UsersSetup1 is TestLog {
         vm.label(erc20Minter, "ERC20Minter");
         userStakingRewardAdmin = users[2];
         vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
+    }
+} // UsersSetup0
+
+contract UsersSetup1 is UsersSetup0 {
+    // address payable[] internal users;
+
+    // address internal erc20Admin;
+    // address internal erc20Minter;
+    // address internal userStakingRewardAdmin;
+
+    address internal userAlice;
+
+    function setUp() public virtual override {
+        verboseLog("UsersSetup1 setUp()");
+        debugLog("UsersSetup1 setUp() start");
+        UsersSetup0.setUp();
+        utils = new Utils();
+        users = utils.createUsers(5);
+
+        // erc20Admin = users[0];
+        // vm.label(erc20Admin, "ERC20Admin");
+        // erc20Minter = users[1];
+        // vm.label(erc20Minter, "ERC20Minter");
+        // userStakingRewardAdmin = users[2];
+        // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
 
         userAlice = users[3];
         vm.label(userAlice, "Alice");
@@ -133,28 +153,29 @@ contract UsersSetup1 is TestLog {
     }
 } // UsersSetup1
 
-contract UsersSetup2 is TestLog {
-    address payable[] internal users;
+contract UsersSetup2 is UsersSetup0 {
+    // address payable[] internal users;
 
-    address internal erc20Admin;
-    address internal erc20Minter;
-    address internal userStakingRewardAdmin;
+    // address internal erc20Admin;
+    // address internal erc20Minter;
+    // address internal userStakingRewardAdmin;
 
     address internal userAlice;
     address internal userBob;
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
         verboseLog("UsersSetup2 setUp()");
         debugLog("UsersSetup2 setUp() start");
+        UsersSetup0.setUp();
         utils = new Utils();
         users = utils.createUsers(5);
 
-        erc20Admin = users[0];
-        vm.label(erc20Admin, "ERC20Admin");
-        erc20Minter = users[1];
-        vm.label(erc20Minter, "ERC20Minter");
-        userStakingRewardAdmin = users[2];
-        vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
+        // erc20Admin = users[0];
+        // vm.label(erc20Admin, "ERC20Admin");
+        // erc20Minter = users[1];
+        // vm.label(erc20Minter, "ERC20Minter");
+        // userStakingRewardAdmin = users[2];
+        // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
 
         userAlice = users[3];
         vm.label(userAlice, "Alice");
@@ -166,29 +187,30 @@ contract UsersSetup2 is TestLog {
 
 // ----------------
 
-contract UsersSetup3 is TestLog {
-    address payable[] internal users;
+contract UsersSetup3 is UsersSetup0 {
+    // address payable[] internal users;
 
-    address internal erc20Admin;
-    address internal erc20Minter;
-    address internal userStakingRewardAdmin;
+    // address internal erc20Admin;
+    // address internal erc20Minter;
+    // address internal userStakingRewardAdmin;
 
     address internal userAlice;
     address internal userBob;
     address internal userCherry;
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
         verboseLog("UsersSetup3 setUp()");
         debugLog("UsersSetup3 setUp() start");
+        UsersSetup0.setUp();
         utils = new Utils();
         users = utils.createUsers(6);
 
-        erc20Admin = users[0];
-        vm.label(erc20Admin, "ERC20Admin");
-        erc20Minter = users[1];
-        vm.label(erc20Minter, "ERC20Minter");
-        userStakingRewardAdmin = users[2];
-        vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
+        // erc20Admin = users[0];
+        // vm.label(erc20Admin, "ERC20Admin");
+        // erc20Minter = users[1];
+        // vm.label(erc20Minter, "ERC20Minter");
+        // userStakingRewardAdmin = users[2];
+        // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
 
         userAlice = users[3];
         vm.label(userAlice, "Alice");
@@ -202,6 +224,23 @@ contract UsersSetup3 is TestLog {
 } // UsersSetup3
 
 // ------------------------------------
+
+// contract Erc20Setup0 is UsersSetup0 {
+//     RewardERC20 internal rewardErc20;
+//     StakingERC20 internal stakingERC20;
+
+//     function setUp() public virtual override {
+//         debugLog("Erc20Setup0 setUp() start");
+//         UsersSetup1.setUp();
+//         verboseLog("Erc20Setup0 setUp()");
+//         vm.startPrank(erc20Minter);
+//         rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
+//         stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+//         stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
+//         vm.stopPrank();
+//         debugLog("Erc20Setup0 setUp() end");
+//     }
+// } // Erc20Setup0
 
 contract Erc20Setup1 is UsersSetup1 {
     RewardERC20 internal rewardErc20;
@@ -295,6 +334,12 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
     uint256 /* immutable */ internal STAKING_PERCENTAGE_DURATION;
     uint256 /* immutable */ internal CLAIM_PERCENTAGE_DURATION;
     /* solhint-enable var-name-mixedcase */
+
+    function setUp() public virtual {
+        debugLog("StakingPreSetup setUp() start");
+        verboseLog("StakingPreSetup setUp()");
+        debugLog("StakingPreSetup setUp() end");
+    }
 
     function checkStakingTotalSupplyStaked() internal {
         debugLog("checkStakingTotalSupplyStaked");
@@ -473,12 +518,13 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         }
     }
 
-    function checkRewardForDuration() internal {
+    function _checkRewardForDuration() internal {
         debugLog("checkRewardForDuration");
         uint256 rewardForDuration;
 
         rewardForDuration = stakingRewards2.getRewardForDuration();
         debugLog("checkRewardForDuration: getRewardForDuration = ", stakingRewards2.getRewardForDuration());
+        debugLog("checkRewardForDuration: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
         assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
 
         vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
@@ -490,6 +536,11 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
 
         verboseLog("Staking contract: rewardsDuration ok");
+    }
+
+    function checkRewardForDuration() internal virtual {
+        debugLog("checkRewardForDuration()");
+        assertFalse(true, "IMPLEMENT checkRewardForDuration() in derived contract");
     }
 
     function checkStakingPeriod(uint256 _stakingPercentageDurationReached) internal {

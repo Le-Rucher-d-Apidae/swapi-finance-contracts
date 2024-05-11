@@ -12,7 +12,6 @@ import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts@5.0.2/utils/ReentrancyGuard.sol";
 
-// import "./StakingRewards2Errors.sol";
 import {
     RewardPeriodInProgress,
     CantWithdrawStakingToken,
@@ -115,7 +114,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     function getRewardForDuration() external view returns (uint256) {
         if (isVariableRewardRate) {
             // Current MAX possible reward for duration
-            return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration;
+            // return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration;
+            return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN;
         }
         return rewardRate * rewardsDuration;
     }
@@ -267,53 +267,19 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         if (stakingToken == rewardsToken) {
             balance = balance - _totalSupply;
         }
-
-        // if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance) {
-        //     revert ProvidedVariableRewardTooHigh({
-        //         constantRewardPerTokenStored: constantRewardRatePerTokenStored,
-        //         variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
-        //         rewardBalance: balance
-        //     });
-        // }
-
-        // balance / rewardsDuration = max. reward rate per second
-
-        // if (variableRewardMaxTotalSupply < ONE_TOKEN) {
-
-        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance *
-        // ONE_TOKEN) {
-        //         revert ProvidedVariableRewardTooHigh({
-        //             constantRewardPerTokenStored: constantRewardRatePerTokenStored,
-        //             variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
-        //             variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
-        //             rewardBalance: balance
-        //         });
-        //     }
-
-        // } else {
-
-        //     if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration >
-        // balance) {
-        //         revert ProvidedVariableRewardTooHigh({
-        //             constantRewardPerTokenStored: constantRewardRatePerTokenStored,
-        //             variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
-        //             variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
-        //             rewardBalance: balance
-        //         });
-        //     }
-
-        // }
-
-        if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored / ONE_TOKEN * rewardsDuration > balance)
+        if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN)
         {
             revert ProvidedVariableRewardTooHigh({
                 constantRewardPerTokenStored: constantRewardRatePerTokenStored,
                 variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+                // minRewardBalance: returns 1e18 too much, should be :
+                // minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored *
+                //                   rewardsDuration / ONE_TOKEN,
+                // keeping it as is for accurracy : dividing by ONE_TOKEN will return 0 if the result is < 1e18
                 minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
                 currentRewardBalance: balance
             });
         }
-
         // Guard: in case already existing deposits exceed max. cap
         if (_totalSupply > variableRewardMaxTotalSupply) {
             revert StakeTotalSupplyExceedsAllowedMax({
