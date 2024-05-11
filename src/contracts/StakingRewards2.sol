@@ -114,7 +114,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     function getRewardForDuration() external view returns (uint256) {
         if (isVariableRewardRate) {
             // Current MAX possible reward for duration
-            // return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration;
             return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN;
         }
         return rewardRate * rewardsDuration;
