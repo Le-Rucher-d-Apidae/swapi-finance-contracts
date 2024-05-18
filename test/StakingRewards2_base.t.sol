@@ -245,7 +245,7 @@ contract UsersSetup3 is UsersSetup0 {
 contract Erc20Setup1 is UsersSetup1 {
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
-    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
+    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
 
     function setUp() public virtual override {
         debugLog("Erc20Setup1 setUp() start");
@@ -263,7 +263,7 @@ contract Erc20Setup1 is UsersSetup1 {
 contract Erc20Setup2 is UsersSetup2 {
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
-    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
+    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
     uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
 
     function setUp() public virtual override {
@@ -497,13 +497,14 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
     {
         if (CLAIM_PERCENTAGE_DURATION > 0) {
             verboseLog("checkUserClaim:");
-            verboseLog("_userName:", _userName);
+            verboseLog("checkUserClaim: _userName:", _userName);
             uint256 stakingElapsedTime = block.timestamp - STAKING_START_TIME;
-            debugLog("stakingElapsedTime = ", stakingElapsedTime);
+            debugLog("checkUserClaim: stakingElapsedTime = ", stakingElapsedTime);
             uint256 rewardErc20UserBalance = rewardErc20.balanceOf(_user);
-            verboseLog("CLAIM: before: user reward balance = ", rewardErc20UserBalance);
+            verboseLog("checkUserClaim: before: user (reward) balance = ", rewardErc20UserBalance);
             uint256 expectedRewards =
                 expectedStakingRewards(_stakeAmount, stakingElapsedTime, REWARD_INITIAL_DURATION);
+            verboseLog("checkUserClaim: expectedRewards = ", expectedRewards);
             vm.prank(_user);
             vm.expectEmit(true, true, false, false, address(stakingRewards2));
             emit StakingRewards2Events.RewardPaid(_user, expectedRewards);
@@ -511,7 +512,8 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
             // Check user rewards balance before/after claim
             uint256 rewardErc20UserBalanceAfterClaim = rewardErc20.balanceOf(_user);
             claimedRewards_ = rewardErc20UserBalanceAfterClaim - rewardErc20UserBalance;
-            verboseLog("CLAIM: after: user reward balance = ", rewardErc20UserBalanceAfterClaim);
+            verboseLog("checkUserClaim: after: user reward balance = ", rewardErc20UserBalanceAfterClaim);
+            verboseLog("checkUserClaim: -> user CLAIMEDREWARDS = ", claimedRewards_);
             if (_delta == 0) {
                 assertEq(expectedRewards, claimedRewards_);
             } else {
@@ -526,7 +528,7 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         uint256 rewardForDuration;
 
         rewardForDuration = stakingRewards2.getRewardForDuration();
-        debugLog("checkRewardForDuration: getRewardForDuration = ", stakingRewards2.getRewardForDuration());
+        debugLog("checkRewardForDuration: getRewardForDuration  = ", stakingRewards2.getRewardForDuration());
         debugLog("checkRewardForDuration: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
 
         // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
