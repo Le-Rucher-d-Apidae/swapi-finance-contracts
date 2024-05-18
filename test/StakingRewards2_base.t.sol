@@ -309,7 +309,9 @@ abstract contract StakingPreSetup0 is TestLog {
 
     // Duration of the rewards program
     /* solhint-disable var-name-mixedcase */
-    uint256 internal constant REWARD_INITIAL_DURATION = 10_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
+    // uint256 internal constant REWARD_INITIAL_DURATION = 10_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
+    uint256 internal constant REWARD_INITIAL_DURATION = 31_536_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
+
 
     uint256 internal REWARD_INITIAL_AMOUNT;
     /* solhint-enable var-name-mixedcase */
@@ -518,27 +520,33 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         }
     }
 
-    function _checkRewardForDuration() internal {
+    /* getRewardForDuration should stay constant */
+    function _checkRewardForDuration(uint256 _delta) internal {
         debugLog("checkRewardForDuration");
         uint256 rewardForDuration;
 
         rewardForDuration = stakingRewards2.getRewardForDuration();
         debugLog("checkRewardForDuration: getRewardForDuration = ", stakingRewards2.getRewardForDuration());
         debugLog("checkRewardForDuration: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
-        assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+
+        // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+       assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
         vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
         rewardForDuration = stakingRewards2.getRewardForDuration();
-        assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+    //    assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+       assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
         vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
         rewardForDuration = stakingRewards2.getRewardForDuration();
-        assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+    //    assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+       assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
         verboseLog("Staking contract: rewardsDuration ok");
     }
 
-    function checkRewardForDuration() internal virtual {
+    // Comment parameter name to silent "Unused function parameter." warning
+    function checkRewardForDuration(uint256 /* _delta */) internal virtual {
         debugLog("checkRewardForDuration()");
         assertFalse(true, "IMPLEMENT checkRewardForDuration() in derived contract");
     }

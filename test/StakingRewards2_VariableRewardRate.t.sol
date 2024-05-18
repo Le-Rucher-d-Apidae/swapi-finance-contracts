@@ -4,6 +4,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 
 import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_base.t.sol";
 import {
+    DELTA_0_00000000015,
     DELTA_0_015,
     DELTA_0_04,
     DELTA_0_31,
@@ -58,6 +59,14 @@ abstract contract StakingPreSetupVRR is StakingPreSetup {
         //     CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY * REWARD_INITIAL_DURATION;
         REWARD_INITIAL_AMOUNT = CONSTANT_REWARD_MAXTOTALSUPPLY * APR / APR_BASE;
         // allocated to rewards
+
+        debugLog("StakingPreSetupCRR APR = ", APR);
+        debugLog("StakingPreSetupCRR APR_BASE = ", APR_BASE);
+        debugLog("StakingPreSetupCRR CONSTANT_REWARD_MAXTOTALSUPPLY_LP = ", CONSTANT_REWARD_MAXTOTALSUPPLY_LP);
+        debugLog("StakingPreSetupCRR CONSTANT_REWARD_MAXTOTALSUPPLY = ", CONSTANT_REWARD_MAXTOTALSUPPLY);
+        debugLog("StakingPreSetupCRR CONSTANT_REWARDRATE_PERTOKENSTORED = ", CONSTANT_REWARDRATE_PERTOKENSTORED);
+        debugLog("StakingPreSetupCRR REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
+
         verboseLog("StakingPreSetupCRR setUp()");
         debugLog("StakingPreSetupCRR setUp() end");
     }
@@ -66,9 +75,9 @@ abstract contract StakingPreSetupVRR is StakingPreSetup {
     // Global reward rate is VARIABLE
     // All budget might NOT be spent during the reward duration
     // But checkRewardForDuration should return the same amount as the initial budget
-    function checkRewardForDuration() internal virtual override {
+    function checkRewardForDuration(uint256 _delta) internal virtual override {
         debugLog("StakingPreSetupVRR: checkRewardForDuration");
-        _checkRewardForDuration();
+        _checkRewardForDuration(_delta);
     }
 }
 
@@ -351,7 +360,7 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is DepositSetup1 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -412,7 +421,7 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is DepositSetup2 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -483,7 +492,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is DepositSetup3 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -544,6 +553,8 @@ contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
+        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
+        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
             fail(
@@ -551,8 +562,6 @@ contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
                 " / DIVIDE"
             );
         }
-        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
@@ -570,7 +579,7 @@ contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -621,6 +630,8 @@ contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
+        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
+        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
             fail(
@@ -628,8 +639,6 @@ contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
                 " / DIVIDE"
             );
         }
-        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
@@ -648,7 +657,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -716,6 +725,8 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
+        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
+        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
         // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
             fail(
@@ -723,8 +734,6 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
                 " / DIVIDE"
             );
         }
-        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
@@ -744,7 +753,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;

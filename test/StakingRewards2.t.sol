@@ -8,6 +8,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 // import "./StakingRewards2_base.t.sol";
 import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_base.t.sol";
 import {
+    DELTA_0_00000000015,
     DELTA_0_015,
     DELTA_0_31,
     PERCENT_1,
@@ -50,9 +51,9 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
     // All stakers share reward budget, the more staked amount, the less rewards for each staker
     // Reward rate is constant, same reward amount is "distributed" at each block, shared between stakers
     // All budget is spent during the reward duration
-    function checkRewardForDuration() internal virtual override {
+    function checkRewardForDuration(uint256 _delta) internal virtual override {
         debugLog("StakingPreSetupVRR: checkRewardForDuration");
-        _checkRewardForDuration();
+        _checkRewardForDuration(_delta);
     }
 }
 
@@ -313,7 +314,7 @@ contract DuringStaking1WithoutWithdral is DepositSetup1 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -378,7 +379,7 @@ contract DuringStaking2WithoutWithdral is DepositSetup2 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -453,7 +454,7 @@ contract DuringStaking3WithoutWithdral is DepositSetup3 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -539,12 +540,12 @@ contract DuringStaking1WithWithdral is DepositSetup1 {
     /* solhint-enable var-name-mixedcase */
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
-        // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
+        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
+        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
+        // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
             fail("DuringStaking1WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
-        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
@@ -567,7 +568,7 @@ contract DuringStaking1WithWithdral is DepositSetup1 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -633,20 +634,20 @@ contract DuringStaking2WithWithdral is DepositSetup2 {
     /* solhint-enable var-name-mixedcase */
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
-        // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
+        // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
         /* solhint-disable reason-string */
         /* solhint-disable custom-errors */
+        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
+        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
             fail("DuringStaking2WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
-        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         require(
             _claimPercentageDuration <= (_stakingPercentageDuration / DIVIDE),
             "DuringStaking2WithoutWithdral: _claimPercentageDuration > _stakingPercentageDuration / DIVIDE"
         );
         /* solhint-enable custom-errors */
         /* solhint-enable reason-string */
-        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
@@ -668,7 +669,7 @@ contract DuringStaking2WithWithdral is DepositSetup2 {
         }
 
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
         checkUsersStake();
 
@@ -745,14 +746,14 @@ contract DuringStaking3WithWithdral is DepositSetup3 {
     /* solhint-enable var-name-mixedcase */
 
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
-        // Claim must be BEFORE (or equal to) half of the staking duration, else reward computaton will underflow
+        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
+        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
+        // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
             fail("DuringStaking3WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
-        STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking3WithoutWithdral:
         // _claimPercentageDuration > _stakingPercentageDuration");
-        CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
     function setUp() public override {
@@ -775,7 +776,7 @@ contract DuringStaking3WithWithdral is DepositSetup3 {
         }
 
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration();
+        checkRewardForDuration(DELTA_0_00000000015);
         checkStakingTotalSupplyStaked();
         checkUsersStake();
 

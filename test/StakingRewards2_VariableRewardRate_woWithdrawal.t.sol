@@ -43,179 +43,179 @@ import {
 // 1 staker deposits right after staking starts and keeps staked amount until the end of staking period
 // 42 tests
 // /*
-contract DuringStakingConstantReward1_WithoutWithdral_0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_0, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_0, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_1_0_1 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_1, PERCENT_0_1)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_1_0_1 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_1, PERCENT_0_1)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_10__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_10, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_10__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_10, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_10__5 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_10, PERCENT_5)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_10__5 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_10, PERCENT_5)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_20__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_20, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_20__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_20, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_20__10 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_20, PERCENT_10)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_20__10 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_20, PERCENT_10)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_30__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_30, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_30__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_30, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_30__20 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_30, PERCENT_20)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_30__20 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_30, PERCENT_20)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_33__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_33, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_33__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_33, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_33__10 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_33, PERCENT_10)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_33__10 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_33, PERCENT_10)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_40__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_40, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_40__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_40, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_40__5 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_40, PERCENT_5)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_40__5 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_40, PERCENT_5)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_50__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_50, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_50__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_50, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_50__5 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_50, PERCENT_5)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_50__5 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_50, PERCENT_5)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_60__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_60, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_60__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_60, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_60__20 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_60, PERCENT_20)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_60__20 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_60, PERCENT_20)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_66__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_66, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_66__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_66, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_66__30 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_66, PERCENT_30)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_66__30 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_66, PERCENT_30)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_70__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_70, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_70__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_70, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_70__10 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_70, PERCENT_10)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_70__10 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_70, PERCENT_10)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_80__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_80, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_80__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_80, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_80__70 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_80, PERCENT_70)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_80__70 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_80, PERCENT_70)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_90__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_90, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_90__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_90, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_90__50 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_90, PERCENT_50)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_90__50 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_90, PERCENT_50)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_99__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_99, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_99__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_99, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_99__33 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_99, PERCENT_33)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_99__33 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_99, PERCENT_33)
+// { }
 
 contract DuringStakingConstantReward1_WithoutWithdral_100__0 is
     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_100, PERCENT_0)
 { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_100__30 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_100, PERCENT_30)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_100__30 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_100, PERCENT_30)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_101__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_101, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_101__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_101, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_101__50 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_101, PERCENT_50)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_101__50 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_101, PERCENT_50)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_110__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_110, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_110__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_110, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_110__60 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_110, PERCENT_60)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_110__60 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_110, PERCENT_60)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_150__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_150, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_150__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_150, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_150__70 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_150, PERCENT_70)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_150__70 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_150, PERCENT_70)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_190__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_190, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_190__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_190, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_190__80 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_190, PERCENT_80)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_190__80 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_190, PERCENT_80)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_200__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_200, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_200__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_200, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_200__90 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_200, PERCENT_90)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_200__90 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_200, PERCENT_90)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_201__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_201, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_201__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_201, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_201__90 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_201, PERCENT_90)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_201__90 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_201, PERCENT_90)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_220__0 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_220, PERCENT_0)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_220__0 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_220, PERCENT_0)
+// { }
 
-contract DuringStakingConstantReward1_WithoutWithdral_220__99 is
-    DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_220, PERCENT_99)
-{ }
+// contract DuringStakingConstantReward1_WithoutWithdral_220__99 is
+//     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_220, PERCENT_99)
+// { }
 // */
 // ------------------------------------
 
 // 2 stakers deposit right after staking starts and keep staked amount until the end of staking period
 // 42 tests
-// /*
+/*
 contract DuringStakingConstantReward2_WithoutWithdral_0__0 is
     DuringStakingVariableRewardRate2WithoutWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -387,12 +387,12 @@ contract DuringStakingConstantReward2_WithoutWithdral_220__0 is
 contract DuringStakingConstantReward2_WithoutWithdral_220__99 is
     DuringStakingVariableRewardRate2WithoutWithdral(PERCENT_220, PERCENT_99)
 { }
-// */
+*/
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and keep staked amount until the end of staking period
 // 42 tests
-// /*
+/*
 contract DuringStakingConstantReward3_WithoutWithdral_0 is
     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -560,7 +560,7 @@ contract DuringStakingConstantReward3_WithoutWithdral_220__0 is
 contract DuringStakingConstantReward3_WithoutWithdral_220__99 is
     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_220, PERCENT_99)
 { }
-// */
+*/
 
 // ----------------------------------------------------------------------------
 

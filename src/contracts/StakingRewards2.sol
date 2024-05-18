@@ -57,7 +57,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
     /* ========== Variable Reward Rate ========== */
     bool public isVariableRewardRate = false;
-    uint256 public variableRewardRate = 0;
+    bool public isConstantRewardRatePerTokenStored = false;
+    // uint256 public variableRewardRate = 0;
     uint256 public constantRewardRatePerTokenStored;
     uint256 public variableRewardMaxTotalSupply;
     // Naïve implementation for rewards computation: lastUpdateTime user map, updated every time a user interacts
@@ -139,7 +140,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
         if (isVariableRewardRate) {
             // Update variable reward rate
-            variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
+            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
         }
         emit Staked(msg.sender, amount);
     }
@@ -176,7 +177,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         if (isVariableRewardRate) {
             // Update variable reward rate
-            variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
+            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply; // WRONG
         }
         emit Staked(msg.sender, amount);
     }
@@ -193,7 +194,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         stakingToken.safeTransfer(msg.sender, amount);
         if (isVariableRewardRate) {
             // Update variable reward rate
-            variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
+            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply; // WRONG
         }
         emit Withdrawn(msg.sender, amount);
     }
@@ -226,7 +227,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
                 });
             }
             // Update variable reward rate
-            variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
+            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply; // WRONG
         }
     }
 
@@ -254,7 +255,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     {
         isVariableRewardRate = true;
         constantRewardRatePerTokenStored = _constantRewardRatePerTokenStored;
-        variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
+        // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
         variableRewardMaxTotalSupply = _variableRewardMaxTotalSupply; // Set max LP cap ; if 0, no cap
 
         // Ensure the provided reward amount is not more than the balance in the contract.
@@ -384,7 +385,19 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         }
         _;
     }
-
+/*
+    modifier updateReward(address account) {
+        if (!isVariableRewardRate) {
+            rewardPerTokenStored = rewardPerToken();
+            lastUpdateTime = lastTimeRewardApplicable();
+            if (account != address(0)) {
+                rewards[account] = earned(account);
+                userRewardPerTokenPaid[account] = rewardPerTokenStored;
+            }
+        }
+        _;
+    }
+*/
     /* ========== PAUSABLE ========== */
 
     function setPaused(bool _paused) external onlyOwner {
