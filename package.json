@@ -65,6 +65,7 @@
     "forge:test:StakingRewards2v": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate.t.sol",
     "forge:test:StakingRewards2vww": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_withWithdrawal.t.sol",
     "forge:test:StakingRewards2vwow": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_woWithdrawal.t.sol",
+    "forge:test:StakingRewards2vc": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_CustomTests.t.sol",
     "forgeTest": "forge test ",
     "test:coverage": "forge coverage",
     "test:coverage:report": "forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage",

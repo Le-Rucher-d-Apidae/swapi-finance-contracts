@@ -330,7 +330,7 @@ abstract contract StakingPreSetup0 is TestLog {
 abstract contract StakingPreSetup is StakingPreSetup0 {
     StakingRewards2 internal stakingRewards2;
     /* solhint-disable var-name-mixedcase */
-    uint256 internal immutable STAKING_START_TIME = block.timestamp;
+    uint256 internal /* immutable */ STAKING_START_TIME = block.timestamp;
 
     uint256 /* constant */ internal TOTAL_STAKED_AMOUNT;
     uint256 /* immutable */ internal STAKING_PERCENTAGE_DURATION;
