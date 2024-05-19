@@ -37,6 +37,8 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
 {
     // address payable[] internal users;
     // address internal userAlice;
+      uint256 internal immutable INITIAL_BLOCK_TIMESTAMP = block.timestamp;
+      uint256 internal immutable INITIAL_BLOCK_NUMBER = block.number;
 
   function setUp() public virtual override(Erc20Setup2, StakingPreSetup) {
 //   function setUp() public virtual override(StakingPreSetup) {
@@ -104,7 +106,11 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
 
       vm.stopPrank();
 
-      // Alice deposits tokens BEFORE rewards start
+      // Alice deposit tokens BEFORE rewards start
+      debugLog("Alice deposit tokens BEFORE rewards start at :");
+      debugLog("block.timestamp = ", block.timestamp);
+      debugLog("block.number = ", block.number);
+
       vm.startPrank(userAlice);
       stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
       vm.expectEmit(true, true, false, false, address(stakingRewards2));
@@ -112,7 +118,12 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
       vm.stopPrank();
 
-// vm.warp
+      vm.warp( INITIAL_BLOCK_TIMESTAMP + 100);
+      vm.roll( INITIAL_BLOCK_NUMBER + 10);
+
+      debugLog("Set rewards duration at :");
+      debugLog("block.timestamp = ", block.timestamp);
+      debugLog("block.number = ", block.number);
 
       vm.startPrank(userStakingRewardAdmin);
     //   vm.prank(userStakingRewardAdmin);
@@ -120,6 +131,15 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       vm.expectEmit(true, true, false, false, address(stakingRewards2));
       emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
       stakingRewards2.setRewardsDuration(REWARD_DURATION);
+
+      vm.warp( INITIAL_BLOCK_TIMESTAMP + 200);
+      vm.roll( INITIAL_BLOCK_NUMBER + 20);
+
+      debugLog("notifyVariableRewardAmount at :");
+      debugLog("block.timestamp = ", block.timestamp);
+      debugLog("block.number = ", block.number);
+
+
       // Check emitted events
       vm.expectEmit(true, false, false, false, address(stakingRewards2));
       emit StakingRewards2Events.MaxTotalSupply(ONE_TOKEN);
@@ -131,6 +151,13 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       STAKING_START_TIME = block.timestamp;
       vm.stopPrank();
 
+      vm.warp( INITIAL_BLOCK_TIMESTAMP + 300);
+      vm.roll( INITIAL_BLOCK_NUMBER + 30);
+
+      debugLog("Bob deposit tokens AFTER rewards at :");
+      debugLog("block.timestamp = ", block.timestamp);
+      debugLog("block.number = ", block.number);
+
       // Bob deposits tokens AFTER rewards start
       vm.startPrank(userBob);
       stakingERC20.approve(address(stakingRewards2), BOB_DEPOSIT_AMOUNT);
@@ -138,6 +165,18 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       emit StakingRewards2Events.Staked(userBob, BOB_DEPOSIT_AMOUNT);
       stakingRewards2.stake(BOB_DEPOSIT_AMOUNT);
       vm.stopPrank();
+
+
+
+
+      // Go to the end of the reward period
+      debugLog("Go to the end of the reward period at :");
+      vm.warp( INITIAL_BLOCK_TIMESTAMP + REWARD_DURATION + 1);
+      vm.roll( INITIAL_BLOCK_NUMBER + REWARD_DURATION / 10 + 1);
+      debugLog("block.timestamp = ", block.timestamp);
+      debugLog("block.number = ", block.number);
+
+
 
   }
 
