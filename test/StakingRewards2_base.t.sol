@@ -264,7 +264,7 @@ contract Erc20Setup2 is UsersSetup2 {
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
     uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
-    uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
+    uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
 
     function setUp() public virtual override {
         debugLog("Erc20Setup2 setUp() start");
@@ -583,7 +583,7 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         vm.prank(_user);
         stakingRewards2.withdraw(_amount);
         uint256 balanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_user);
-        debugLog("withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal);
+        debugLog("withdrawStake: balanceOfUserAfterWithdrawal = ", balanceOfUserAfterWithdrawal);
         assertEq(balanceOfUserBeforeWithdrawal - _amount, balanceOfUserAfterWithdrawal);
     }
 
