@@ -31,7 +31,7 @@ import {
 
 // TODO : move to utils
 contract TestLog is Test {
-    bool internal debug = true;
+    bool internal debug = true; // TODO : set to false
     bool internal verbose = true; // TODO : set to false
     Utils internal utils;
 
@@ -312,6 +312,13 @@ abstract contract StakingPreSetup0 is TestLog {
     // uint256 internal constant REWARD_INITIAL_DURATION = 10_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
     uint256 internal constant REWARD_INITIAL_DURATION = 31_536_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
 
+    // Initial timestamp
+    uint256 internal immutable INITIAL_BLOCK_TIMESTAMP = block.timestamp;
+    uint256 internal immutable INITIAL_BLOCK_NUMBER = block.number;
+
+    // 1 block each 10 seconds
+    uint8 internal constant BLOCK_TIME = 10;
+
 
     uint256 internal REWARD_INITIAL_AMOUNT;
     /* solhint-enable var-name-mixedcase */
@@ -325,6 +332,28 @@ abstract contract StakingPreSetup0 is TestLog {
         view
         virtual
         returns (uint256 expectedRewardsAmount);
+
+    function displayTime() view internal {
+      debugLog(" displayTime: block.timestamp = ", block.timestamp);
+      debugLog(" displayTime: block.number", block.number);
+    }
+
+    function gotoTime(uint256 _timeStamp) internal {
+        gotoTime(_timeStamp, false);
+    }
+
+    function gotoTime(uint256 _timeStamp, bool _displayTime) internal {
+      debugLog("gotoTime: ", _timeStamp);
+      if (_displayTime) {
+            displayTime();
+      }
+      vm.warp( _timeStamp);
+      vm.roll( _timeStamp / BLOCK_TIME);
+      if (_displayTime) {
+            displayTime();
+      }
+    }
+
 } // StakingPreSetup0
 
 abstract contract StakingPreSetup is StakingPreSetup0 {
@@ -359,6 +388,17 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         );
         verboseLog("getRewardDurationReached: rewardDurationReached = ", rewardDurationReached);
         return rewardDurationReached;
+    }
+
+    function getLastRewardTime() internal view returns (uint256) {
+        // debugLog("getLastRewardTime");
+        uint256 lastTimeReward = (
+            block.timestamp < STAKING_START_TIME + REWARD_INITIAL_DURATION
+                ? block.timestamp
+                : STAKING_START_TIME + REWARD_INITIAL_DURATION // last time reward
+        );
+        verboseLog("getLastRewardTime: lastTimeReward = ", lastTimeReward);
+        return lastTimeReward;
     }
 
     function getRewardDurationReached(uint256 _durationReached) internal view /* pure */ returns (uint256) {
