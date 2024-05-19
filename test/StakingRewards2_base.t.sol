@@ -330,7 +330,7 @@ abstract contract StakingPreSetup0 is TestLog {
 abstract contract StakingPreSetup is StakingPreSetup0 {
     StakingRewards2 internal stakingRewards2;
     /* solhint-disable var-name-mixedcase */
-    uint256 internal /* immutable */ STAKING_START_TIME = block.timestamp;
+    uint256 internal /* immutable */ STAKING_START_TIME; //  = block.timestamp;
 
     uint256 /* constant */ internal TOTAL_STAKED_AMOUNT;
     uint256 /* immutable */ internal STAKING_PERCENTAGE_DURATION;
@@ -627,4 +627,20 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         verboseLog("getRewardedStakingDuration: rewardedStakingDuration = ", rewardedStakingDuration);
         return rewardedStakingDuration;
     }
+
+    function notifyVariableRewardAmount(uint256 _constantRewardRatePerTokenStored, uint256 _variableRewardMaxTotalSupply) internal {
+        debugLog("notifyVariableRewardAmount: _constantRewardRatePerTokenStored : ", _constantRewardRatePerTokenStored);
+        debugLog("notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ", _variableRewardMaxTotalSupply);
+        // vm.prank(userStakingRewardAdmin);
+        stakingRewards2.notifyVariableRewardAmount(_constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply);
+        STAKING_START_TIME = block.timestamp;
+    }
+
+    function notifyRewardAmount(uint256 reward) internal {
+        debugLog("notifyRewardAmount: reward : ", reward);
+        // vm.prank(userStakingRewardAdmin);
+        stakingRewards2.notifyRewardAmount(reward);
+        STAKING_START_TIME = block.timestamp;
+    }
+
 } // StakingPreSetup

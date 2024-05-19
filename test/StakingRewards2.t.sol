@@ -111,7 +111,8 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-        stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        // stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
         // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
 
@@ -150,7 +151,8 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-        stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        // stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
         // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
 
@@ -194,7 +196,8 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-        stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        // stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
         // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
 

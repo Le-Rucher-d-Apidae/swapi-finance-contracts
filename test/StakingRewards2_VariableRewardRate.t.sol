@@ -140,7 +140,8 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-        stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        // stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_START_TIME);
         debugLog("StakingSetup1 setUp() end");
@@ -188,7 +189,8 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
 
-        stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        // stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_START_TIME);
         debugLog("StakingSetup2 setUp() end");
@@ -240,7 +242,8 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
 
-        stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        // stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_START_TIME);
         debugLog("StakingSetup3 setUp() end");
@@ -1861,7 +1864,6 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
     // TODO : add some fuzzing
 
     // function testStakingNotifyVariableRewardAmountFuzz() public {
-    //     vm.prank(userStakingRewardAdmin);
     // }
 } // CheckStakingConstantRewardLimits2
 

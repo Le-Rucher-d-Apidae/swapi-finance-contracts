@@ -42,7 +42,7 @@ import {
 /* solhint-disable contract-name-camelcase */
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
-// 42 tests
+// 42+ tests
 // /*
 
 // contract DuringStakingVariableRewardRate1_WithWithdral__0 is
@@ -230,7 +230,7 @@ import {
 
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
-// 42 tests
+// 42+ tests
 // /*
 // contract DuringStakingVariableRewardRate2_WithWithdral__0 is
 //     DuringStakingVariableRewardRate2WithWithdral(PERCENT_0, PERCENT_0)
@@ -404,8 +404,7 @@ import {
 
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
-// 22 tests
-// 42 tests
+// 42+ tests
 
 // /*
 // contract DuringStakingVariableRewardRate3_WithWithdral__0 is

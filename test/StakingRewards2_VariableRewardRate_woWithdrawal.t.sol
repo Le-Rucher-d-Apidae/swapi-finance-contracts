@@ -41,7 +41,7 @@ import {
 // ----------------------------------------------------------------------------
 
 // 1 staker deposits right after staking starts and keeps staked amount until the end of staking period
-// 42 tests
+// 42+ tests
 // /*
 // contract DuringStakingConstantReward1_WithoutWithdral_0 is
 //     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_0, PERCENT_0)
@@ -151,7 +151,7 @@ import {
 //     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_100, PERCENT_0)
 // { }
 
-//
+
 // contract DuringStakingConstantReward1_WithoutWithdral_100__30 is
 //     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_100, PERCENT_30)
 // { }
@@ -219,7 +219,7 @@ import {
 // ------------------------------------
 
 // 2 stakers deposit right after staking starts and keep staked amount until the end of staking period
-// 42 tests
+// 42+ tests
 // /*
 // contract DuringStakingConstantReward2_WithoutWithdral_0__0 is
 //     DuringStakingVariableRewardRate2WithoutWithdral(PERCENT_0, PERCENT_0)
@@ -404,7 +404,7 @@ import {
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and keep staked amount until the end of staking period
-// 42 tests
+// 42+ tests
 // /*
 // contract DuringStakingConstantReward3_WithoutWithdral_0 is
 //     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_0, PERCENT_0)
@@ -582,9 +582,6 @@ import {
 //     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_220, PERCENT_100)
 // { }
 
-// contract DuringStakingConstantReward3_WithoutWithdral_220__100 is
-//     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_220, PERCENT_100)
-// { }
 // */
 
 // ----------------------------------------------------------------------------

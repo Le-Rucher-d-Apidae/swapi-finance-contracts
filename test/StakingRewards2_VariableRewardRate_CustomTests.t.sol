@@ -115,6 +115,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
 // vm.warp
 
       vm.startPrank(userStakingRewardAdmin);
+    //   vm.prank(userStakingRewardAdmin);
       // Check emitted events
       vm.expectEmit(true, true, false, false, address(stakingRewards2));
       emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
@@ -124,9 +125,9 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       emit StakingRewards2Events.MaxTotalSupply(ONE_TOKEN);
       vm.expectEmit(true, false, false, false, address(stakingRewards2));
       emit StakingRewards2Events.RewardAddedPerTokenStored(REWARD_PER_TOKEN_STORED);
-      stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+    //   stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+      notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
       verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-      stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
       STAKING_START_TIME = block.timestamp;
       vm.stopPrank();
 
