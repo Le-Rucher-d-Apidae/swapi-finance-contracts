@@ -268,7 +268,6 @@ contract DepositSetup1 is StakingSetup1 {
     // uint256 constant internal TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
 
     function setUp() public virtual override {
-        // console.log("DepositSetup1 setUp()");
         debugLog("DepositSetup1 setUp() start");
         verboseLog("DepositSetup1 setUp()");
         StakingSetup1.setUp();
@@ -287,7 +286,6 @@ contract DepositSetup1 is StakingSetup1 {
 
 contract DepositSetup2 is StakingSetup2 {
     function setUp() public virtual override {
-        // console.log("DepositSetup2 setUp()");
         debugLog("DepositSetup2 setUp() start");
         verboseLog("DepositSetup2 setUp()");
         StakingSetup2.setUp();
@@ -311,7 +309,6 @@ contract DepositSetup2 is StakingSetup2 {
 
 contract DepositSetup3 is StakingSetup3 {
     function setUp() public virtual override {
-        // console.log("DepositSetup3 setUp()");
         debugLog("DepositSetup3 setUp() start");
         verboseLog("DepositSetup3 setUp()");
         StakingSetup3.setUp();

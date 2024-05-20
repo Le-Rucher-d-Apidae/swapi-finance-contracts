@@ -111,7 +111,6 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-        // stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
         // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
@@ -151,7 +150,6 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-        // stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
         // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
@@ -196,7 +194,6 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-        // stakingRewards2.notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
         // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
@@ -297,8 +294,6 @@ contract DuringStaking1WithoutWithdral is DepositSetup1 {
      */
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking1WithoutWithdral:
-        // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
@@ -361,8 +356,6 @@ contract DuringStaking1WithoutWithdral is DepositSetup1 {
 contract DuringStaking2WithoutWithdral is DepositSetup2 {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking2WithoutWithdral:
-        // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
@@ -435,8 +428,6 @@ contract DuringStaking2WithoutWithdral is DepositSetup2 {
 contract DuringStaking3WithoutWithdral is DepositSetup3 {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking3WithoutWithdral:
-        // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
@@ -645,10 +636,10 @@ contract DuringStaking2WithWithdral is DepositSetup2 {
         if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
             fail("DuringStaking2WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
         }
-        require(
-            _claimPercentageDuration <= (_stakingPercentageDuration / DIVIDE),
-            "DuringStaking2WithoutWithdral: _claimPercentageDuration > _stakingPercentageDuration / DIVIDE"
-        );
+        // require(
+        //     _claimPercentageDuration <= (_stakingPercentageDuration / DIVIDE),
+        //     "DuringStaking2WithoutWithdral: _claimPercentageDuration > _stakingPercentageDuration / DIVIDE"
+        // );
         /* solhint-enable custom-errors */
         /* solhint-enable reason-string */
     }
