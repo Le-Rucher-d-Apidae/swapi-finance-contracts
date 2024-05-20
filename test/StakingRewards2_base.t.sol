@@ -509,18 +509,18 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
                     debugLog("checkStakingRewards: assertApproxEqAbs stakerRewards= ", _unitsDelta);
                     assertApproxEqAbs(stakerRewards, _expectedRewardAmount, _unitsDelta);
                 } else {
-                    debugLog("checkStakingRewards: 1");
+                    // debugLog("checkStakingRewards: 1");
                     if (_percentDelta == 0) {
-                        debugLog("checkStakingRewards: 2");
+                        // debugLog("checkStakingRewards: 2");
                         assertEq(stakerRewards, _expectedRewardAmount);
                     } else {
-                        debugLog("checkStakingRewards: 3");
+                        // debugLog("checkStakingRewards: 3");
                         assertApproxEqRel(stakerRewards, _expectedRewardAmount, _percentDelta);
                     }
                 }
             }
         }
-        debugLog("checkStakingRewards: 4");
+        // debugLog("checkStakingRewards: 4");
         verboseLog(_stakerName);
         verboseLog(" rewards: ", stakerRewards);
     }
