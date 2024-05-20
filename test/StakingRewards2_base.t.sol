@@ -683,4 +683,26 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         STAKING_START_TIME = block.timestamp;
     }
 
+    function displayEarned(
+      address _staker,
+      string memory _stakerName
+    ) internal view {
+        displayEarned(_staker, _stakerName, false);
+    }
+    function displayEarned(
+      address _staker,
+      string memory _stakerName,
+      bool _displayTime
+    ) internal view {
+        debugLog("displayEarned: %s ", _staker);
+        debugLog("displayEarned: %s ", _stakerName);
+        if (_displayTime) {
+            displayTime();
+        }
+        uint256 stakerRewards = stakingRewards2.earned(_staker);
+        debugLog("displayEarned: stakerRewards = %d ", stakerRewards);
+        // vm.prank(userStakingRewardAdmin);
+    }
+
+
 } // StakingPreSetup
