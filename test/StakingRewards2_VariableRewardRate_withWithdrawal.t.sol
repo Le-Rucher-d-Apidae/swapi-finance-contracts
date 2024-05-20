@@ -157,10 +157,6 @@ contract DuringStakingVariableRewardRate1_WithWithdral__100__50 is
     DuringStakingVariableRewardRate1WithWithdral(PERCENT_100, PERCENT_50)
 { }
 
-contract DuringStakingVariableRewardRate1_WithWithdral__100__101 is
-    DuringStakingVariableRewardRate1WithWithdral(PERCENT_100, PERCENT_100)
-{ }
-
 contract DuringStakingVariableRewardRate1_WithWithdral__100__30 is
     DuringStakingVariableRewardRate1WithWithdral(PERCENT_100, PERCENT_30)
 { }
