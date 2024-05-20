@@ -89,6 +89,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     /* ========== Variable Reward Rate ========== */
     bool public isVariableRewardRate = false;
     bool public isConstantRewardRatePerTokenStored = false;
+    uint256 public firstRewardTime;
     // uint256 public variableRewardRate = 0;
     uint256 public constantRewardRatePerTokenStored;
     uint256 public variableRewardMaxTotalSupply;
@@ -134,10 +135,22 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
             + ((lastTimeRewardApplicable() - lastUpdateTime) * rewardRate * ONE_TOKEN / _totalSupply);
     }
 
+    function getUserLastUpdateTime(address account) internal view returns (uint256) {
+        if (isVariableRewardRate) {
+          if (userLastUpdateTime[account] == 0) {
+            return firstRewardTime; // In case of deposit before first reward time
+          }
+          return userLastUpdateTime[account];
+        }
+        return lastUpdateTime; // should never be returned
+    }
+
     function earned(address account) public view returns (uint256) {
         if (isVariableRewardRate) {
+            // return _balances[account] * constantRewardRatePerTokenStored
+            //     * (lastTimeRewardApplicable() - userLastUpdateTime[account]) / ONE_TOKEN + rewards[account];
             return _balances[account] * constantRewardRatePerTokenStored
-                * (lastTimeRewardApplicable() - userLastUpdateTime[account]) / ONE_TOKEN + rewards[account];
+                * (lastTimeRewardApplicable() - getUserLastUpdateTime(account)) / ONE_TOKEN + rewards[account];
         }
         return
             _balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account]) / ONE_TOKEN + rewards[account];
@@ -318,6 +331,9 @@ console2.log("StakingRewards2::stakeWithPermit: permit");
         external
         onlyOwner
     {
+console2.log("StakingRewards2::notifyVariableRewardAmount");
+console2.log("StakingRewards2::notifyVariableRewardAmount: _constantRewardRatePerTokenStored = %d", _constantRewardRatePerTokenStored);
+console2.log("StakingRewards2::notifyVariableRewardAmount: _variableRewardMaxTotalSupply = %d", _variableRewardMaxTotalSupply);
         isVariableRewardRate = true;
         constantRewardRatePerTokenStored = _constantRewardRatePerTokenStored;
         // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
@@ -328,9 +344,12 @@ console2.log("StakingRewards2::stakeWithPermit: permit");
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
+console2.log("StakingRewards2::notifyVariableRewardAmount: balance = %d", balance);
         // Substract total supply if staking token is the same as rewards token
         if (stakingToken == rewardsToken) {
+console2.log("StakingRewards2::notifyVariableRewardAmount: stakingToken == rewardsToken = %d", balance);
             balance = balance - _totalSupply;
+console2.log("StakingRewards2::notifyVariableRewardAmount: rewardsToken real balance = %d", balance);
         }
         if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN)
         {
@@ -357,6 +376,7 @@ console2.log("StakingRewards2::stakeWithPermit: permit");
 
         emit MaxTotalSupply(variableRewardMaxTotalSupply);
 
+        firstRewardTime = block.timestamp;
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + rewardsDuration;
         emit RewardAddedPerTokenStored(constantRewardRatePerTokenStored);
@@ -430,24 +450,31 @@ console2.log("StakingRewards2::stakeWithPermit: permit");
 
     modifier updateReward(address account) {
 console2.log("StakingRewards2::updateReward");
+console2.log("StakingRewards2::updateReward account = %s", account);
         if (isVariableRewardRate) {
-console2.log("StakingRewards2::isVariableRewardRate");
+console2.log("StakingRewards2::updateReward:isVariableRewardRate");
             // Update variable reward rate
             // rewardPerTokenStored = constantRewardRatePerTokenStored; // Useless
 
+            lastUpdateTime = lastTimeRewardApplicable(); // not useful for rewards computations when variable reward
+console2.log("StakingRewards2::updateReward: lastUpdateTime = %s", lastUpdateTime);
             if (account != address(0)) {
                 rewards[account] = earned(account);
-                userLastUpdateTime[account] = lastTimeRewardApplicable();
+                userLastUpdateTime[account] = lastUpdateTime;
+console2.log("StakingRewards2::updateReward: userLastUpdateTime[account] = %s", userLastUpdateTime[account]);
             }
-
-            lastUpdateTime = lastTimeRewardApplicable(); // not useful for rewards computations when variable reward
                 // rate
         } else {
+console2.log("StakingRewards2::updateReward: NOT isVariableRewardRate");
             rewardPerTokenStored = rewardPerToken();
+console2.log("StakingRewards2::updateReward: rewardPerTokenStored = %s", rewardPerTokenStored);
             lastUpdateTime = lastTimeRewardApplicable();
+console2.log("StakingRewards2::updateReward: lastUpdateTime = %s", lastUpdateTime);
             if (account != address(0)) {
                 rewards[account] = earned(account);
+console2.log("StakingRewards2::updateReward: rewards[account] = %s", rewards[account]);
                 userRewardPerTokenPaid[account] = rewardPerTokenStored;
+console2.log("StakingRewards2::updateReward: userRewardPerTokenPaid[account] = %s", userRewardPerTokenPaid[account]);
             }
         }
         _;
