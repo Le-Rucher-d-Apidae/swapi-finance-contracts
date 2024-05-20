@@ -12,6 +12,37 @@ import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts@5.0.2/utils/ReentrancyGuard.sol";
 
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+import { console2 } from "forge-std/src/console2.sol";
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+
+
 import {
     RewardPeriodInProgress,
     CantWithdrawStakingToken,
@@ -193,6 +224,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         _stake(amount, msg.sender)
         stake_(amount, msg.sender)
     {
+console2.log("StakingRewards2::stake");
     }
 
     function stakeWithPermit(
@@ -209,7 +241,9 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         _stake(amount, msg.sender)
         stake_(amount, msg.sender)
     {
+console2.log("StakingRewards2::stakeWithPermit");
         // permit
+console2.log("StakingRewards2::stakeWithPermit: permit");
         IUniswapV2ERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
     }
 
@@ -395,9 +429,11 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     /* ========== MODIFIERS ========== */
 
     modifier updateReward(address account) {
+console2.log("StakingRewards2::updateReward");
         if (isVariableRewardRate) {
+console2.log("StakingRewards2::isVariableRewardRate");
             // Update variable reward rate
-            rewardPerTokenStored = constantRewardRatePerTokenStored;
+            // rewardPerTokenStored = constantRewardRatePerTokenStored; // Useless
 
             if (account != address(0)) {
                 rewards[account] = earned(account);
@@ -430,10 +466,17 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     }
 */
     modifier _stake(uint256 amount, address account) {
+console2.log("StakingRewards2::_stake");
+console2.log("StakingRewards2::amount = %d", amount);
+console2.log("StakingRewards2::account = %s", account);
         if (amount == 0) revert StakeZero();
+console2.log("StakingRewards2::_totalSupply before stake = %d", _totalSupply);
         _totalSupply = _totalSupply + amount;
+console2.log("StakingRewards2::_totalSupply after stake = %d", _totalSupply);
         if (isVariableRewardRate) {
+console2.log("StakingRewards2::isVariableRewardRate");
             if (_totalSupply > variableRewardMaxTotalSupply) {
+console2.log("StakingRewards2::_totalSupply > variableRewardMaxTotalSupply");
                 revert StakeTotalSupplyExceedsAllowedMax({
                     newTotalSupply: _totalSupply,
                     variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
@@ -442,13 +485,18 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
                 });
             }
         }
+console2.log("StakingRewards2::_balances[account] before update = %d", _balances[account]);
         _balances[account] = _balances[account] + amount;
+console2.log("StakingRewards2::_balances[account] after update = %d", _balances[account]);
         _;
     }
 
     modifier stake_(uint256 amount, address account) {
+console2.log("StakingRewards2::stake_");
         _;
+console2.log("StakingRewards2::stake_ safeTransferFrom");
         stakingToken.safeTransferFrom(account, address(this), amount);
+console2.log("StakingRewards2::stake_ Event Staked");
         emit Staked(msg.sender, amount);
     }
 
