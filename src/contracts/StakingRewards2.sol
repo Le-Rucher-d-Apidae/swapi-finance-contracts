@@ -121,7 +121,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
-
+/*
     function stake(uint256 amount) external nonReentrant whenNotPaused updateReward(msg.sender) {
         if (amount == 0) revert StakeZero();
         _totalSupply = _totalSupply + amount;
@@ -180,6 +180,37 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
             // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply; // WRONG
         }
         emit Staked(msg.sender, amount);
+    }
+*/
+
+    function stake(
+        uint256 amount
+    )
+        external
+        nonReentrant
+        whenNotPaused
+        updateReward(msg.sender)
+        _stake(amount, msg.sender)
+        stake_(amount, msg.sender)
+    {
+    }
+
+    function stakeWithPermit(
+        uint256 amount,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    )
+        external
+        nonReentrant
+        whenNotPaused
+        updateReward(msg.sender)
+        _stake(amount, msg.sender)
+        stake_(amount, msg.sender)
+    {
+        // permit
+        IUniswapV2ERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
     }
 
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
@@ -398,6 +429,30 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         _;
     }
 */
+    modifier _stake(uint256 amount, address account) {
+        if (amount == 0) revert StakeZero();
+        _totalSupply = _totalSupply + amount;
+        if (isVariableRewardRate) {
+            if (_totalSupply > variableRewardMaxTotalSupply) {
+                revert StakeTotalSupplyExceedsAllowedMax({
+                    newTotalSupply: _totalSupply,
+                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
+                    depositAmount: amount,
+                    currentTotalSupply: _totalSupply - amount
+                });
+            }
+        }
+        _balances[account] = _balances[account] + amount;
+        _;
+    }
+
+    modifier stake_(uint256 amount, address account) {
+        _;
+        stakingToken.safeTransferFrom(account, address(this), amount);
+        emit Staked(msg.sender, amount);
+    }
+
+
     /* ========== PAUSABLE ========== */
 
     function setPaused(bool _paused) external onlyOwner {
