@@ -146,6 +146,15 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
       stakingRewards2.setRewardsDuration(REWARD_DURATION);
 
+
+debugLog("------------------");
+debugLog("displayEarned");
+displayTime();
+displayEarned(userAlice, "Alice");
+displayEarned(userBob, "Bob");
+debugLog("------------------");
+
+
       gotoTime(INITIAL_BLOCK_TIMESTAMP + 200);
 
       debugLog("notifyVariableRewardAmount at :");
@@ -161,6 +170,13 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       debugLog("STAKING_START_TIME = " , STAKING_START_TIME);
       verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
       vm.stopPrank();
+
+debugLog("------------------");
+debugLog("displayEarned");
+displayTime();
+displayEarned(userAlice, "Alice");
+displayEarned(userBob, "Bob");
+debugLog("------------------");
 
 
       gotoTime(STAKING_START_TIME + 100);
