@@ -98,6 +98,71 @@ contract TestLog is Test {
     function verboseLogTime(string memory _msg, address _address) public view {
         if (verbose) console.log(_msg, _address, " ts: ", block.timestamp);
     }
+
+    function errorLog(string memory _msg1, string memory _msg2) public view {
+        console.log(_msg1, _msg2);
+    }
+
+    function errorLog(string memory _msg) public view {
+        console.log(_msg);
+    }
+
+    function errorLog(string memory _msg, uint256 _val256) public view {
+        console.log(_msg, _val256);
+    }
+
+    function errorLog(string memory _msg, address _address) public view {
+        console.log(_msg, _address);
+    }
+
+    function errorLogTime(string memory _msg1, string memory _msg2) public view {
+        console.log(_msg1, _msg2, " ts: ", block.timestamp);
+    }
+
+    function errorLogTime(string memory _msg) public view {
+        console.log(_msg, " ts: ", block.timestamp);
+    }
+
+    function errorLogTime(string memory _msg, uint256 _val256) public view {
+        console.log(_msg, _val256, " ts: ", block.timestamp);
+    }
+
+    function errorLogTime(string memory _msg, address _address) public view {
+        console.log(_msg, _address, " ts: ", block.timestamp);
+    }
+
+    function warningLog(string memory _msg1, string memory _msg2) public view {
+        console.log(_msg1, _msg2);
+    }
+
+    function warningLog(string memory _msg) public view {
+        console.log(_msg);
+    }
+
+    function warningLog(string memory _msg, uint256 _val256) public view {
+        console.log(_msg, _val256);
+    }
+
+    function warningLog(string memory _msg, address _address) public view {
+        console.log(_msg, _address);
+    }
+
+    function warningLogTime(string memory _msg1, string memory _msg2) public view {
+        console.log(_msg1, _msg2, " ts: ", block.timestamp);
+    }
+
+    function warningLogTime(string memory _msg) public view {
+        console.log(_msg, " ts: ", block.timestamp);
+    }
+
+    function warningLogTime(string memory _msg, uint256 _val256) public view {
+        console.log(_msg, _val256, " ts: ", block.timestamp);
+    }
+
+    function warningLogTime(string memory _msg, address _address) public view {
+        console.log(_msg, _address, " ts: ", block.timestamp);
+    }
+
 } // TestLog
 
 // ----------------
@@ -105,15 +170,19 @@ contract TestLog is Test {
 contract UsersSetup0 is TestLog {
     address payable[] internal users;
 
+    uint internal constant MAX_USERS = 6;
     address internal erc20Admin;
     address internal erc20Minter;
     address internal userStakingRewardAdmin;
+    // userAlice;
+    // userBob;
+    // userCherry;
 
     function setUp() public virtual {
         verboseLog("UsersSetup0 setUp()");
         debugLog("UsersSetup0 setUp() start");
         utils = new Utils();
-        users = utils.createUsers(5);
+        users = utils.createUsers(MAX_USERS);
 
         erc20Admin = users[0];
         vm.label(erc20Admin, "ERC20Admin");
@@ -137,8 +206,8 @@ contract UsersSetup1 is UsersSetup0 {
         verboseLog("UsersSetup1 setUp()");
         debugLog("UsersSetup1 setUp() start");
         UsersSetup0.setUp();
-        utils = new Utils();
-        users = utils.createUsers(5);
+        // utils = new Utils();
+        // users = utils.createUsers(5);
 
         // erc20Admin = users[0];
         // vm.label(erc20Admin, "ERC20Admin");
@@ -153,22 +222,23 @@ contract UsersSetup1 is UsersSetup0 {
     }
 } // UsersSetup1
 
-contract UsersSetup2 is UsersSetup0 {
+contract UsersSetup2 is UsersSetup1 {
     // address payable[] internal users;
 
     // address internal erc20Admin;
     // address internal erc20Minter;
     // address internal userStakingRewardAdmin;
 
-    address internal userAlice;
+    // address internal userAlice;
     address internal userBob;
 
     function setUp() public virtual override {
         verboseLog("UsersSetup2 setUp()");
         debugLog("UsersSetup2 setUp() start");
-        UsersSetup0.setUp();
-        utils = new Utils();
-        users = utils.createUsers(5);
+        // UsersSetup0.setUp();
+        UsersSetup1.setUp();
+        // utils = new Utils();
+        // users = utils.createUsers(5);
 
         // erc20Admin = users[0];
         // vm.label(erc20Admin, "ERC20Admin");
@@ -177,8 +247,8 @@ contract UsersSetup2 is UsersSetup0 {
         // userStakingRewardAdmin = users[2];
         // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
 
-        userAlice = users[3];
-        vm.label(userAlice, "Alice");
+        // userAlice = users[3];
+        // vm.label(userAlice, "Alice");
         userBob = users[4];
         vm.label(userBob, "Bob");
         debugLog("UsersSetup2 setUp() end");
@@ -187,23 +257,24 @@ contract UsersSetup2 is UsersSetup0 {
 
 // ----------------
 
-contract UsersSetup3 is UsersSetup0 {
+contract UsersSetup3 is UsersSetup2 {
     // address payable[] internal users;
 
     // address internal erc20Admin;
     // address internal erc20Minter;
     // address internal userStakingRewardAdmin;
 
-    address internal userAlice;
-    address internal userBob;
+    // address internal userAlice;
+    // address internal userBob;
     address internal userCherry;
 
     function setUp() public virtual override {
         verboseLog("UsersSetup3 setUp()");
         debugLog("UsersSetup3 setUp() start");
-        UsersSetup0.setUp();
-        utils = new Utils();
-        users = utils.createUsers(6);
+        // UsersSetup0.setUp();
+        UsersSetup2.setUp();
+        // utils = new Utils();
+        // users = utils.createUsers(6);
 
         // erc20Admin = users[0];
         // vm.label(erc20Admin, "ERC20Admin");
@@ -212,10 +283,10 @@ contract UsersSetup3 is UsersSetup0 {
         // userStakingRewardAdmin = users[2];
         // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
 
-        userAlice = users[3];
-        vm.label(userAlice, "Alice");
-        userBob = users[4];
-        vm.label(userBob, "Bob");
+        // userAlice = users[3];
+        // vm.label(userAlice, "Alice");
+        // userBob = users[4];
+        // vm.label(userBob, "Bob");
         userCherry = users[5];
         vm.label(userCherry, "Cherry");
 
@@ -309,8 +380,8 @@ abstract contract StakingPreSetup0 is TestLog {
 
     // Duration of the rewards program
     /* solhint-disable var-name-mixedcase */
-    // uint256 internal constant REWARD_INITIAL_DURATION = 10_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
-    uint256 internal constant REWARD_INITIAL_DURATION = 31_536_000; // 10e4 ; 10 000 s. = 2 h. 46 m. 40 s.
+    // uint256 internal constant REWARD_INITIAL_DURATION = 10_000; // 1e4 ; 10 000 s. = 2 h. 46 m. 40 s.
+    uint256 internal constant REWARD_INITIAL_DURATION = 52 weeks; // = ~1 year
 
     // Initial timestamp
     uint256 internal immutable INITIAL_BLOCK_TIMESTAMP = block.timestamp;
@@ -322,6 +393,18 @@ abstract contract StakingPreSetup0 is TestLog {
 
     uint256 internal REWARD_INITIAL_AMOUNT;
     /* solhint-enable var-name-mixedcase */
+
+    function setUp() public virtual {
+        debugLog("StakingPreSetup0 setUp() start");
+        debugLog("StakingPreSetup0: REWARD_INITIAL_DURATION = ", REWARD_INITIAL_DURATION);
+        debugLog("StakingPreSetup0: BLOCK_TIME = ", BLOCK_TIME);
+        // debugLog("StakingPreSetup0: INITIAL_BLOCK_TIMESTAMP = ", INITIAL_BLOCK_TIMESTAMP);
+        // debugLog("StakingPreSetup0: INITIAL_BLOCK_NUMBER = ", INITIAL_BLOCK_NUMBER);
+        // debugLog("StakingPreSetup0: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
+        verboseLog("StakingPreSetup0 setUp()");
+        debugLog("StakingPreSetup0 setUp() end");
+    }
+
 
     function expectedStakingRewards(
         uint256 _stakedAmount,
@@ -338,12 +421,12 @@ abstract contract StakingPreSetup0 is TestLog {
       debugLog(" displayTime: block.number", block.number);
     }
 
-    function gotoTime(uint256 _timeStamp) internal {
-        gotoTime(_timeStamp, false);
+    function gotoTimestamp(uint256 _timeStamp) internal {
+        gotoTimestamp(_timeStamp, false);
     }
 
-    function gotoTime(uint256 _timeStamp, bool _displayTime) internal {
-      debugLog("gotoTime: ", _timeStamp);
+    function gotoTimestamp(uint256 _timeStamp, bool _displayTime) internal {
+      debugLog("gotoTimestamp: ", _timeStamp);
       if (_displayTime) {
             displayTime();
       }
@@ -366,8 +449,9 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
     uint256 /* immutable */ internal CLAIM_PERCENTAGE_DURATION;
     /* solhint-enable var-name-mixedcase */
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
         debugLog("StakingPreSetup setUp() start");
+        StakingPreSetup0.setUp();
         verboseLog("StakingPreSetup setUp()");
         debugLog("StakingPreSetup setUp() end");
     }
@@ -562,29 +646,42 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
         }
     }
 
-    /* getRewardForDuration should stay constant */
+    /* getRewardForDuration should stay constant
+        Check getRewardForDuration() == REWARD_INITIAL_AMOUNT
+        Unless the reward duration is greater than REWARD_INITIAL_DURATION => 0
+    */
+
     function _checkRewardForDuration(uint256 _delta) internal {
-        debugLog("checkRewardForDuration");
+        debugLog("_checkRewardForDuration");
+        if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
+          warningLog("_checkRewardForDuration: REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION");
+          warningLog("_checkRewardForDuration: => reward is likely to be ZERO !");
+        }
+        uint256 INITIAL_BLOCK_TIMESTAMP = block.timestamp;
         uint256 rewardForDuration;
-
         rewardForDuration = stakingRewards2.getRewardForDuration();
-        debugLog("checkRewardForDuration: getRewardForDuration  = ", stakingRewards2.getRewardForDuration());
-        debugLog("checkRewardForDuration: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
-
+        debugLog("_checkRewardForDuration: getRewardForDuration  = ", rewardForDuration);
+        debugLog("_checkRewardForDuration: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
         // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
        assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
+        // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION);
+        gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
         rewardForDuration = stakingRewards2.getRewardForDuration();
     //    assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
        assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+        // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+        gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
         rewardForDuration = stakingRewards2.getRewardForDuration();
     //    assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
        assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        verboseLog("Staking contract: rewardsDuration ok");
+       // set back to initial time
+      // vm.warp(INITIAL_BLOCK_TIMESTAMP);
+      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP);
+
+        verboseLog("_checkRewardForDuration: ok");
     }
 
     // Comment parameter name to silent "Unused function parameter." warning
