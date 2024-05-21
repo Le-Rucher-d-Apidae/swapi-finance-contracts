@@ -157,10 +157,19 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     }
 
     function getRewardForDuration() external view returns (uint256) {
+console2.log("StakingRewards2::getRewardForDuration");
         if (isVariableRewardRate) {
+console2.log("StakingRewards2::getRewardForDuration: isVariableRewardRate");
             // Current MAX possible reward for duration
+console2.log("StakingRewards2::getRewardForDuration: constantRewardRatePerTokenStored = %d", constantRewardRatePerTokenStored);
+console2.log("StakingRewards2::getRewardForDuration: rewardsDuration = %d", rewardsDuration);
+console2.log("StakingRewards2::getRewardForDuration: constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN = %d", constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN);
             return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN;
         }
+console2.log("StakingRewards2::getRewardForDuration: NOT isVariableRewardRate");
+console2.log("StakingRewards2::getRewardForDuration: rewardRate = %d", rewardRate);
+console2.log("StakingRewards2::getRewardForDuration: rewardsDuration = %d", rewardsDuration);
+console2.log("StakingRewards2::getRewardForDuration: rewardRate * rewardsDuration = %d", rewardRate * rewardsDuration);
         return rewardRate * rewardsDuration;
     }
 
@@ -405,29 +414,51 @@ console2.log("StakingRewards2::notifyVariableRewardAmount: rewardsToken real bal
     }
 
     function notifyRewardAmount(uint256 reward) external onlyOwner updateReward(address(0)) {
+console2.log("StakingRewards2::notifyRewardAmount");
         isVariableRewardRate = false;
 
         if (block.timestamp >= periodFinish) {
+console2.log("StakingRewards2::notifyRewardAmount block.timestamp >= periodFinish");
             rewardRate = reward / rewardsDuration;
+console2.log("StakingRewards2::notifyRewardAmount reward = %s", reward);
+console2.log("StakingRewards2::notifyRewardAmount rewardsDuration = %s", rewardsDuration);
+console2.log("StakingRewards2::notifyRewardAmount rewardRate = %s", rewardRate);
         } else {
+console2.log("StakingRewards2::notifyRewardAmount block.timestamp >= periodFinish");
+console2.log("StakingRewards2::notifyRewardAmount periodFinish = %s", periodFinish);
+console2.log("StakingRewards2::notifyRewardAmount block.timestamp = %s", block.timestamp);
             uint256 remaining = periodFinish - block.timestamp;
+console2.log("StakingRewards2::notifyRewardAmount remaining = %s", remaining);
+console2.log("StakingRewards2::notifyRewardAmount rewardRate = %s", rewardRate);
             uint256 leftover = remaining * rewardRate;
+console2.log("StakingRewards2::notifyRewardAmount leftover = %s", leftover);
             rewardRate = (reward + leftover) / rewardsDuration;
+console2.log("StakingRewards2::notifyRewardAmount reward = %s", reward);
+console2.log("StakingRewards2::notifyRewardAmount rewardsDuration = %s", rewardsDuration);
+console2.log("StakingRewards2::notifyRewardAmount rewardRate = %s", rewardRate);
         }
         // Ensure the provided reward amount is not more than the balance in the contract.
         // This keeps the reward rate in the right range, preventing overflows due to
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
+console2.log("StakingRewards2::notifyRewardAmount balance = %s", balance);
         // Substract total supply if staking token is the same as rewards token
         if (stakingToken == rewardsToken) {
+console2.log("StakingRewards2::notifyRewardAmount stakingToken == rewardsToken");
+console2.log("StakingRewards2::notifyRewardAmount balance = %s", balance);
+console2.log("StakingRewards2::notifyRewardAmount _totalSupply = %s", _totalSupply);
             balance = balance - _totalSupply;
+console2.log("StakingRewards2::notifyRewardAmount balance = %s", balance);
         }
         if (rewardRate > balance / rewardsDuration) {
+console2.log("StakingRewards2::notifyRewardAmount rewardRate > balance / rewardsDuration");
             revert ProvidedRewardTooHigh({ reward: reward, rewardBalance: balance, rewardsDuration: rewardsDuration });
         }
         lastUpdateTime = block.timestamp;
+console2.log("StakingRewards2::notifyRewardAmount lastUpdateTime = %s", lastUpdateTime);
         periodFinish = block.timestamp + rewardsDuration;
+console2.log("StakingRewards2::notifyRewardAmount periodFinish = %s", periodFinish);
         emit RewardAdded(reward);
     }
 
