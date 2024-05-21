@@ -8,7 +8,6 @@ import { StakingPreSetup
 // , Erc20Setup3
 } from "./StakingRewards2_base.t.sol";
 import {
-    DELTA_0_00000000015,
     DELTA_0_015,
     DELTA_0_04,
     DELTA_0_31,
@@ -99,7 +98,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
   // Check already deposited amount is lower or equal than max amount
   function testStakingVRR2Deposit1BeforeReward1After() public {
 
-      gotoTime(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
+      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
 
       // Mint 10 * 10^18 token as reward
       vm.startPrank(erc20Minter);
@@ -136,7 +135,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
       itStakesCorrectly(userBob, 0, "Bob");
 // */
 
-      gotoTime(INITIAL_BLOCK_TIMESTAMP + 100);
+      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 100);
 
       debugLog("Set rewards duration at :");
       displayTime();
@@ -155,7 +154,7 @@ displayEarned(userBob, "Bob");
 debugLog("------------------");
 
 
-      gotoTime(INITIAL_BLOCK_TIMESTAMP + 200);
+      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 200);
 
       debugLog("notifyVariableRewardAmount at :");
       displayTime();
@@ -179,7 +178,7 @@ displayEarned(userBob, "Bob");
 debugLog("------------------");
 
 
-      gotoTime(STAKING_START_TIME + 100);
+      gotoTimestamp(STAKING_START_TIME + 100);
 
       debugLog("Bob deposit tokens AFTER rewards at :");
       displayTime();
@@ -193,7 +192,7 @@ debugLog("------------------");
       vm.stopPrank();
 
 
-      gotoTime(STAKING_START_TIME + 200);
+      gotoTimestamp(STAKING_START_TIME + 200);
 /*
       // Alice deposit tokens AFTER rewards start
       debugLog("Alice deposit tokens AFTER rewards start at :");
@@ -217,7 +216,7 @@ debugLog("------------------");
       // Go to the end of the reward period
       debugLog("Go to the end of the reward period at :");
 
-      gotoTime(STAKING_START_TIME + REWARD_DURATION + 1);
+      gotoTimestamp(STAKING_START_TIME + REWARD_DURATION + 1);
 
       debugLog("block.timestamp = ", block.timestamp);
       debugLog("block.number = ", block.number);
