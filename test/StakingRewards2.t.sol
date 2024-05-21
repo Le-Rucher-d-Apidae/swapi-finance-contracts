@@ -8,7 +8,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 // import "./StakingRewards2_base.t.sol";
 import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_base.t.sol";
 import {
-    DELTA_0_00000000015,
+    DELTA_0_00000000022,
     DELTA_0_015,
     DELTA_0_31,
     PERCENT_1,
@@ -42,7 +42,18 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
         // Constant reward amount allocated to the staking program during the reward duration
         // Same reward amount is distributed at each block
         // Stakers will share the reward budget based on their staked amount
-        REWARD_INITIAL_AMOUNT = 100_000; // 10e5
+        // REWARD_INITIAL_AMOUNT = 100_000; // 1e5
+        REWARD_INITIAL_AMOUNT = REWARD_INITIAL_DURATION * 1e5; // x 1e5
+
+
+        if (REWARD_INITIAL_DURATION == 0) {
+            fail("StakingPreSetupCRR: REWARD_INITIAL_DURATION is 0");
+        }
+        if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
+            errorLog("REWARD_INITIAL_AMOUNT", REWARD_INITIAL_AMOUNT);
+            errorLog("REWARD_INITIAL_DURATION", REWARD_INITIAL_DURATION);
+            fail("StakingPreSetupCRR: REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION");
+        }
 
         verboseLog("StakingPreSetupCRR setUp()");
         debugLog("StakingPreSetupCRR setUp() end");
@@ -312,7 +323,7 @@ contract DuringStaking1WithoutWithdral is DepositSetup1 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration(DELTA_0_00000000015);
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -375,7 +386,7 @@ contract DuringStaking2WithoutWithdral is DepositSetup2 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration(DELTA_0_00000000015);
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -448,7 +459,7 @@ contract DuringStaking3WithoutWithdral is DepositSetup3 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration(DELTA_0_00000000015);
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -562,7 +573,7 @@ contract DuringStaking1WithWithdral is DepositSetup1 {
         verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration(DELTA_0_00000000015);
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
@@ -663,7 +674,7 @@ contract DuringStaking2WithWithdral is DepositSetup2 {
         }
 
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration(DELTA_0_00000000015);
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
         checkUsersStake();
 
@@ -770,7 +781,7 @@ contract DuringStaking3WithWithdral is DepositSetup3 {
         }
 
         checkRewardPerToken(0, 0, 0);
-        checkRewardForDuration(DELTA_0_00000000015);
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
         checkUsersStake();
 
