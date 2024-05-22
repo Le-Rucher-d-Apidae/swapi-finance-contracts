@@ -5,17 +5,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 import { StakingSetup1, StakingSetup2 } from "./StakingRewards2_VariableRewardRateSetups.t.sol";
 import { StakingPreSetup, Erc20Setup1 } from "./StakingRewards2_commonbase.t.sol";
 
-import {
-//     DELTA_0_00000000022,
-//     DELTA_0_015,
-//     DELTA_0_04,
-//     DELTA_0_31,
-//     DELTA_0_4,
-//     PERCENT_10,
-//     PERCENT_100,
-//     DELTA_0,
-    ONE_TOKEN
-} from "./TestsConstants.sol";
+import { ONE_TOKEN } from "./TestsConstants.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import {
@@ -25,12 +15,8 @@ import {
 } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
-// import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
-
-// ----------------
-
 
 // ----------------------------------------------------------------------------
 
@@ -194,7 +180,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
         verboseLog(
             "Staking contract: Only owner can notifyVariableRewardAmount of ",
             CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY

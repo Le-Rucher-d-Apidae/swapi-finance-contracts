@@ -253,8 +253,6 @@ contract Erc20Setup0 is UsersSetup0 {
 } // Erc20Setup0
 
 contract Erc20Setup1 is Erc20Setup0, UsersSetup1 {
-    // RewardERC20 internal rewardErc20;
-    // StakingERC20 internal stakingERC20;
     uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
 
     function setUp() public virtual override(Erc20Setup0, UsersSetup1) {
@@ -263,8 +261,6 @@ contract Erc20Setup1 is Erc20Setup0, UsersSetup1 {
         UsersSetup1.setUp();
         verboseLog("Erc20Setup1 setUp()");
         vm.startPrank(erc20Minter);
-        // rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-        // stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
         stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
         vm.stopPrank();
         debugLog("Erc20Setup1 setUp() end");
@@ -272,9 +268,6 @@ contract Erc20Setup1 is Erc20Setup0, UsersSetup1 {
 } // Erc20Setup1
 
 contract Erc20Setup2 is Erc20Setup1, UsersSetup2 {
-    // RewardERC20 internal rewardErc20;
-    // StakingERC20 internal stakingERC20;
-    // uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
     uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
 
     function setUp() public virtual override(Erc20Setup1, UsersSetup2) {
@@ -283,9 +276,6 @@ contract Erc20Setup2 is Erc20Setup1, UsersSetup2 {
         UsersSetup2.setUp();
         verboseLog("Erc20Setup2 setUp()");
         vm.startPrank(erc20Minter);
-        // rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-        // stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
-        // stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
         stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
         vm.stopPrank();
         debugLog("Erc20Setup2 setUp() end");
@@ -293,10 +283,6 @@ contract Erc20Setup2 is Erc20Setup1, UsersSetup2 {
 } // Erc20Setup2
 
 contract Erc20Setup3 is Erc20Setup2, UsersSetup3 {
-    // RewardERC20 internal rewardErc20;
-    // StakingERC20 internal stakingERC20;
-    // uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
-    // uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
     uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
 
     function setUp() public virtual override(Erc20Setup2, UsersSetup3) {
@@ -305,10 +291,6 @@ contract Erc20Setup3 is Erc20Setup2, UsersSetup3 {
         UsersSetup3.setUp();
         verboseLog("Erc20Setup3 setUp()");
         vm.startPrank(erc20Minter);
-        // rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-        // stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
-        // stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
-        // stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
         stakingERC20.mint(userCherry, CHERRY_STAKINGERC20_MINTEDAMOUNT);
         vm.stopPrank();
         debugLog("Erc20Setup3 setUp() end");
@@ -586,11 +568,9 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         }
     }
 
-    /* getRewardForDuration should stay constant
-        Check getRewardForDuration() == REWARD_INITIAL_AMOUNT
-        Unless the reward duration is greater than REWARD_INITIAL_DURATION => 0
-    */
-
+    // getRewardForDuration should stay constant
+    //     Check getRewardForDuration() == REWARD_INITIAL_AMOUNT
+    //     Unless the reward duration is greater than REWARD_INITIAL_DURATION => 0
     function _checkRewardForDuration(uint256 _delta) internal {
         debugLog("_checkRewardForDuration");
         if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
@@ -602,23 +582,17 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         rewardForDuration = stakingRewards2.getRewardForDuration();
         debugLog("_checkRewardForDuration: getRewardForDuration  = ", rewardForDuration);
         debugLog("_checkRewardForDuration: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
-        // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
         assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        // vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION);
         gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
         rewardForDuration = stakingRewards2.getRewardForDuration();
-        // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
         assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        // vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
         gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
         rewardForDuration = stakingRewards2.getRewardForDuration();
-        // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
         assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
         // set back to initial time
-        // vm.warp(INITIAL_BLOCK_TIMESTAMP);
         gotoTimestamp(INITIAL_BLOCK_TIMESTAMP);
 
         verboseLog("_checkRewardForDuration: ok");
@@ -705,32 +679,6 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         return rewardedStakingDuration;
     }
 
-/*
-
-    function notifyVariableRewardAmount(
-        uint256 _constantRewardRatePerTokenStored,
-        uint256 _variableRewardMaxTotalSupply
-    )
-        internal
-    {
-        debugLog(
-            "notifyVariableRewardAmount: _constantRewardRatePerTokenStored : ", _constantRewardRatePerTokenStored
-        );
-        debugLog("notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ", _variableRewardMaxTotalSupply);
-        // vm.prank(userStakingRewardAdmin);
-        stakingRewards2.notifyVariableRewardAmount(_constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply);
-        STAKING_TIMESTAMP = block.timestamp;
-    }
-
-    function notifyRewardAmount(uint256 reward) internal {
-        debugLog("notifyRewardAmount: reward : ", reward);
-        // vm.prank(userStakingRewardAdmin);
-        stakingRewards2.notifyRewardAmount(reward);
-        STAKING_TIMESTAMP = block.timestamp;
-    }
-
-
-*/
     function notifyVariableRewardAmount(
         uint256 _constantRewardRatePerTokenStored,
         uint256 _variableRewardMaxTotalSupply
@@ -803,6 +751,5 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         }
         uint256 stakerRewards = stakingRewards2.earned(_staker);
         debugLog("displayEarned: stakerRewards = %d ", stakerRewards);
-        // vm.prank(userStakingRewardAdmin);
     }
 } // StakingPreSetup

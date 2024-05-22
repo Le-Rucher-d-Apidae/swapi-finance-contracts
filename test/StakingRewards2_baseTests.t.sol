@@ -2,29 +2,10 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import { console } from "forge-std/src/console.sol";
-// import { stdMath } from "forge-std/src/StdMath.sol";
-
-// import "./StakingRewards2_commonbase.t.sol";
 import { StakingSetup2 } from "./StakingRewards2Setups.t.sol";
-// import {
-//     DELTA_0_00000000022,
-//     DELTA_0_015,
-//     DELTA_0_31,
-//     PERCENT_1,
-//     PERCENT_5,
-//     PERCENT_90,
-//     PERCENT_100,
-//     DELTA_0,
-//     ONE_TOKEN
-// } from "./TestsConstants.sol";
-
-// import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
-// // import "../src/contracts/StakingRewards2Errors.sol";
 import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
-// import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
