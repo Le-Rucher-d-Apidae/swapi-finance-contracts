@@ -320,7 +320,7 @@ contract Erc20Setup3 is Erc20Setup2, UsersSetup3 {
 
 // --------------------------------------------------------
 
-abstract contract StakingPreSetup0 is TestLog {
+abstract contract _StakingPreSetup is TestLog {
     // Rewards constants
 
     // Duration of the rewards program
@@ -328,7 +328,7 @@ abstract contract StakingPreSetup0 is TestLog {
     // uint256 internal constant REWARD_INITIAL_DURATION = 10_000; // 1e4 ; 10 000 s. = 2 h. 46 m. 40 s.
     uint256 internal constant REWARD_INITIAL_DURATION = 52 weeks; // = ~1 year
 
-    // Initial timestamp
+    // Initial timestamp and block number
     uint256 internal immutable INITIAL_BLOCK_TIMESTAMP = block.timestamp;
     uint256 internal immutable INITIAL_BLOCK_NUMBER = block.number;
 
@@ -340,14 +340,14 @@ abstract contract StakingPreSetup0 is TestLog {
     /* solhint-enable var-name-mixedcase */
 
     function setUp() public virtual {
-        debugLog("StakingPreSetup0 setUp() start");
-        debugLog("StakingPreSetup0: REWARD_INITIAL_DURATION = ", REWARD_INITIAL_DURATION);
-        debugLog("StakingPreSetup0: BLOCK_TIME = ", BLOCK_TIME);
-        // debugLog("StakingPreSetup0: INITIAL_BLOCK_TIMESTAMP = ", INITIAL_BLOCK_TIMESTAMP);
-        // debugLog("StakingPreSetup0: INITIAL_BLOCK_NUMBER = ", INITIAL_BLOCK_NUMBER);
-        // debugLog("StakingPreSetup0: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
-        verboseLog("StakingPreSetup0 setUp()");
-        debugLog("StakingPreSetup0 setUp() end");
+        debugLog("_StakingPreSetup setUp() start");
+        debugLog("_StakingPreSetup: REWARD_INITIAL_DURATION = ", REWARD_INITIAL_DURATION);
+        debugLog("_StakingPreSetup: BLOCK_TIME = ", BLOCK_TIME);
+        // debugLog("_StakingPreSetup: INITIAL_BLOCK_TIMESTAMP = ", INITIAL_BLOCK_TIMESTAMP);
+        // debugLog("_StakingPreSetup: INITIAL_BLOCK_NUMBER = ", INITIAL_BLOCK_NUMBER);
+        // debugLog("_StakingPreSetup: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
+        verboseLog("_StakingPreSetup setUp()");
+        debugLog("_StakingPreSetup setUp() end");
     }
 
 
@@ -382,9 +382,9 @@ abstract contract StakingPreSetup0 is TestLog {
       }
     }
 
-} // StakingPreSetup0
+} // _StakingPreSetup
 
-abstract contract StakingPreSetup is StakingPreSetup0 {
+abstract contract StakingPreSetup is _StakingPreSetup {
     StakingRewards2 internal stakingRewards2;
     /* solhint-disable var-name-mixedcase */
     uint256 internal /* immutable */ STAKING_START_TIME; //  = block.timestamp;
@@ -396,7 +396,7 @@ abstract contract StakingPreSetup is StakingPreSetup0 {
 
     function setUp() public virtual override {
         debugLog("StakingPreSetup setUp() start");
-        StakingPreSetup0.setUp();
+        _StakingPreSetup.setUp();
         verboseLog("StakingPreSetup setUp()");
         debugLog("StakingPreSetup setUp() end");
     }
