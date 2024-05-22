@@ -142,11 +142,6 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        // vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        // emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
-        // vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        // emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_TIMESTAMP);
@@ -190,10 +185,6 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
         vm.prank(userStakingRewardAdmin);
 
         // Check emitted events
-        // vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        // emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
-        // vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        // emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_TIMESTAMP);
@@ -239,12 +230,6 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
-
-        // Check emitted events
-        // vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        // emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
-        // vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        // emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_TIMESTAMP);
