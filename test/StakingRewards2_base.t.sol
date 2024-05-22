@@ -168,15 +168,13 @@ contract TestLog is Test {
 // ----------------
 
 contract UsersSetup0 is TestLog {
+
     address payable[] internal users;
 
     uint internal constant MAX_USERS = 6;
     address internal erc20Admin;
     address internal erc20Minter;
     address internal userStakingRewardAdmin;
-    // userAlice;
-    // userBob;
-    // userCherry;
 
     function setUp() public virtual {
         verboseLog("UsersSetup0 setUp()");
@@ -194,11 +192,6 @@ contract UsersSetup0 is TestLog {
 } // UsersSetup0
 
 contract UsersSetup1 is UsersSetup0 {
-    // address payable[] internal users;
-
-    // address internal erc20Admin;
-    // address internal erc20Minter;
-    // address internal userStakingRewardAdmin;
 
     address internal userAlice;
 
@@ -206,15 +199,6 @@ contract UsersSetup1 is UsersSetup0 {
         verboseLog("UsersSetup1 setUp()");
         debugLog("UsersSetup1 setUp() start");
         UsersSetup0.setUp();
-        // utils = new Utils();
-        // users = utils.createUsers(5);
-
-        // erc20Admin = users[0];
-        // vm.label(erc20Admin, "ERC20Admin");
-        // erc20Minter = users[1];
-        // vm.label(erc20Minter, "ERC20Minter");
-        // userStakingRewardAdmin = users[2];
-        // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
 
         userAlice = users[3];
         vm.label(userAlice, "Alice");
@@ -223,34 +207,17 @@ contract UsersSetup1 is UsersSetup0 {
 } // UsersSetup1
 
 contract UsersSetup2 is UsersSetup1 {
-    // address payable[] internal users;
-
-    // address internal erc20Admin;
-    // address internal erc20Minter;
-    // address internal userStakingRewardAdmin;
-
-    // address internal userAlice;
     address internal userBob;
 
     function setUp() public virtual override {
         verboseLog("UsersSetup2 setUp()");
         debugLog("UsersSetup2 setUp() start");
-        // UsersSetup0.setUp();
+
         UsersSetup1.setUp();
-        // utils = new Utils();
-        // users = utils.createUsers(5);
 
-        // erc20Admin = users[0];
-        // vm.label(erc20Admin, "ERC20Admin");
-        // erc20Minter = users[1];
-        // vm.label(erc20Minter, "ERC20Minter");
-        // userStakingRewardAdmin = users[2];
-        // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
-
-        // userAlice = users[3];
-        // vm.label(userAlice, "Alice");
         userBob = users[4];
         vm.label(userBob, "Bob");
+
         debugLog("UsersSetup2 setUp() end");
     }
 } // UsersSetup2
@@ -258,35 +225,13 @@ contract UsersSetup2 is UsersSetup1 {
 // ----------------
 
 contract UsersSetup3 is UsersSetup2 {
-    // address payable[] internal users;
-
-    // address internal erc20Admin;
-    // address internal erc20Minter;
-    // address internal userStakingRewardAdmin;
-
-    // address internal userAlice;
-    // address internal userBob;
     address internal userCherry;
 
     function setUp() public virtual override {
         verboseLog("UsersSetup3 setUp()");
         debugLog("UsersSetup3 setUp() start");
-        // UsersSetup0.setUp();
         UsersSetup2.setUp();
-        // utils = new Utils();
-        // users = utils.createUsers(6);
 
-        // erc20Admin = users[0];
-        // vm.label(erc20Admin, "ERC20Admin");
-        // erc20Minter = users[1];
-        // vm.label(erc20Minter, "ERC20Minter");
-        // userStakingRewardAdmin = users[2];
-        // vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
-
-        // userAlice = users[3];
-        // vm.label(userAlice, "Alice");
-        // userBob = users[4];
-        // vm.label(userBob, "Bob");
         userCherry = users[5];
         vm.label(userCherry, "Cherry");
 
@@ -296,77 +241,77 @@ contract UsersSetup3 is UsersSetup2 {
 
 // ------------------------------------
 
-// contract Erc20Setup0 is UsersSetup0 {
-//     RewardERC20 internal rewardErc20;
-//     StakingERC20 internal stakingERC20;
-
-//     function setUp() public virtual override {
-//         debugLog("Erc20Setup0 setUp() start");
-//         UsersSetup1.setUp();
-//         verboseLog("Erc20Setup0 setUp()");
-//         vm.startPrank(erc20Minter);
-//         rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-//         stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
-//         stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
-//         vm.stopPrank();
-//         debugLog("Erc20Setup0 setUp() end");
-//     }
-// } // Erc20Setup0
-
-contract Erc20Setup1 is UsersSetup1 {
+contract Erc20Setup0 is UsersSetup0 {
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
+
+    function setUp() public virtual override (UsersSetup0) {
+        debugLog("Erc20Setup0 setUp() start");
+        UsersSetup0.setUp();
+        verboseLog("Erc20Setup0 setUp()");
+        rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
+        stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+        debugLog("Erc20Setup0 setUp() end");
+    }
+} // Erc20Setup0
+
+contract Erc20Setup1 is Erc20Setup0, UsersSetup1 {
+    // RewardERC20 internal rewardErc20;
+    // StakingERC20 internal stakingERC20;
     uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
 
-    function setUp() public virtual override {
+    function setUp() public virtual override (Erc20Setup0, UsersSetup1) {
         debugLog("Erc20Setup1 setUp() start");
+        Erc20Setup0.setUp();
         UsersSetup1.setUp();
         verboseLog("Erc20Setup1 setUp()");
         vm.startPrank(erc20Minter);
-        rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-        stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+        // rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
+        // stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
         stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
         vm.stopPrank();
         debugLog("Erc20Setup1 setUp() end");
     }
 } // Erc20Setup1
 
-contract Erc20Setup2 is UsersSetup2 {
-    RewardERC20 internal rewardErc20;
-    StakingERC20 internal stakingERC20;
-    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
+contract Erc20Setup2 is Erc20Setup1, UsersSetup2 {
+    // RewardERC20 internal rewardErc20;
+    // StakingERC20 internal stakingERC20;
+    // uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
     uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
 
-    function setUp() public virtual override {
+    function setUp() public virtual override (Erc20Setup1, UsersSetup2) {
         debugLog("Erc20Setup2 setUp() start");
+        Erc20Setup1.setUp();
         UsersSetup2.setUp();
         verboseLog("Erc20Setup2 setUp()");
         vm.startPrank(erc20Minter);
-        rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-        stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
-        stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
+        // rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
+        // stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+        // stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
         stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
         vm.stopPrank();
         debugLog("Erc20Setup2 setUp() end");
     }
 } // Erc20Setup2
 
-contract Erc20Setup3 is UsersSetup3 {
-    RewardERC20 internal rewardErc20;
-    StakingERC20 internal stakingERC20;
-    uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
-    uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
+contract Erc20Setup3 is Erc20Setup2, UsersSetup3 {
+    // RewardERC20 internal rewardErc20;
+    // StakingERC20 internal stakingERC20;
+    // uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
+    // uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
     uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
 
-    function setUp() public virtual override {
+    function setUp() public virtual override (Erc20Setup2, UsersSetup3){
         debugLog("Erc20Setup3 setUp() start");
+        Erc20Setup2.setUp();
         UsersSetup3.setUp();
         verboseLog("Erc20Setup3 setUp()");
         vm.startPrank(erc20Minter);
-        rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-        stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
-        stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
-        stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
+        // rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
+        // stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+        // stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
+        // stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
         stakingERC20.mint(userCherry, CHERRY_STAKINGERC20_MINTEDAMOUNT);
         vm.stopPrank();
         debugLog("Erc20Setup3 setUp() end");
