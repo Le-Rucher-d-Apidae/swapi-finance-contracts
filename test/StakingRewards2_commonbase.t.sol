@@ -736,6 +736,9 @@ abstract contract StakingPreSetup is _StakingPreSetup {
     function setRewardsDuration(uint256 _rewardsDuration, address _userStakingRewardAdmin) internal {
         debugLog("setRewardsDuration: _rewardsDuration : ", _rewardsDuration);
         if (_userStakingRewardAdmin!= address(0)) vm.prank(_userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardsDurationUpdated(_rewardsDuration);
         stakingRewards2.setRewardsDuration(_rewardsDuration);
     }
 

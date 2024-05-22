@@ -111,12 +111,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         verboseLog("Staking contract: Bob can't notifyVariableRewardAmount");
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(1);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(1);
-        stakingRewards2.notifyVariableRewardAmount(1, 1);
+        notifyVariableRewardAmount(1, 1);
         verboseLog("Staking contract: Only owner can notifyVariableRewardAmount of ", 1);
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
@@ -136,12 +131,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         verboseLog("Staking contract: Bob can't notifyVariableRewardAmount");
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(1);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(0);
-        stakingRewards2.notifyVariableRewardAmount(0, 0);
+        notifyVariableRewardAmount(0, 0);
         verboseLog("Staking contract: Only owner can notifyVariableRewardAmount of ", 0);
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
@@ -163,24 +153,14 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         verboseLog("Staking contract: Bob can't notifyVariableRewardAmount");
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-        stakingRewards2.notifyVariableRewardAmount(1, 1);
+        notifyVariableRewardAmount(1, 1);
         verboseLog("Staking contract: Only owner can notifyVariableRewardAmount");
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
 
     function testStakingNotifyVariableRewardAmountLimit1() public {
         vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-        stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
         verboseLog(
             "Staking contract: Only owner can notifyVariableRewardAmount of ",
             CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY
@@ -203,10 +183,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         verboseLog("Staking contract: Bob can't setRewardsDuration");
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(1);
-        stakingRewards2.setRewardsDuration(1);
+        setRewardsDuration(1);
         verboseLog("Staking contract: Owner can setRewardsDuration right after last epoch end");
         verboseLog("Staking contract: Event RewardsDurationUpdated emitted");
     }
@@ -284,8 +261,8 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
     // Test that the owner can notifyVariableRewardAmount with a reward max total supply amount that is just low
     // enough
     function testStakingNotifyVariableRewardAmountSuccess1() public {
-        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2)); // Should be
-            // REWARD_INITIAL_AMOUNT
+        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2));
+        // Should be REWARD_INITIAL_AMOUNT
         assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
 
         // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
@@ -302,13 +279,7 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
         uint256 MAXTOTALSUPPLY_EXTRA_OK = MAXTOTALSUPPLY_EXTRA_OVERFLOW - REWARD_INITIAL_DURATION;
         vm.prank(userStakingRewardAdmin);
 
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-
-        stakingRewards2.notifyVariableRewardAmount(
+        notifyVariableRewardAmount(
             CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK
         );
 
@@ -321,8 +292,8 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
 
     // Test that the owner can't notifyVariableRewardAmount with a reward max total supply amount that is too high
     function testStakingNotifyVariableRewardAmountFail1() public {
-        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2)); // Should be
-            // REWARD_INITIAL_AMOUNT
+        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2));
+        // Should be REWARD_INITIAL_AMOUNT
         assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
 
         // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
@@ -391,7 +362,6 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
 contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
     function setUp() public virtual override(Erc20Setup1, StakingPreSetup) {
         debugLog("CheckStakingConstantRewardLimits2 setUp() start");
-        // verboseLog("StakingSetup");
         StakingPreSetup.setUp();
         Erc20Setup1.setUp();
 
@@ -420,6 +390,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         return 0;
     }
 
+    // Nothing minted, no reward
     function testStakingNotifyVariableRewardAmountFail0() public {
         // Test some arbitrary values
         // Smallest amount (1,1), 0 reward minted
@@ -428,15 +399,12 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         // vm.prank(erc20Minter);
         // rewardErc20.mint( address(stakingRewards2), 0 );
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(100);
-        stakingRewards2.setRewardsDuration(100); // 100 s.
+        setRewardsDuration(100); // 100 s.
 
         // Set 1 unit (1 = 10^-18) of token as reward per token deposit
         // and max deposit of 1 / 1^18 token
 
-        // Check emitted events
+        // Expect revert: expected min. balance 100, current balance 0
         vm.expectRevert(
             abi.encodeWithSelector(
                 ProvidedVariableRewardTooHigh.selector,
@@ -461,21 +429,12 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), 100);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(100);
-        stakingRewards2.setRewardsDuration(100); // 100 s.
+        setRewardsDuration(100); // 100 s.
 
         // Set 1 unit (1 = 10^-18) of token as reward per token deposit
         // and max deposit of 1 / 1^18 token
 
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(1);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(1);
-        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
-        stakingRewards2.notifyVariableRewardAmount(1, 1);
+        notifyVariableRewardAmount(1, 1);
         vm.stopPrank();
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
@@ -504,10 +463,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), MINTED_REWARD_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION); // 100 s.
+        setRewardsDuration(REWARD_DURATION); // 100 s.
 
         // Revert: expected min. balance 100, current balance 99
         vm.expectRevert(
@@ -552,10 +508,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), MINTED_REWARD_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION); // 100 s.
+        setRewardsDuration(REWARD_DURATION); // 100 s.
 
         // Revert: expected min. balance 100, current balance 99
         vm.expectRevert(
@@ -594,18 +547,8 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
-
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(MAX_DEPOSIT_AMOUNT);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(REWARD_PER_TOKEN_STORED);
-        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+        setRewardsDuration(REWARD_DURATION);
+        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
         vm.stopPrank();
 
@@ -632,10 +575,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), INSUFFICIENT_MINTED_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
+        setRewardsDuration(REWARD_DURATION);
 
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -674,10 +614,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
+        setRewardsDuration(REWARD_DURATION);
 
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -725,17 +662,8 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
-
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(MAX_DEPOSIT_AMOUNT);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(REWARD_PER_TOKEN_STORED);
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+        setRewardsDuration(REWARD_DURATION);
+        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
         // 9999999998812800000000000000000000000 < 10000000000000000000000000000000000000
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
         verboseLog("Staking contract: notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED * MAX_DEPOSIT_AMOUNT);
@@ -761,10 +689,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
+        setRewardsDuration(REWARD_DURATION);
 
         // Compute max deposit amount limit with rounding
         /* solhint-disable var-name-mixedcase */
@@ -773,12 +698,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         /* solhint-enable var-name-mixedcase */
         verboseLog("ROUNDING_MARGIN = ", ROUNDING_MARGIN);
 
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(REWARD_PER_TOKEN_STORED);
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN);
+        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN);
         vm.stopPrank();
         // 9999999999999999999859055616000000000 < 10000000000000000000000000000000000000
 
@@ -809,10 +729,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
+        setRewardsDuration(REWARD_DURATION);
 
         // Compute max deposit amount limit with rounding
         /* solhint-disable var-name-mixedcase */
@@ -876,16 +793,8 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.stopPrank();
 
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
-        // Check emitted events
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.MaxTotalSupply(ONE_TOKEN);
-        vm.expectEmit(true, false, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardAddedPerTokenStored(REWARD_PER_TOKEN_STORED);
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+        setRewardsDuration(REWARD_DURATION);
+        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
         vm.stopPrank();
 
@@ -928,10 +837,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.stopPrank();
 
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
+        setRewardsDuration(REWARD_DURATION);
 
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -986,10 +892,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
         vm.stopPrank();
 
         vm.startPrank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_DURATION);
+        setRewardsDuration(REWARD_DURATION);
 
         vm.expectRevert(
             abi.encodeWithSelector(

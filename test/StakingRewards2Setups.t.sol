@@ -115,10 +115,11 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted event
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
+        // // Check emitted event
+        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        // emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
+        // stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
+        setRewardsDuration(REWARD_INITIAL_DURATION);
 
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
@@ -155,10 +156,11 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
         // bytes4(keccak256("setRewardsDuration")) );
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted event
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
+        // // Check emitted event
+        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        // emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
+        // stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
+        setRewardsDuration(REWARD_INITIAL_DURATION);
 
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
@@ -200,10 +202,11 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
         // bytes4(keccak256("setRewardsDuration")) );
 
         vm.prank(userStakingRewardAdmin);
-        // Check emitted event
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
+        // // Check emitted event
+        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        // emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
+        // stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
+        setRewardsDuration(REWARD_INITIAL_DURATION);
 
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
