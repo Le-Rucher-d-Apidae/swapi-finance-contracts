@@ -162,16 +162,14 @@ contract TestLog is Test {
     function warningLogTime(string memory _msg, address _address) public view {
         console.log(_msg, _address, " ts: ", block.timestamp);
     }
-
 } // TestLog
 
 // ----------------
 
 contract UsersSetup0 is TestLog {
-
     address payable[] internal users;
 
-    uint internal constant MAX_USERS = 6;
+    uint256 internal constant MAX_USERS = 6;
     address internal erc20Admin;
     address internal erc20Minter;
     address internal userStakingRewardAdmin;
@@ -192,7 +190,6 @@ contract UsersSetup0 is TestLog {
 } // UsersSetup0
 
 contract UsersSetup1 is UsersSetup0 {
-
     address internal userAlice;
 
     function setUp() public virtual override {
@@ -245,7 +242,7 @@ contract Erc20Setup0 is UsersSetup0 {
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
 
-    function setUp() public virtual override (UsersSetup0) {
+    function setUp() public virtual override(UsersSetup0) {
         debugLog("Erc20Setup0 setUp() start");
         UsersSetup0.setUp();
         verboseLog("Erc20Setup0 setUp()");
@@ -260,7 +257,7 @@ contract Erc20Setup1 is Erc20Setup0, UsersSetup1 {
     // StakingERC20 internal stakingERC20;
     uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
 
-    function setUp() public virtual override (Erc20Setup0, UsersSetup1) {
+    function setUp() public virtual override(Erc20Setup0, UsersSetup1) {
         debugLog("Erc20Setup1 setUp() start");
         Erc20Setup0.setUp();
         UsersSetup1.setUp();
@@ -280,7 +277,7 @@ contract Erc20Setup2 is Erc20Setup1, UsersSetup2 {
     // uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
     uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
 
-    function setUp() public virtual override (Erc20Setup1, UsersSetup2) {
+    function setUp() public virtual override(Erc20Setup1, UsersSetup2) {
         debugLog("Erc20Setup2 setUp() start");
         Erc20Setup1.setUp();
         UsersSetup2.setUp();
@@ -302,7 +299,7 @@ contract Erc20Setup3 is Erc20Setup2, UsersSetup3 {
     // uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
     uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
 
-    function setUp() public virtual override (Erc20Setup2, UsersSetup3){
+    function setUp() public virtual override(Erc20Setup2, UsersSetup3) {
         debugLog("Erc20Setup3 setUp() start");
         Erc20Setup2.setUp();
         UsersSetup3.setUp();
@@ -335,7 +332,6 @@ abstract contract _StakingPreSetup is TestLog {
     // 1 block each 10 seconds
     uint8 internal constant BLOCK_TIME = 10;
 
-
     uint256 internal REWARD_INITIAL_AMOUNT;
     /* solhint-enable var-name-mixedcase */
 
@@ -357,9 +353,9 @@ abstract contract _StakingPreSetup is TestLog {
         virtual
         returns (uint256 expectedRewardsAmount);
 
-    function displayTime() view internal {
-      debugLog(" displayTime: block.timestamp = ", block.timestamp);
-      debugLog(" displayTime: block.number", block.number);
+    function displayTime() internal view {
+        debugLog(" displayTime: block.timestamp = ", block.timestamp);
+        debugLog(" displayTime: block.number", block.number);
     }
 
     // Use these functions to go to a specific timestamp in place of vm.warp
@@ -370,17 +366,16 @@ abstract contract _StakingPreSetup is TestLog {
     }
 
     function gotoTimestamp(uint256 _timeStamp, bool _displayTime) internal {
-      debugLog("gotoTimestamp: ", _timeStamp);
-      if (_displayTime) {
+        debugLog("gotoTimestamp: ", _timeStamp);
+        if (_displayTime) {
             displayTime();
-      }
-      vm.warp( _timeStamp);
-      vm.roll( _timeStamp / BLOCK_TIME);
-      if (_displayTime) {
+        }
+        vm.warp(_timeStamp);
+        vm.roll(_timeStamp / BLOCK_TIME);
+        if (_displayTime) {
             displayTime();
-      }
+        }
     }
-
 } // _StakingPreSetup
 
 abstract contract StakingPreSetup is _StakingPreSetup {
@@ -423,8 +418,9 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         uint256 lastTimeReward = (
             block.timestamp < STAKING_START_TIME + REWARD_INITIAL_DURATION
                 ? block.timestamp
-                : STAKING_START_TIME + REWARD_INITIAL_DURATION // last time reward
-        );
+                : STAKING_START_TIME + REWARD_INITIAL_DURATION
+        ); // last time reward
+
         verboseLog("getLastRewardTime: lastTimeReward = ", lastTimeReward);
         return lastTimeReward;
     }
@@ -598,8 +594,8 @@ abstract contract StakingPreSetup is _StakingPreSetup {
     function _checkRewardForDuration(uint256 _delta) internal {
         debugLog("_checkRewardForDuration");
         if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
-          warningLog("_checkRewardForDuration: REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION");
-          warningLog("_checkRewardForDuration: => reward is likely to be ZERO !");
+            warningLog("_checkRewardForDuration: REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION");
+            warningLog("_checkRewardForDuration: => reward is likely to be ZERO !");
         }
         uint256 INITIAL_BLOCK_TIMESTAMP = block.timestamp;
         uint256 rewardForDuration;
@@ -613,23 +609,23 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
         rewardForDuration = stakingRewards2.getRewardForDuration();
         // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
-       assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
+        assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-      // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
-      gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
-      rewardForDuration = stakingRewards2.getRewardForDuration();
-      // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
-      assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
+        // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+        gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+        rewardForDuration = stakingRewards2.getRewardForDuration();
+        // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+        assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-       // set back to initial time
+        // set back to initial time
         // vm.warp(INITIAL_BLOCK_TIMESTAMP);
-      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP);
+        gotoTimestamp(INITIAL_BLOCK_TIMESTAMP);
 
-      verboseLog("_checkRewardForDuration: ok");
+        verboseLog("_checkRewardForDuration: ok");
     }
 
     // Comment parameter name to silent "Unused function parameter." warning
-    function checkRewardForDuration(uint256 /* _delta */) internal virtual {
+    function checkRewardForDuration(uint256 /* _delta */ ) internal virtual {
         debugLog("checkRewardForDuration()");
         assertFalse(true, "IMPLEMENT checkRewardForDuration() in derived contract");
     }
@@ -709,8 +705,15 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         return rewardedStakingDuration;
     }
 
-    function notifyVariableRewardAmount(uint256 _constantRewardRatePerTokenStored, uint256 _variableRewardMaxTotalSupply) internal {
-        debugLog("notifyVariableRewardAmount: _constantRewardRatePerTokenStored : ", _constantRewardRatePerTokenStored);
+    function notifyVariableRewardAmount(
+        uint256 _constantRewardRatePerTokenStored,
+        uint256 _variableRewardMaxTotalSupply
+    )
+        internal
+    {
+        debugLog(
+            "notifyVariableRewardAmount: _constantRewardRatePerTokenStored : ", _constantRewardRatePerTokenStored
+        );
         debugLog("notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ", _variableRewardMaxTotalSupply);
         // vm.prank(userStakingRewardAdmin);
         stakingRewards2.notifyVariableRewardAmount(_constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply);
@@ -724,17 +727,11 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         STAKING_START_TIME = block.timestamp;
     }
 
-    function displayEarned(
-      address _staker,
-      string memory _stakerName
-    ) internal view {
+    function displayEarned(address _staker, string memory _stakerName) internal view {
         displayEarned(_staker, _stakerName, false);
     }
-    function displayEarned(
-      address _staker,
-      string memory _stakerName,
-      bool _displayTime
-    ) internal view {
+
+    function displayEarned(address _staker, string memory _stakerName, bool _displayTime) internal view {
         debugLog("displayEarned: %s ", _staker);
         debugLog("displayEarned: %s ", _stakerName);
         if (_displayTime) {
@@ -744,6 +741,4 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         debugLog("displayEarned: stakerRewards = %d ", stakerRewards);
         // vm.prank(userStakingRewardAdmin);
     }
-
-
 } // StakingPreSetup

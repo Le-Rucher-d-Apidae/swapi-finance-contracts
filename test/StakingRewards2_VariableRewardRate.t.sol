@@ -67,7 +67,6 @@ abstract contract StakingPreSetupVRR is StakingPreSetup {
         debugLog("StakingPreSetupCRR CONSTANT_REWARDRATE_PERTOKENSTORED = ", CONSTANT_REWARDRATE_PERTOKENSTORED);
         debugLog("StakingPreSetupCRR REWARD_INITIAL_AMOUNT              = ", REWARD_INITIAL_AMOUNT);
 
-
         if (REWARD_INITIAL_DURATION == 0) {
             fail("StakingPreSetupCRR: REWARD_INITIAL_DURATION is 0");
         }
@@ -149,7 +148,6 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-        // stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_START_TIME);
@@ -198,7 +196,6 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
 
-        // stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_START_TIME);
@@ -251,7 +248,6 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
 
-        // stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
         debugLog("Staking start time", STAKING_START_TIME);
@@ -490,7 +486,6 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is DepositSetup2 {
         verboseLog("Bob claimed                   : ", userBobClaimedRewards);
         verboseLog("Bob expected remaining        : ", userBobExpectedRewards);
         verboseLog("-----------------------------------------");
-
     }
 }
 
@@ -590,7 +585,6 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is DepositSetup3 {
         verboseLog("Cherry claimed                : ", userCherryClaimedRewards);
         verboseLog("Cherry expected remaining     : ", userCherryExpectedRewards);
         verboseLog("-----------------------------------------");
-
     }
 }
 
@@ -654,7 +648,10 @@ contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
-        debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached(stakingPercentageDurationReached));
+        debugLog(
+            "reward duration (%%) of total staking reward duration = ",
+            getRewardDurationReached(stakingPercentageDurationReached)
+        );
         debugLog(
             "Staking duration (%%) total staking reward duration = ",
             // STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
@@ -681,7 +678,6 @@ contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
         verboseLog("Alice claimed                 : ", userAliceClaimedRewards);
         verboseLog("Alice expected remaining      : ", userAliceExpectedRewards);
         verboseLog("-----------------------------------------");
-
     }
 }
 
@@ -752,16 +748,17 @@ contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
-        debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached(stakingPercentageDurationReached));
+        debugLog(
+            "reward duration (%%) of total staking reward duration = ",
+            getRewardDurationReached(stakingPercentageDurationReached)
+        );
         debugLog(
             "Staking duration (%%) total staking reward duration = ",
             // STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
             stakingPercentageDurationReached * REWARD_INITIAL_DURATION / PERCENT_100
         );
 
-
         checkStakingPeriod(stakingPercentageDurationReached);
-
 
         // Alice withdraws all
         withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
@@ -796,7 +793,6 @@ contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
         verboseLog("Bob claimed                   : ", userBobClaimedRewards);
         verboseLog("Bob expected remaining        : ", userBobExpectedRewards);
         verboseLog("-----------------------------------------");
-
     }
 }
 
@@ -874,7 +870,10 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
-        debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached(stakingPercentageDurationReached));
+        debugLog(
+            "reward duration (%%) of total staking reward duration = ",
+            getRewardDurationReached(stakingPercentageDurationReached)
+        );
         debugLog(
             "Staking duration (%%) total staking reward duration = ",
             // STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
@@ -926,7 +925,6 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
         verboseLog("Cherry claimed                : ", userCherryClaimedRewards);
         verboseLog("Cherry expected remaining     : ", userCherryExpectedRewards);
         verboseLog("-----------------------------------------");
-
     }
 }
 
@@ -1092,7 +1090,7 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY);
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-        stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
         verboseLog(
             "Staking contract: Only owner can notifyVariableRewardAmount of ",
             CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY
@@ -1186,8 +1184,6 @@ contract CheckStakingPermissions2 is StakingSetup2 {
 // 2 tests
 
 contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
-
-
     function setUp() public virtual override {
         // console.log("CheckStakingPermissions2 setUp()");
         debugLog("CheckStakingConstantRewardLimits1 setUp() start");
@@ -1195,18 +1191,18 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
         debugLog("CheckStakingConstantRewardLimits1 setUp() end");
     }
 
-
-    // Test that the owner can notifyVariableRewardAmount with a reward max total supply amount that is just low enough
+    // Test that the owner can notifyVariableRewardAmount with a reward max total supply amount that is just low
+    // enough
     function testStakingNotifyVariableRewardAmountSuccess1() public {
-
-        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2)); // Should be REWARD_INITIAL_AMOUNT
+        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2)); // Should be
+            // REWARD_INITIAL_AMOUNT
         assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
 
         // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
         uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
         uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
         uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
-        for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY; ; i+= REWARD_INITIAL_DURATION) {
+        for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
             if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
                 debugLog("testStakingNotifyVariableRewardAmountSuccess1: i   = ", i);
                 MAXTOTALSUPPLY_EXTRA_OVERFLOW = i - CONSTANT_REWARD_MAXTOTALSUPPLY;
@@ -1235,15 +1231,15 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
 
     // Test that the owner can't notifyVariableRewardAmount with a reward max total supply amount that is too high
     function testStakingNotifyVariableRewardAmountFail1() public {
-
-        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2)); // Should be REWARD_INITIAL_AMOUNT
+        uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2)); // Should be
+            // REWARD_INITIAL_AMOUNT
         assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
 
         // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
         uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
         uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
         uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
-        for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY; ; i+= REWARD_INITIAL_DURATION) {
+        for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
             if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
                 debugLog("testStakingNotifyVariableRewardAmountFail1: i   = ", i);
                 MAXTOTALSUPPLY_EXTRA_OVERFLOW = i - CONSTANT_REWARD_MAXTOTALSUPPLY;
@@ -1256,7 +1252,10 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
                 ProvidedVariableRewardTooHigh.selector,
                 CONSTANT_REWARDRATE_PERTOKENSTORED, // constantRewardRatePerTokenStored
                 CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OVERFLOW, // Max. total supply
-                ((CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OVERFLOW) * CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION),
+                (
+                    (CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OVERFLOW)
+                        * CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION
+                ),
                 // Min. expected balance
                 REWARD_INITIAL_AMOUNT // Current balance
             )
@@ -1295,13 +1294,11 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
         );
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
-
 } // CheckStakingConstantRewardLimits1
 
 // 13 tests
 
 contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
-
     function setUp() public virtual override(Erc20Setup1, StakingPreSetup) {
         debugLog("CheckStakingConstantRewardLimits2 setUp() start");
         // verboseLog("StakingSetup");

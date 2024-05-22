@@ -2,11 +2,13 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingPreSetup
-// , Erc20Setup1
-, Erc20Setup2
+import {
+    StakingPreSetup,
+    // , Erc20Setup1
+    Erc20Setup2
+} from
 // , Erc20Setup3
-} from "./StakingRewards2_base.t.sol";
+"./StakingRewards2_base.t.sol";
 import {
     DELTA_0_015,
     DELTA_0_04,
@@ -32,45 +34,43 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // ----------------
 
-contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
-{
+contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
     // address payable[] internal users;
     // address internal userAlice;
     //   uint256 internal immutable INITIAL_BLOCK_TIMESTAMP = block.timestamp;
     //   uint256 internal immutable INITIAL_BLOCK_NUMBER = block.number;
 
-      // Reward rate : 10% yearly
-      // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-      /* solhint-disable var-name-mixedcase */
+    // Reward rate : 10% yearly
+    // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+    /* solhint-disable var-name-mixedcase */
 
-      uint256 APR = 10; // 10%
-      uint256 APR_BASE = 100; // 100%
-      uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-      uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-          // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-      uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-      uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-      uint256 CONSTANT_REWARDRATE_PERTOKENSTORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 APR = 10; // 10%
+    uint256 APR_BASE = 100; // 100%
+    uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+        // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+    uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+    uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+    uint256 CONSTANT_REWARDRATE_PERTOKENSTORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
 
-      uint256 ALICE_DEPOSIT_AMOUNT = 20 * ONE_TOKEN; // 20 tokens
-      uint256 BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
-      /* solhint-enable var-name-mixedcase */
+    uint256 ALICE_DEPOSIT_AMOUNT = 20 * ONE_TOKEN; // 20 tokens
+    uint256 BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
+        /* solhint-enable var-name-mixedcase */
 
+    function setUp() public virtual override(Erc20Setup2, StakingPreSetup) {
+        //   function setUp() public virtual override(StakingPreSetup) {
+        debugLog("CheckStakingConstantRewardLimits setUp() start");
+        verboseLog("StakingSetup1");
+        StakingPreSetup.setUp();
+        Erc20Setup2.setUp();
+        // utils = new Utils();
+        // users = utils.createUsers(5);
+        vm.prank(userStakingRewardAdmin);
+        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
 
-  function setUp() public virtual override(Erc20Setup2, StakingPreSetup) {
-//   function setUp() public virtual override(StakingPreSetup) {
-      debugLog("CheckStakingConstantRewardLimits setUp() start");
-      verboseLog("StakingSetup1");
-      StakingPreSetup.setUp();
-      Erc20Setup2.setUp();
-      // utils = new Utils();
-      // users = utils.createUsers(5);
-      vm.prank(userStakingRewardAdmin);
-      stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-      assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
-      debugLog("CheckStakingConstantRewardLimits setUp() end");
-  }
+        debugLog("CheckStakingConstantRewardLimits setUp() end");
+    }
 
     function expectedStakingRewards(
         uint256 _stakedAmount,
@@ -94,106 +94,100 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2
         return expectedStakingRewardsAmount;
     }
 
+    // Check already deposited amount is lower or equal than max amount
+    function testStakingVRR2Deposit1BeforeReward1After() public {
+        gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
 
-  // Check already deposited amount is lower or equal than max amount
-  function testStakingVRR2Deposit1BeforeReward1After() public {
+        // Mint 10 * 10^18 token as reward
+        vm.startPrank(erc20Minter);
+        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
 
-      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
+        // Mint Alice tokens
+        stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+        // Mint Bob tokens
+        stakingERC20.mint(userBob, BOB_DEPOSIT_AMOUNT);
 
-      // Mint 10 * 10^18 token as reward
-      vm.startPrank(erc20Minter);
-      rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+        // Check Alice and Bob staking balances
+        // Nobody should have staked yet
+        itStakesCorrectly(userAlice, 0, "Alice");
+        itStakesCorrectly(userBob, 0, "Bob");
 
-      // Mint Alice tokens
-      stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
-      // Mint Bob tokens
-      stakingERC20.mint(userBob, BOB_DEPOSIT_AMOUNT);
+        vm.stopPrank();
+        // /*
+        // Alice deposit tokens BEFORE rewards start
+        debugLog("Alice deposit tokens BEFORE rewards start at :");
+        displayTime();
+        //   debugLog("block.timestamp = ", block.timestamp);
+        //   debugLog("block.number = ", block.number);
 
-      // Check Alice and Bob staking balances
-      // Nobody should have staked yet
-      itStakesCorrectly(userAlice, 0, "Alice");
-      itStakesCorrectly(userBob, 0, "Bob");
+        vm.startPrank(userAlice);
+        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
 
-      vm.stopPrank();
-// /*
-      // Alice deposit tokens BEFORE rewards start
-      debugLog("Alice deposit tokens BEFORE rewards start at :");
-      displayTime();
-    //   debugLog("block.timestamp = ", block.timestamp);
-    //   debugLog("block.number = ", block.number);
+        // Check Alice and Bob staking balances
+        // Only Alice should have staked
+        itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
+        itStakesCorrectly(userBob, 0, "Bob");
+        // */
 
-      vm.startPrank(userAlice);
-      stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
-      vm.expectEmit(true, true, false, false, address(stakingRewards2));
-      emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
-      stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
-      vm.stopPrank();
+        gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 100);
 
-      // Check Alice and Bob staking balances
-      // Only Alice should have staked
-      itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
-      itStakesCorrectly(userBob, 0, "Bob");
-// */
+        debugLog("Set rewards duration at :");
+        displayTime();
 
-      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 100);
+        vm.startPrank(userStakingRewardAdmin);
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
+        stakingRewards2.setRewardsDuration(REWARD_DURATION);
 
-      debugLog("Set rewards duration at :");
-      displayTime();
+        debugLog("------------------");
+        debugLog("displayEarned");
+        displayTime();
+        displayEarned(userAlice, "Alice");
+        displayEarned(userBob, "Bob");
+        debugLog("------------------");
 
-      vm.startPrank(userStakingRewardAdmin);
-      vm.expectEmit(true, true, false, false, address(stakingRewards2));
-      emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
-      stakingRewards2.setRewardsDuration(REWARD_DURATION);
+        gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 200);
 
+        debugLog("notifyVariableRewardAmount at :");
+        displayTime();
 
-debugLog("------------------");
-debugLog("displayEarned");
-displayTime();
-displayEarned(userAlice, "Alice");
-displayEarned(userBob, "Bob");
-debugLog("------------------");
+        getLastRewardTime();
+        // Check emitted events
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.MaxTotalSupply(ONE_TOKEN);
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
+        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, MAX_DEPOSIT_AMOUNT);
+        debugLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+        vm.stopPrank();
 
+        debugLog("------------------");
+        debugLog("displayEarned");
+        displayTime();
+        displayEarned(userAlice, "Alice");
+        displayEarned(userBob, "Bob");
+        debugLog("------------------");
 
-      gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 200);
+        gotoTimestamp(STAKING_START_TIME + 100);
 
-      debugLog("notifyVariableRewardAmount at :");
-      displayTime();
+        debugLog("Bob deposit tokens AFTER rewards at :");
+        displayTime();
 
-      getLastRewardTime();
-      // Check emitted events
-      vm.expectEmit(true, false, false, false, address(stakingRewards2));
-      emit StakingRewards2Events.MaxTotalSupply(ONE_TOKEN);
-      vm.expectEmit(true, false, false, false, address(stakingRewards2));
-      emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
-      notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, MAX_DEPOSIT_AMOUNT);
-      debugLog("STAKING_START_TIME = " , STAKING_START_TIME);
-      verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-      vm.stopPrank();
+        // Bob deposits tokens AFTER rewards start
+        vm.startPrank(userBob);
+        stakingERC20.approve(address(stakingRewards2), BOB_DEPOSIT_AMOUNT);
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Staked(userBob, BOB_DEPOSIT_AMOUNT);
+        stakingRewards2.stake(BOB_DEPOSIT_AMOUNT);
+        vm.stopPrank();
 
-debugLog("------------------");
-debugLog("displayEarned");
-displayTime();
-displayEarned(userAlice, "Alice");
-displayEarned(userBob, "Bob");
-debugLog("------------------");
-
-
-      gotoTimestamp(STAKING_START_TIME + 100);
-
-      debugLog("Bob deposit tokens AFTER rewards at :");
-      displayTime();
-
-      // Bob deposits tokens AFTER rewards start
-      vm.startPrank(userBob);
-      stakingERC20.approve(address(stakingRewards2), BOB_DEPOSIT_AMOUNT);
-      vm.expectEmit(true, true, false, false, address(stakingRewards2));
-      emit StakingRewards2Events.Staked(userBob, BOB_DEPOSIT_AMOUNT);
-      stakingRewards2.stake(BOB_DEPOSIT_AMOUNT);
-      vm.stopPrank();
-
-
-      gotoTimestamp(STAKING_START_TIME + 200);
-/*
+        gotoTimestamp(STAKING_START_TIME + 200);
+        /*
       // Alice deposit tokens AFTER rewards start
       debugLog("Alice deposit tokens AFTER rewards start at :");
       displayTime();
@@ -204,31 +198,28 @@ debugLog("------------------");
       emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
       stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
       vm.stopPrank();
-*/
+        */
 
-      // Check Alice and Bob staking balances
-      // Alice and Bob should have staked
-      itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
-      itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
+        // Check Alice and Bob staking balances
+        // Alice and Bob should have staked
+        itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
+        itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
 
+        // Go to the end of the reward period
+        debugLog("Go to the end of the reward period at :");
 
+        gotoTimestamp(STAKING_START_TIME + REWARD_DURATION + 1);
 
-      // Go to the end of the reward period
-      debugLog("Go to the end of the reward period at :");
+        debugLog("block.timestamp = ", block.timestamp);
+        debugLog("block.number = ", block.number);
 
-      gotoTimestamp(STAKING_START_TIME + REWARD_DURATION + 1);
+        uint256 aliceTotalExpectedRewards =
+            expectedStakingRewards(ALICE_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
+        uint256 bobTotalExpectedRewards = expectedStakingRewards(BOB_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
 
-      debugLog("block.timestamp = ", block.timestamp);
-      debugLog("block.number = ", block.number);
-
-    uint256 aliceTotalExpectedRewards = expectedStakingRewards(ALICE_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
-    uint256 bobTotalExpectedRewards = expectedStakingRewards(BOB_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
-
-    checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0_015, 0);
-    checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
-
-  }
-
+        checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0_015, 0);
+        checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
+    }
 } // CheckStakingConstantRewardLimits2
 
 // // */
