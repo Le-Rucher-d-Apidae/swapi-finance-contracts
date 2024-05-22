@@ -705,6 +705,8 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         return rewardedStakingDuration;
     }
 
+/*
+
     function notifyVariableRewardAmount(
         uint256 _constantRewardRatePerTokenStored,
         uint256 _variableRewardMaxTotalSupply
@@ -725,6 +727,68 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         // vm.prank(userStakingRewardAdmin);
         stakingRewards2.notifyRewardAmount(reward);
         STAKING_TIMESTAMP = block.timestamp;
+    }
+
+
+*/
+    function notifyVariableRewardAmount(
+        uint256 _constantRewardRatePerTokenStored,
+        uint256 _variableRewardMaxTotalSupply
+    )
+        internal
+    {
+        notifyVariableRewardAmount(_constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply, address(0));
+    }
+
+    function notifyVariableRewardAmount(
+        uint256 _constantRewardRatePerTokenStored,
+        uint256 _variableRewardMaxTotalSupply,
+        address _userStakingRewardAdmin
+    )
+        internal
+    {
+        debugLog(
+            "notifyVariableRewardAmount: _constantRewardRatePerTokenStored : ", _constantRewardRatePerTokenStored
+        );
+        debugLog("notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ", _variableRewardMaxTotalSupply);
+
+        if (_userStakingRewardAdmin!= address(0)) vm.prank(_userStakingRewardAdmin);
+        // Check emitted events
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.MaxTotalSupply(_variableRewardMaxTotalSupply);
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAddedPerTokenStored(_constantRewardRatePerTokenStored);
+        stakingRewards2.notifyVariableRewardAmount(_constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply);
+        STAKING_TIMESTAMP = block.timestamp;
+
+    }
+
+    function notifyRewardAmount(
+        uint256 _reward
+    )
+        internal
+    {
+        notifyRewardAmount(_reward, address(0));
+    }
+
+    function notifyRewardAmount(uint256 _reward, address _userStakingRewardAdmin) internal {
+        debugLog("notifyRewardAmount: reward : ", _reward);
+        if (_userStakingRewardAdmin!= address(0)) vm.prank(_userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAdded(1);
+        stakingRewards2.notifyRewardAmount(_reward);
+        STAKING_TIMESTAMP = block.timestamp;
+    }
+
+    function setRewardsDuration(uint256 _rewardsDuration) internal {
+        setRewardsDuration(_rewardsDuration, address(0));
+    }
+
+    function setRewardsDuration(uint256 _rewardsDuration, address _userStakingRewardAdmin) internal {
+        debugLog("setRewardsDuration: _rewardsDuration : ", _rewardsDuration);
+        if (_userStakingRewardAdmin!= address(0)) vm.prank(_userStakingRewardAdmin);
+        stakingRewards2.setRewardsDuration(_rewardsDuration);
     }
 
     function displayEarned(address _staker, string memory _stakerName) internal view {
