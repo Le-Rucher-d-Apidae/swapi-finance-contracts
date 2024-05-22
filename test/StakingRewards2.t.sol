@@ -45,7 +45,6 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
         // REWARD_INITIAL_AMOUNT = 100_000; // 1e5
         REWARD_INITIAL_AMOUNT = REWARD_INITIAL_DURATION * 1e5; // x 1e5
 
-
         if (REWARD_INITIAL_DURATION == 0) {
             fail("StakingPreSetupCRR: REWARD_INITIAL_DURATION is 0");
         }
@@ -116,15 +115,19 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
 
         vm.prank(userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
         stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
 
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAdded(REWARD_INITIAL_AMOUNT);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-
-        // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
 
         debugLog("Staking start time", STAKING_START_TIME);
         debugLog("StakingSetup1 setUp() end");
@@ -155,15 +158,19 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
         // bytes4(keccak256("setRewardsDuration")) );
 
         vm.prank(userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
         stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
 
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAdded(REWARD_INITIAL_AMOUNT);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-
-        // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
 
         debugLog("Staking start time", STAKING_START_TIME);
         debugLog("StakingSetup2 setUp() end");
@@ -199,15 +206,19 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
         // bytes4(keccak256("setRewardsDuration")) );
 
         vm.prank(userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
         stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
 
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
         vm.prank(userStakingRewardAdmin);
+        // Check emitted event
+        vm.expectEmit(true, false, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardAdded(REWARD_INITIAL_AMOUNT);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-
-        // TODO : check event RewardAdded(REWARD_INITIAL_AMOUNT;
 
         debugLog("Staking start time", STAKING_START_TIME);
         debugLog("StakingSetup3 setUp() end");
