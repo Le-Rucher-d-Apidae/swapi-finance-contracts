@@ -343,13 +343,9 @@ abstract contract _StakingPreSetup is TestLog {
         debugLog("_StakingPreSetup setUp() start");
         debugLog("_StakingPreSetup: REWARD_INITIAL_DURATION = ", REWARD_INITIAL_DURATION);
         debugLog("_StakingPreSetup: BLOCK_TIME = ", BLOCK_TIME);
-        // debugLog("_StakingPreSetup: INITIAL_BLOCK_TIMESTAMP = ", INITIAL_BLOCK_TIMESTAMP);
-        // debugLog("_StakingPreSetup: INITIAL_BLOCK_NUMBER = ", INITIAL_BLOCK_NUMBER);
-        // debugLog("_StakingPreSetup: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
         verboseLog("_StakingPreSetup setUp()");
         debugLog("_StakingPreSetup setUp() end");
     }
-
 
     function expectedStakingRewards(
         uint256 _stakedAmount,
@@ -365,6 +361,9 @@ abstract contract _StakingPreSetup is TestLog {
       debugLog(" displayTime: block.timestamp = ", block.timestamp);
       debugLog(" displayTime: block.number", block.number);
     }
+
+    // Use these functions to go to a specific timestamp in place of vm.warp
+    // to insure that the block number is also updated consistently
 
     function gotoTimestamp(uint256 _timeStamp) internal {
         gotoTimestamp(_timeStamp, false);
@@ -387,11 +386,11 @@ abstract contract _StakingPreSetup is TestLog {
 abstract contract StakingPreSetup is _StakingPreSetup {
     StakingRewards2 internal stakingRewards2;
     /* solhint-disable var-name-mixedcase */
-    uint256 internal /* immutable */ STAKING_START_TIME; //  = block.timestamp;
+    uint256 internal STAKING_START_TIME;
 
-    uint256 /* constant */ internal TOTAL_STAKED_AMOUNT;
-    uint256 /* immutable */ internal STAKING_PERCENTAGE_DURATION;
-    uint256 /* immutable */ internal CLAIM_PERCENTAGE_DURATION;
+    uint256 internal TOTAL_STAKED_AMOUNT;
+    uint256 internal STAKING_PERCENTAGE_DURATION;
+    uint256 internal CLAIM_PERCENTAGE_DURATION;
     /* solhint-enable var-name-mixedcase */
 
     function setUp() public virtual override {
@@ -608,25 +607,25 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         debugLog("_checkRewardForDuration: getRewardForDuration  = ", rewardForDuration);
         debugLog("_checkRewardForDuration: REWARD_INITIAL_AMOUNT = ", REWARD_INITIAL_AMOUNT);
         // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
-       assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
+        assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
         // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION);
         gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
         rewardForDuration = stakingRewards2.getRewardForDuration();
-    //    assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+        // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
        assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
-        gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
-        rewardForDuration = stakingRewards2.getRewardForDuration();
-    //    assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
-       assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
+      // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+      gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+      rewardForDuration = stakingRewards2.getRewardForDuration();
+      // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
+      assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
        // set back to initial time
-      // vm.warp(INITIAL_BLOCK_TIMESTAMP);
+        // vm.warp(INITIAL_BLOCK_TIMESTAMP);
       gotoTimestamp(INITIAL_BLOCK_TIMESTAMP);
 
-        verboseLog("_checkRewardForDuration: ok");
+      verboseLog("_checkRewardForDuration: ok");
     }
 
     // Comment parameter name to silent "Unused function parameter." warning
