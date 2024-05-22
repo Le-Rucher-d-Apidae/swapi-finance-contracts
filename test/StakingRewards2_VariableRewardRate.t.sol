@@ -150,7 +150,7 @@ contract StakingSetup1 is Erc20Setup1, StakingSetup {
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
-        debugLog("Staking start time", STAKING_START_TIME);
+        debugLog("Staking start time", STAKING_TIMESTAMP);
         debugLog("StakingSetup1 setUp() end");
     }
 
@@ -198,7 +198,7 @@ contract StakingSetup2 is Erc20Setup2, StakingSetup {
 
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
-        debugLog("Staking start time", STAKING_START_TIME);
+        debugLog("Staking start time", STAKING_TIMESTAMP);
         debugLog("StakingSetup2 setUp() end");
     }
 
@@ -250,7 +250,7 @@ contract StakingSetup3 is Erc20Setup3, StakingSetup {
 
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
-        debugLog("Staking start time", STAKING_START_TIME);
+        debugLog("Staking start time", STAKING_TIMESTAMP);
         debugLog("StakingSetup3 setUp() end");
     }
 
@@ -362,7 +362,7 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is DepositSetup1 {
     }
 
     function testUsersStakingRewards() public {
-        verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
         checkRewardForDuration(DELTA_0_00000000022);
@@ -380,7 +380,7 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is DepositSetup1 {
         }
 
         gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_START_TIME;
+        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
@@ -431,7 +431,7 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is DepositSetup2 {
     }
 
     function testUsersStakingRewards() public {
-        verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -454,7 +454,7 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is DepositSetup2 {
         }
 
         gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_START_TIME;
+        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -514,7 +514,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is DepositSetup3 {
     }
 
     function testUsersStakingRewards() public {
-        verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -545,7 +545,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is DepositSetup3 {
         }
 
         gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_START_TIME;
+        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -620,7 +620,7 @@ contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
     }
 
     function testUsersStakingRewards() public {
-        verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -644,7 +644,7 @@ contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         gotoStakingPeriod(stakingPercentageDurationReached);
 
-        stakingElapsedTime = block.timestamp - STAKING_START_TIME;
+        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -714,7 +714,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
     }
 
     function testUsersStakingRewards() public {
-        verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -744,7 +744,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         gotoStakingPeriod(stakingPercentageDurationReached);
 
-        stakingElapsedTime = block.timestamp - STAKING_START_TIME;
+        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -831,7 +831,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
     }
 
     function testUsersStakingRewards() public {
-        verboseLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -866,7 +866,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         gotoStakingPeriod(stakingPercentageDurationReached);
 
-        stakingElapsedTime = block.timestamp - STAKING_START_TIME;
+        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -1100,7 +1100,7 @@ stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, C
 
     function testStakingSetRewardsDurationAfterEpochEnd() public {
         // Previous reward epoch must have ended before setting a new duration
-        vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+        vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -1137,7 +1137,7 @@ stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, C
         vm.prank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                RewardPeriodInProgress.selector, block.timestamp, STAKING_START_TIME + REWARD_INITIAL_DURATION
+                RewardPeriodInProgress.selector, block.timestamp, STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
             )
         );
         stakingRewards2.setRewardsDuration(1);
@@ -1146,7 +1146,7 @@ stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, C
         );
 
         // Previous reward epoch must have ended before setting a new duration
-        vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
+        vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -1167,7 +1167,7 @@ stakingRewards2.notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, C
         vm.prank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                RewardPeriodInProgress.selector, block.timestamp, STAKING_START_TIME + REWARD_INITIAL_DURATION
+                RewardPeriodInProgress.selector, block.timestamp, STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
             )
         );
         stakingRewards2.setRewardsDuration(1);

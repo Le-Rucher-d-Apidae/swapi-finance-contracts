@@ -162,7 +162,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAddedPerTokenStored(CONSTANT_REWARDRATE_PERTOKENSTORED);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, MAX_DEPOSIT_AMOUNT);
-        debugLog("STAKING_START_TIME = ", STAKING_START_TIME);
+        debugLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
         vm.stopPrank();
 
@@ -173,7 +173,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
         displayEarned(userBob, "Bob");
         debugLog("------------------");
 
-        gotoTimestamp(STAKING_START_TIME + 100);
+        gotoTimestamp(STAKING_TIMESTAMP + 100);
 
         debugLog("Bob deposit tokens AFTER rewards at :");
         displayTime();
@@ -186,7 +186,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
         stakingRewards2.stake(BOB_DEPOSIT_AMOUNT);
         vm.stopPrank();
 
-        gotoTimestamp(STAKING_START_TIME + 200);
+        gotoTimestamp(STAKING_TIMESTAMP + 200);
         /*
       // Alice deposit tokens AFTER rewards start
       debugLog("Alice deposit tokens AFTER rewards start at :");
@@ -208,7 +208,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
         // Go to the end of the reward period
         debugLog("Go to the end of the reward period at :");
 
-        gotoTimestamp(STAKING_START_TIME + REWARD_DURATION + 1);
+        gotoTimestamp(STAKING_TIMESTAMP + REWARD_DURATION + 1);
 
         debugLog("block.timestamp = ", block.timestamp);
         debugLog("block.number = ", block.number);

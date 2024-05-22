@@ -381,7 +381,7 @@ abstract contract _StakingPreSetup is TestLog {
 abstract contract StakingPreSetup is _StakingPreSetup {
     StakingRewards2 internal stakingRewards2;
     /* solhint-disable var-name-mixedcase */
-    uint256 internal STAKING_START_TIME;
+    uint256 internal STAKING_TIMESTAMP;
 
     uint256 internal TOTAL_STAKED_AMOUNT;
     uint256 internal STAKING_PERCENTAGE_DURATION;
@@ -416,9 +416,9 @@ abstract contract StakingPreSetup is _StakingPreSetup {
     function getLastRewardTime() internal view returns (uint256) {
         // debugLog("getLastRewardTime");
         uint256 lastTimeReward = (
-            block.timestamp < STAKING_START_TIME + REWARD_INITIAL_DURATION
+            block.timestamp < STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
                 ? block.timestamp
-                : STAKING_START_TIME + REWARD_INITIAL_DURATION
+                : STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
         ); // last time reward
 
         verboseLog("getLastRewardTime: lastTimeReward = ", lastTimeReward);
@@ -562,7 +562,7 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         if (CLAIM_PERCENTAGE_DURATION > 0) {
             verboseLog("checkUserClaim:");
             verboseLog("checkUserClaim: _userName:", _userName);
-            uint256 stakingElapsedTime = block.timestamp - STAKING_START_TIME;
+            uint256 stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
             debugLog("checkUserClaim: stakingElapsedTime = ", stakingElapsedTime);
             uint256 rewardErc20UserBalance = rewardErc20.balanceOf(_user);
             verboseLog("checkUserClaim: before: user (reward) balance = ", rewardErc20UserBalance);
@@ -605,14 +605,14 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
         assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION);
-        gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION); // epoch last time reward
+        // vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION);
+        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
         rewardForDuration = stakingRewards2.getRewardForDuration();
         // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
         assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
 
-        // vm.warp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
-        gotoTimestamp(STAKING_START_TIME + REWARD_INITIAL_DURATION + 1); // epoch ended
+        // vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
+        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
         rewardForDuration = stakingRewards2.getRewardForDuration();
         // assertEq(rewardForDuration, REWARD_INITIAL_AMOUNT);
         assertApproxEqRel(rewardForDuration, REWARD_INITIAL_AMOUNT, _delta);
@@ -636,7 +636,7 @@ abstract contract StakingPreSetup is _StakingPreSetup {
             _stakingPercentageDurationReached <= STAKING_PERCENTAGE_DURATION,
             "checkStakingPeriod: _stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
         );
-        uint256 stakingTimeReached = STAKING_START_TIME
+        uint256 stakingTimeReached = STAKING_TIMESTAMP
             + (
                 _stakingPercentageDurationReached >= PERCENT_100
                     ? REWARD_INITIAL_DURATION
@@ -671,7 +671,7 @@ abstract contract StakingPreSetup is _StakingPreSetup {
             _stakingPercentageDurationReached <= STAKING_PERCENTAGE_DURATION,
             "gotoStakingPeriod: _stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
         );
-        uint256 gotoStakingPeriodResult = STAKING_START_TIME
+        uint256 gotoStakingPeriodResult = STAKING_TIMESTAMP
             + (
                 _stakingPercentageDurationReached >= PERCENT_100
                     ? REWARD_INITIAL_DURATION
@@ -686,7 +686,7 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         debugLog("getStakingTimeReached");
         uint256 rewardDurationReached = getRewardDurationReached();
         debugLog("getStakingTimeReached: rewardDurationReached : ", rewardDurationReached);
-        return STAKING_START_TIME + rewardDurationReached;
+        return STAKING_TIMESTAMP + rewardDurationReached;
     }
 
     function getStakingDuration() internal view returns (uint256) {
@@ -717,14 +717,14 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         debugLog("notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ", _variableRewardMaxTotalSupply);
         // vm.prank(userStakingRewardAdmin);
         stakingRewards2.notifyVariableRewardAmount(_constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply);
-        STAKING_START_TIME = block.timestamp;
+        STAKING_TIMESTAMP = block.timestamp;
     }
 
     function notifyRewardAmount(uint256 reward) internal {
         debugLog("notifyRewardAmount: reward : ", reward);
         // vm.prank(userStakingRewardAdmin);
         stakingRewards2.notifyRewardAmount(reward);
-        STAKING_START_TIME = block.timestamp;
+        STAKING_TIMESTAMP = block.timestamp;
     }
 
     function displayEarned(address _staker, string memory _stakerName) internal view {
