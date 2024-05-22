@@ -8,7 +8,7 @@ import {
     Erc20Setup2
 } from
 // , Erc20Setup3
-"./StakingRewards2_base.t.sol";
+"./StakingRewards2_commonbase.t.sol";
 import {
     DELTA_0_015,
     DELTA_0_04,
