@@ -6,7 +6,7 @@ import {
     DuringStakingVariableRewardRate1WithWithdral,
     DuringStakingVariableRewardRate2WithWithdral,
     DuringStakingVariableRewardRate3WithWithdral
-} from "./StakingRewards2_VariableRewardRateSetups.t.sol";
+} from "./StakingRewards2_VariableRewardRate_setups.t.sol";
 
 import {
     PERCENT_0,

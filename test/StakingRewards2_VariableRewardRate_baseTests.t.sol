@@ -2,7 +2,7 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingSetup1, StakingSetup2 } from "./StakingRewards2_VariableRewardRateSetups.t.sol";
+import { StakingSetup1, StakingSetup2 } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
 import { StakingPreSetup, Erc20Setup1 } from "./StakingRewards2_commonbase.t.sol";
 
 import { ONE_TOKEN } from "./TestsConstants.sol";

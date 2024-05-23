@@ -2,7 +2,7 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingSetup2 } from "./StakingRewards2Setups.t.sol";
+import { StakingSetup2 } from "./StakingRewards2_setups.t.sol";
 import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 

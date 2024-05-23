@@ -6,7 +6,7 @@ import {
     DuringStaking1WithoutWithdral,
     DuringStaking2WithoutWithdral,
     DuringStaking3WithoutWithdral
-} from "./StakingRewards2Setups.t.sol";
+} from "./StakingRewards2_setups.t.sol";
 
 import {
     PERCENT_0,
