@@ -40,15 +40,16 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
     function setUp() public virtual override {
         debugLog("StakingPreSetupCRR setUp() start");
 
+        if (REWARD_INITIAL_DURATION == 0) {
+            fail("StakingPreSetupCRR: REWARD_INITIAL_DURATION is 0");
+        }
+
         // Constant reward amount allocated to the staking program during the reward duration
         // Same reward amount is distributed at each block
         // Stakers will share the reward budget based on their staked amount
         // REWARD_INITIAL_AMOUNT = 100_000; // 1e5
         REWARD_INITIAL_AMOUNT = REWARD_INITIAL_DURATION * 1e5; // x 1e5
 
-        if (REWARD_INITIAL_DURATION == 0) {
-            fail("StakingPreSetupCRR: REWARD_INITIAL_DURATION is 0");
-        }
         if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
             errorLog("REWARD_INITIAL_AMOUNT", REWARD_INITIAL_AMOUNT);
             errorLog("REWARD_INITIAL_DURATION", REWARD_INITIAL_DURATION);
@@ -119,7 +120,6 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
         debugLog("expectedStakingRewards: expectedStakingRewards_ = ", expectedStakingRewards_);
         return expectedStakingRewards_;
     }
-
 
     function _userStakes(address _userAddress, string memory _userName, uint256 _amount) internal {
         debugLog("StakingSetup _userStakes() start");

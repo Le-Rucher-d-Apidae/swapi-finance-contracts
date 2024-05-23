@@ -2,11 +2,11 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import {
-//     DuringStakingVariableRewardRate1WithoutWithdral,
-//     DuringStakingVariableRewardRate2WithoutWithdral,
-//     DuringStakingVariableRewardRate3WithoutWithdral
-// } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
+import {
+    DuringStakingVariableRewardRate1WithoutWithdral,
+    DuringStakingVariableRewardRate2WithoutWithdral,
+    DuringStakingVariableRewardRate3WithoutWithdral
+} from "./StakingRewards2_VariableRewardRate_setups.t.sol";
 
 import {
     PERCENT_0,
@@ -42,7 +42,8 @@ import {
 
 // 1 staker deposits right after staking starts and keeps staked amount until the end of staking period
 // 42+ tests
-/*
+
+// /*
 contract DuringStakingConstantReward1_WithoutWithdral_0 is
     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -214,12 +215,16 @@ contract DuringStakingConstantReward1_WithoutWithdral_220__0 is
 contract DuringStakingConstantReward1_WithoutWithdral_220__99 is
     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_220, PERCENT_99)
 { }
-*/
+
+// */
+
 // ------------------------------------
 
 // 2 stakers deposit right after staking starts and keep staked amount until the end of staking period
 // 42+ tests
-/*
+
+
+// /*
 contract DuringStakingConstantReward2_WithoutWithdral_0__0 is
     DuringStakingVariableRewardRate2WithoutWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -399,12 +404,14 @@ contract DuringStakingConstantReward2_WithoutWithdral_220__0 is
 contract DuringStakingConstantReward2_WithoutWithdral_220__99 is
     DuringStakingVariableRewardRate2WithoutWithdral(PERCENT_220, PERCENT_99)
 { }
-*/
+
+// */
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and keep staked amount until the end of staking period
 // 42+ tests
-/*
+
+// /*
 contract DuringStakingConstantReward3_WithoutWithdral_0 is
     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -581,7 +588,7 @@ contract DuringStakingConstantReward3_WithoutWithdral_220__100 is
     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_220, PERCENT_100)
 { }
 
-*/
+// */
 
 // ----------------------------------------------------------------------------
 
