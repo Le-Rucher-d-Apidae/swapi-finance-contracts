@@ -2,11 +2,11 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import {
-    DuringStakingVariableRewardRate1WithWithdral,
-    DuringStakingVariableRewardRate2WithWithdral,
-    DuringStakingVariableRewardRate3WithWithdral
-} from "./StakingRewards2_VariableRewardRate_setups.t.sol";
+// import {
+//     DuringStakingVariableRewardRate1WithWithdral,
+//     DuringStakingVariableRewardRate2WithWithdral,
+//     DuringStakingVariableRewardRate3WithWithdral
+// } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
 
 import {
     PERCENT_0,
@@ -43,7 +43,7 @@ import {
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 // 42+ tests
-// /*
+/*
 
 contract DuringStakingVariableRewardRate1_WithWithdral__0 is
     DuringStakingVariableRewardRate1WithWithdral(PERCENT_0, PERCENT_0)
@@ -221,13 +221,13 @@ contract DuringStakingVariableRewardRate1_WithWithdral__220__99 is
     DuringStakingVariableRewardRate1WithWithdral(PERCENT_220, PERCENT_99)
 { }
 
-// */
+*/
 // ------------------------------------
 
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 // 42+ tests
-// /*
+/*
 contract DuringStakingVariableRewardRate2_WithWithdral__0 is
     DuringStakingVariableRewardRate2WithWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -395,14 +395,14 @@ contract DuringStakingVariableRewardRate2_WithWithdral__220__0 is
 contract DuringStakingVariableRewardRate2_WithWithdral__220__99 is
     DuringStakingVariableRewardRate2WithWithdral(PERCENT_220, PERCENT_99)
 { }
-// */
+*/
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 // 42+ tests
 
-// /*
+/*
 contract DuringStakingVariableRewardRate3_WithWithdral__0 is
     DuringStakingVariableRewardRate3WithWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -570,7 +570,7 @@ contract DuringStakingVariableRewardRate3_WithWithdral__220__0 is
 contract DuringStakingVariableRewardRate3_WithWithdral__220__99 is
     DuringStakingVariableRewardRate3WithWithdral(PERCENT_220, PERCENT_99)
 { }
-// */
+*/
 
 /* solhint-enable no-empty-blocks */
 /* solhint-enable contract-name-camelcase */

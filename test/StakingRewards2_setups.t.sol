@@ -6,7 +6,8 @@ pragma solidity >= 0.8.0 < 0.9.0;
 // import { stdMath } from "forge-std/src/StdMath.sol";
 
 // import "./StakingRewards2_commonbase.t.sol";
-import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_commonbase.t.sol";
+// import { StakingPreSetup, UsersSetup0, Erc20Setup0, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_commonbase.t.sol";
+import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 import {
     DELTA_0_00000000022,
     DELTA_0_015,
@@ -65,12 +66,31 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
         debugLog("StakingPreSetupVRR: checkRewardForDuration");
         _checkRewardForDuration(_delta);
     }
-}
 
-contract StakingSetup is StakingPreSetupCRR {
-    function setUp() public virtual override {
+} // StakingPreSetupCRR
+
+// contract StakingSetup is StakingPreSetupCRR {
+contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
+
+    uint256 internal ALICE_STAKINGERC20_STAKEDAMOUNT;
+    uint256 internal BOB_STAKINGERC20_STAKEDAMOUNT;
+    uint256 internal CHERRY_STAKINGERC20_STAKEDAMOUNT;
+
+    function setUp() public virtual override(Erc20Setup, StakingPreSetupCRR) {
         debugLog("StakingSetup setUp() start");
         StakingPreSetupCRR.setUp();
+        Erc20Setup.setUp();
+
+        vm.prank(userStakingRewardAdmin);
+        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+        vm.prank(userStakingRewardAdmin);
+        setRewardsDuration(REWARD_INITIAL_DURATION);
+
+        vm.prank(erc20Minter);
+        rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
         verboseLog("StakingSetup setUp()");
         debugLog("StakingSetup setUp() end");
     }
@@ -99,199 +119,442 @@ contract StakingSetup is StakingPreSetupCRR {
         debugLog("expectedStakingRewards: expectedStakingRewards_ = ", expectedStakingRewards_);
         return expectedStakingRewards_;
     }
-}
 
-contract StakingSetup1 is Erc20Setup1, StakingSetup {
-    /* solhint-disable var-name-mixedcase */
-    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    /* solhint-enable var-name-mixedcase */
 
-    function setUp() public virtual override(Erc20Setup1, StakingSetup) {
-        debugLog("StakingSetup1 setUp() start");
-        Erc20Setup1.setUp();
-        StakingSetup.setUp();
-        vm.prank(userStakingRewardAdmin);
-        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+    function _userStakes(address _userAddress, string memory _userName, uint256 _amount) internal {
+        debugLog("StakingSetup _userStakes() start");
+        debugLog("StakingSetup _userStakes userAddress", _userAddress);
+        debugLog("StakingSetup _userStakes userName", _userName);
+        debugLog("StakingSetup _userStakes amount", _amount);
 
-        vm.prank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_INITIAL_DURATION);
+        vm.startPrank(_userAddress);
+        stakingERC20.approve(address(stakingRewards2), _amount);
 
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
 
-        vm.prank(userStakingRewardAdmin);
-        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        debugLog("StakingSetup _userStakes stakingERC20 address: %s", address(stakingERC20) );
+        debugLog("StakingSetup _userStakes stakingRewards2 address: %s", address(stakingRewards2) );
+        debugLog("StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
+        debugLog("StakingSetup _userStakes _userStakes() balanceOf", stakingERC20.balanceOf(_userAddress));
+        debugLog("StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
 
-        debugLog("Staking start time", STAKING_TIMESTAMP);
-        debugLog("StakingSetup1 setUp() end");
+        // Check expected events
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Staked(_userAddress, _amount);
+        stakingRewards2.stake(_amount);
+        vm.stopPrank();
+        TOTAL_STAKED_AMOUNT += _amount;
+        debugLog("StakingSetup _userStakes() end");
+    }
+
+
+    function AliceStakes(uint256 _amount) internal {
+        debugLog("StakingSetup AliceStakes() start");
+        // vm.startPrank(userAlice);
+        // stakingERC20.approve(address(stakingRewards2), _amount);
+        // // Check expected events
+        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        // emit StakingRewards2Events.Staked(userAlice, _amount);
+        // stakingRewards2.stake(_amount);
+        // vm.stopPrank();
+        // TOTAL_STAKED_AMOUNT += _amount;
+        _userStakes(userAlice, "Alice", _amount);
+        ALICE_STAKINGERC20_STAKEDAMOUNT+=_amount;
+        debugLog("StakingSetup AliceStakes() end");
+    }
+    function BobStakes(uint256 _amount) internal {
+        debugLog("StakingSetup BobStakes() start");
+        _userStakes(userBob, "Bob", _amount);
+        BOB_STAKINGERC20_STAKEDAMOUNT+=_amount;
+        debugLog("StakingSetup BobStakes() end");
+    }
+
+    function CherryStakes(uint256 _amount) internal {
+        debugLog("StakingSetup CherryStakes() start");
+        _userStakes(userCherry, "Cherry", _amount);
+        CHERRY_STAKINGERC20_STAKEDAMOUNT+=_amount;
+        debugLog("StakingSetup CherryStakes() end");
     }
 
     function checkAliceStake() internal {
         itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
     }
-}
-
-// ----------------
-
-contract StakingSetup2 is Erc20Setup2, StakingSetup {
-    /* solhint-disable var-name-mixedcase */
-    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
-    /* solhint-enable var-name-mixedcase */
-
-    function setUp() public virtual override(Erc20Setup2, StakingSetup) {
-        debugLog("StakingSetup2 setUp() start");
-        Erc20Setup2.setUp();
-        StakingSetup.setUp();
-        vm.prank(userStakingRewardAdmin);
-        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
-        // checkOnlyAddressCanInvoke( userStakingRewardAdmin, address[](users), address(stakingRewards2),
-        // bytes4(keccak256("setRewardsDuration")) );
-
-        vm.prank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_INITIAL_DURATION);
-
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
-
-        vm.prank(userStakingRewardAdmin);
-        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-
-        debugLog("Staking start time", STAKING_TIMESTAMP);
-        debugLog("StakingSetup2 setUp() end");
-    }
-
-    function checkAliceStake() internal {
-        itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
-    }
-
     function checkBobStake() internal {
         itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
     }
-}
-
-// ----------------
-
-contract StakingSetup3 is Erc20Setup3, StakingSetup {
-    /* solhint-disable var-name-mixedcase */
-    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
-    uint256 internal constant CHERRY_STAKINGERC20_STAKEDAMOUNT = CHERRY_STAKINGERC20_MINTEDAMOUNT;
-    /* solhint-enable var-name-mixedcase */
-
-    function setUp() public virtual override(Erc20Setup3, StakingSetup) {
-        debugLog("StakingSetup3 setUp() start");
-        Erc20Setup3.setUp();
-        StakingSetup.setUp();
-        vm.prank(userStakingRewardAdmin);
-        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
-        // checkOnlyAddressCanInvoke( userStakingRewardAdmin, address[](users), address(stakingRewards2),
-        // bytes4(keccak256("setRewardsDuration")) );
-
-        vm.prank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_INITIAL_DURATION);
-
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
-
-        vm.prank(userStakingRewardAdmin);
-        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-
-        debugLog("Staking start time", STAKING_TIMESTAMP);
-        debugLog("StakingSetup3 setUp() end");
-    }
-
-    function checkAliceStake() internal {
-        itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
-    }
-
-    function checkBobStake() internal {
-        itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
-    }
-
     function checkCherryStake() internal {
         itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
     }
+
+
 }
+
+// contract StakingSetup1 is Erc20Setup1, StakingSetup {
+//     /* solhint-disable var-name-mixedcase */
+//     uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+//     /* solhint-enable var-name-mixedcase */
+
+//     function setUp() public virtual override(Erc20Setup1, StakingSetup) {
+//         debugLog("StakingSetup1 setUp() start");
+//         Erc20Setup1.setUp();
+//         StakingSetup.setUp();
+//         vm.prank(userStakingRewardAdmin);
+//         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+//         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+//         vm.prank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_INITIAL_DURATION);
+
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
+//         vm.prank(userStakingRewardAdmin);
+//         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+//         debugLog("Staking start time", STAKING_TIMESTAMP);
+//         debugLog("StakingSetup1 setUp() end");
+//     }
+
+//     function checkAliceStake() internal {
+//         itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
+//     }
+// }
+
+// Init stakingRewards2 contract with rewardErc20 and stakingERC20, set rewards duration and mint reward amount
+// contract _StakingSetup is StakingSetup {
+// contract _StakingSetup is StakingSetup, Erc20Setup0 {
+
+//     // function setUp() public virtual override(Erc20Setup1, StakingSetup) {
+//     // function setUp() public virtual override(Erc20Setup0, StakingSetup) {
+//     function setUp() public virtual override(Erc20Setup0, StakingSetup) {
+//         debugLog("StakingSetup1 setUp() start");
+//         // Erc20Setup0.setUp();
+//         StakingSetup.setUp();
+//         vm.prank(userStakingRewardAdmin);
+//         debugLog("StakingSetup1 setUp() stakingERC20 address: %s", address(stakingERC20) );
+//         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+//         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+//         vm.prank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_INITIAL_DURATION);
+
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
+//         // vm.prank(userStakingRewardAdmin);
+//         // notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+//         debugLog("StakingSetup1 setUp() end");
+//     }
+
+
+//     function _userStakes(address _userAddress, string memory _userName, uint256 _amount) internal {
+//         debugLog("_StakingSetup _userStakes() start");
+//         debugLog("_StakingSetup _userStakes userAddress", _userAddress);
+//         debugLog("_StakingSetup _userStakes userName", _userName);
+//         debugLog("_StakingSetup _userStakes amount", _amount);
+
+//         vm.startPrank(_userAddress);
+//         stakingERC20.approve(address(stakingRewards2), _amount);
+
+
+//         debugLog("_StakingSetup _userStakes stakingERC20 address: %s", address(stakingERC20) );
+//         debugLog("_StakingSetup _userStakes stakingRewards2 address: %s", address(stakingRewards2) );
+//         debugLog("_StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
+//         debugLog("_StakingSetup _userStakes _userStakes() balanceOf", stakingERC20.balanceOf(_userAddress));
+//         debugLog("_StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
+
+//         // Check expected events
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(_userAddress, _amount);
+//         stakingRewards2.stake(_amount);
+//         vm.stopPrank();
+//         TOTAL_STAKED_AMOUNT += _amount;
+//         debugLog("_StakingSetup _userStakes() end");
+//     }
+
+// }
+
+// Init stakingRewards2 contract with rewardErc20 and stakingERC20, set rewards duration and mint reward amount
+// contract _StakingSetup is StakingSetup {
+
+
+
+// Init stakingRewards2 contract with rewardErc20 and stakingERC20, set rewards duration and mint reward amount
+// contract StakingSetup1 is Erc20Setup1, StakingSetup {
+// contract StakingSetup1 is Erc20Setup1, _StakingSetup {
+// contract StakingSetup1 is _StakingSetup {
+
+//     /* solhint-disable var-name-mixedcase */
+//     uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+//     /* solhint-enable var-name-mixedcase */
+
+//     // function setUp() public virtual override(Erc20Setup1, StakingSetup) {
+//     function setUp() public virtual override(Erc20Setup1, _StakingSetup) {
+//         debugLog("StakingSetup1 setUp() start");
+//         _StakingSetup.setUp();
+//         // Erc20Setup1.setUp();
+//         // vm.prank(userStakingRewardAdmin);
+//         // stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+//         // assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+//         // vm.prank(userStakingRewardAdmin);
+//         // setRewardsDuration(REWARD_INITIAL_DURATION);
+
+//         // vm.prank(erc20Minter);
+//         // rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
+//         // vm.prank(userStakingRewardAdmin);
+//         // notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+//         debugLog("StakingSetup1 setUp() end");
+//     }
+
+//     function checkAliceStake() internal {
+//         itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
+//     }
+
+//     // function _userStakes(address _userAddress, string _userName, uint256 _amount) internal {
+//     //     debugLog("StakingSetup1 _userStakes() start");
+//     //     debugLog("StakingSetup1 userAddress", _userAddress);
+//     //     debugLog("StakingSetup1 userName", _userName);
+//     //     debugLog("StakingSetup1 amount", _amount);
+//     //     vm.startPrank(_userAddress);
+//     //     stakingERC20.approve(address(stakingRewards2), _amount);
+//     //     // Check expected events
+//     //     vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//     //     emit StakingRewards2Events.Staked(userAlice, _amount);
+//     //     stakingRewards2.stake(_amount);
+//     //     vm.stopPrank();
+//     //     TOTAL_STAKED_AMOUNT += _amount;
+//     //     debugLog("StakingSetup1 _userStakes() end");
+//     // }
+
+//     function AliceStakes(uint256 _amount) internal {
+//         debugLog("StakingSetup1 AliceStakes() start");
+//         // vm.startPrank(userAlice);
+//         // stakingERC20.approve(address(stakingRewards2), _amount);
+//         // // Check expected events
+//         // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         // emit StakingRewards2Events.Staked(userAlice, _amount);
+//         // stakingRewards2.stake(_amount);
+//         // vm.stopPrank();
+//         // TOTAL_STAKED_AMOUNT += _amount;
+//         _userStakes(userAlice, "Alice", _amount);
+//         debugLog("StakingSetup1 AliceStakes() end");
+//     }
+
+//     // function AliceUnStakes() internal {
+//     //     vm.startPrank(userAlice);
+//     //     stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
+//     //     vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//     //     emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+//     //     stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
+//     //     vm.stopPrank();
+//     //     TOTAL_STAKED_AMOUNT += ALICE_STAKINGERC20_STAKEDAMOUNT;
+//     // }
+
+// }
+
+// ----------------
+
+// contract StakingSetup2 is Erc20Setup2, StakingSetup {
+//     /* solhint-disable var-name-mixedcase */
+//     uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+//     uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+//     /* solhint-enable var-name-mixedcase */
+
+//     function setUp() public virtual override(Erc20Setup2, StakingSetup) {
+//         debugLog("StakingSetup2 setUp() start");
+//         Erc20Setup2.setUp();
+//         StakingSetup.setUp();
+//         vm.prank(userStakingRewardAdmin);
+//         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+//         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+//         // checkOnlyAddressCanInvoke( userStakingRewardAdmin, address[](users), address(stakingRewards2),
+//         // bytes4(keccak256("setRewardsDuration")) );
+
+//         vm.prank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_INITIAL_DURATION);
+
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
+//         vm.prank(userStakingRewardAdmin);
+//         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+//         debugLog("Staking start time", STAKING_TIMESTAMP);
+//         debugLog("StakingSetup2 setUp() end");
+//     }
+
+//     function checkAliceStake() internal {
+//         itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
+//     }
+
+//     function checkBobStake() internal {
+//         itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
+//     }
+// }
+
+// contract StakingSetup2 is StakingSetup1, Erc20Setup2 {
+//     /* solhint-disable var-name-mixedcase */
+//     // uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+//     uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+//     /* solhint-enable var-name-mixedcase */
+
+//     // function setUp() public virtual override(Erc20Setup2, StakingSetup) {
+//     function setUp() public virtual override(Erc20Setup2, StakingSetup1) {
+//         debugLog("StakingSetup2 setUp() start");
+//         Erc20Setup2.setUp();
+//         StakingSetup1.setUp();
+
+//         debugLog("StakingSetup2 setUp() end");
+//     }
+
+//     function checkBobStake() internal {
+//         itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
+//     }
+
+
+//     function BobStakes(uint256 _amount) internal {
+//         debugLog("StakingSetup1 BobStakes() start");
+//         // vm.startPrank(userBob);
+//         // stakingERC20.approve(address(stakingRewards2), _amount);
+//         // // Check expected events
+//         // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         // emit StakingRewards2Events.Staked(userBob, _amount);
+//         // stakingRewards2.stake(_amount);
+//         // vm.stopPrank();
+//         // TOTAL_STAKED_AMOUNT += _amount;
+
+//         _userStakes(userBob, "Bob", _amount);
+//         debugLog("StakingSetup1 BobStakes() end");
+//     }
+// }
+
+// ----------------
+
+// contract StakingSetup3 is Erc20Setup3, StakingSetup {
+//     /* solhint-disable var-name-mixedcase */
+//     uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
+//     uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
+//     uint256 internal constant CHERRY_STAKINGERC20_STAKEDAMOUNT = CHERRY_STAKINGERC20_MINTEDAMOUNT;
+//     /* solhint-enable var-name-mixedcase */
+
+//     function setUp() public virtual override(Erc20Setup3, StakingSetup) {
+//         debugLog("StakingSetup3 setUp() start");
+//         Erc20Setup3.setUp();
+//         StakingSetup.setUp();
+//         vm.prank(userStakingRewardAdmin);
+//         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+//         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+//         // checkOnlyAddressCanInvoke( userStakingRewardAdmin, address[](users), address(stakingRewards2),
+//         // bytes4(keccak256("setRewardsDuration")) );
+
+//         vm.prank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_INITIAL_DURATION);
+
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
+//         vm.prank(userStakingRewardAdmin);
+//         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+//         debugLog("Staking start time", STAKING_TIMESTAMP);
+//         debugLog("StakingSetup3 setUp() end");
+//     }
+
+//     function checkAliceStake() internal {
+//         itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
+//     }
+
+//     function checkBobStake() internal {
+//         itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
+//     }
+
+//     function checkCherryStake() internal {
+//         itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
+//     }
+// }
 
 // ------------------------------------
 
-contract DepositSetup1 is StakingSetup1 {
-    function setUp() public virtual override {
-        debugLog("DepositSetup1 setUp() start");
-        StakingSetup1.setUp();
-        verboseLog("DepositSetup1 setUp()");
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.stopPrank();
-        TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
-        debugLog("DepositSetup1 setUp() end");
-    }
-}
+// contract DepositSetup1 is StakingSetup1 {
+//     function setUp() public virtual override {
+//         debugLog("DepositSetup1 setUp() start");
+//         StakingSetup1.setUp();
+//         verboseLog("DepositSetup1 setUp()");
+//         vm.startPrank(userAlice);
+//         stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         vm.stopPrank();
+//         TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
+//         debugLog("DepositSetup1 setUp() end");
+//     }
+// }
 
 // ----------------
 
-contract DepositSetup2 is StakingSetup2 {
-    function setUp() public virtual override {
-        debugLog("DepositSetup2 setUp() start");
-        StakingSetup2.setUp();
-        verboseLog("DepositSetup2 setUp()");
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.startPrank(userBob);
-        stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.stopPrank();
-        TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT + BOB_STAKINGERC20_STAKEDAMOUNT;
-        debugLog("DepositSetup2 setUp() end");
-    }
-}
+// contract DepositSetup2 is StakingSetup2 {
+//     function setUp() public virtual override {
+//         debugLog("DepositSetup2 setUp() start");
+//         StakingSetup2.setUp();
+//         verboseLog("DepositSetup2 setUp()");
+//         vm.startPrank(userAlice);
+//         stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         vm.startPrank(userBob);
+//         stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+//         stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
+//         vm.stopPrank();
+//         TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT + BOB_STAKINGERC20_STAKEDAMOUNT;
+//         debugLog("DepositSetup2 setUp() end");
+//     }
+// }
 
-// ----------------
+// // ----------------
 
-contract DepositSetup3 is StakingSetup3 {
-    function setUp() public virtual override {
-        debugLog("DepositSetup3 setUp() start");
-        StakingSetup3.setUp();
-        verboseLog("DepositSetup3 setUp()");
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.startPrank(userBob);
-        stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.startPrank(userCherry);
-        stakingERC20.approve(address(stakingRewards2), CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        vm.stopPrank();
-        TOTAL_STAKED_AMOUNT =
-            ALICE_STAKINGERC20_STAKEDAMOUNT + BOB_STAKINGERC20_STAKEDAMOUNT + CHERRY_STAKINGERC20_STAKEDAMOUNT;
-        debugLog("DepositSetup3 setUp() end");
-    }
-}
+// contract DepositSetup3 is StakingSetup3 {
+//     function setUp() public virtual override {
+//         debugLog("DepositSetup3 setUp() start");
+//         StakingSetup3.setUp();
+//         verboseLog("DepositSetup3 setUp()");
+//         vm.startPrank(userAlice);
+//         stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
+//         vm.startPrank(userBob);
+//         stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+//         stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
+//         vm.startPrank(userCherry);
+//         stakingERC20.approve(address(stakingRewards2), CHERRY_STAKINGERC20_STAKEDAMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
+//         stakingRewards2.stake(CHERRY_STAKINGERC20_STAKEDAMOUNT);
+//         vm.stopPrank();
+//         TOTAL_STAKED_AMOUNT =
+//             ALICE_STAKINGERC20_STAKEDAMOUNT + BOB_STAKINGERC20_STAKEDAMOUNT + CHERRY_STAKINGERC20_STAKEDAMOUNT;
+//         debugLog("DepositSetup3 setUp() end");
+//     }
+// }
 
 // ----------------------------------------------------------------------------
 
-contract DuringStaking1WithoutWithdral is DepositSetup1 {
+// ----------------------------------------------------------------------------
+
+// contract DuringStaking1WithoutWithdral is DepositSetup1 {
+// contract DuringStaking1WithoutWithdral is StakingSetup1 {
+contract DuringStaking1WithoutWithdral is StakingSetup {
     /**
      * @param _stakingPercentageDuration : 0 - infinite
      * @param _claimPercentageDuration : 0 - 100
@@ -301,9 +564,55 @@ contract DuringStaking1WithoutWithdral is DepositSetup1 {
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
+    // function setUp() public virtual override(Erc20Setup1, StakingSetup) {
+    //     debugLog("StakingSetup1 setUp() start");
+    //     Erc20Setup1.setUp();
+    //     StakingSetup.setUp();
+    //     vm.prank(userStakingRewardAdmin);
+    //     stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+    //     assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+    //     vm.prank(userStakingRewardAdmin);
+    //     setRewardsDuration(REWARD_INITIAL_DURATION);
+
+    //     vm.prank(erc20Minter);
+    //     rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
+
+    //     vm.prank(userStakingRewardAdmin);
+    //     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+    //     debugLog("Staking start time", STAKING_TIMESTAMP);
+    //     debugLog("StakingSetup1 setUp() end");
+    // }
+
+    // function checkAliceStake() internal {
+    //     itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
+    // }
+
+    // function setUp() public virtual override {
+    //     debugLog("DepositSetup1 setUp() start");
+    //     StakingSetup1.setUp();
+    //     verboseLog("DepositSetup1 setUp()");
+    //     vm.startPrank(userAlice);
+    //     stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
+    //     vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    //     emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+    //     stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
+    //     vm.stopPrank();
+    //     TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
+    //     debugLog("DepositSetup1 setUp() end");
+    // }
+
+    // function setUp() public override {
+    //     debugLog("DuringStaking1WithoutWithdral setUp() start");
+    //     DepositSetup1.setUp();
+    //     verboseLog("DuringStaking1WithoutWithdral");
+    //     debugLog("DuringStaking1WithoutWithdral setUp() end");
+    // }
+
     function setUp() public override {
         debugLog("DuringStaking1WithoutWithdral setUp() start");
-        DepositSetup1.setUp();
+        StakingSetup.setUp();
         verboseLog("DuringStaking1WithoutWithdral");
         debugLog("DuringStaking1WithoutWithdral setUp() end");
     }
@@ -313,6 +622,22 @@ contract DuringStaking1WithoutWithdral is DepositSetup1 {
     }
 
     function testUsersStakingRewards() public {
+
+
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        debugLog("Staking start time", STAKING_TIMESTAMP);
+
+        // vm.startPrank(userAlice);
+        // stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        // emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // vm.stopPrank();
+        // TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
+        AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
+
+
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
@@ -354,10 +679,10 @@ contract DuringStaking1WithoutWithdral is DepositSetup1 {
         checkRewardPerToken(expectedRewardPerToken, 0, 0); // no delta needed
     }
 }
-
 // ------------------------------------
 
-contract DuringStaking2WithoutWithdral is DepositSetup2 {
+// contract DuringStaking2WithoutWithdral is DepositSetup2 {
+contract DuringStaking2WithoutWithdral is StakingSetup {
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
@@ -365,7 +690,7 @@ contract DuringStaking2WithoutWithdral is DepositSetup2 {
 
     function setUp() public override {
         debugLog("DuringStaking2WithoutWithdral setUp() start");
-        DepositSetup2.setUp();
+        StakingSetup.setUp();
         verboseLog("DuringStaking2WithoutWithdral");
         debugLog("DuringStaking2WithoutWithdral setUp() end");
     }
@@ -376,7 +701,15 @@ contract DuringStaking2WithoutWithdral is DepositSetup2 {
     }
 
     function testUsersStakingRewards() public {
+
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+
+        AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
+        BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
+
+
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -429,7 +762,9 @@ contract DuringStaking2WithoutWithdral is DepositSetup2 {
 
 // ------------------------------------
 
-contract DuringStaking3WithoutWithdral is DepositSetup3 {
+// contract DuringStaking3WithoutWithdral is DepositSetup3 {
+contract DuringStaking3WithoutWithdral is StakingSetup {
+
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
@@ -437,7 +772,7 @@ contract DuringStaking3WithoutWithdral is DepositSetup3 {
 
     function setUp() public override {
         debugLog("DuringStaking3WithoutWithdral setUp() start");
-        DepositSetup3.setUp();
+        StakingSetup.setUp();
         verboseLog("DuringStaking3WithoutWithdral");
         debugLog("DuringStaking3WithoutWithdral setUp() end");
     }
@@ -449,7 +784,15 @@ contract DuringStaking3WithoutWithdral is DepositSetup3 {
     }
 
     function testUsersStakingRewards() public {
+
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+
+        AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
+        BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
+        CherryStakes(CHERRY_STAKINGERC20_MINTEDAMOUNT);
+
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -531,7 +874,8 @@ contract DuringStaking3WithoutWithdral is DepositSetup3 {
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
-contract DuringStaking1WithWithdral is DepositSetup1 {
+// contract DuringStaking1WithWithdral is DepositSetup1 {
+contract DuringStaking1WithWithdral is StakingSetup {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
     /* solhint-disable var-name-mixedcase */
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
@@ -546,13 +890,18 @@ contract DuringStaking1WithWithdral is DepositSetup1 {
         }
     }
 
+    // function setUp() public override {
+    //     debugLog("DuringStaking1WithWithdral setUp() start");
+    //     DepositSetup1.setUp();
+    //     verboseLog("DuringStaking1WithWithdral");
+    //     debugLog("DuringStaking1WithWithdral setUp() end");
+    // }
     function setUp() public override {
         debugLog("DuringStaking1WithWithdral setUp() start");
-        DepositSetup1.setUp();
+        StakingSetup.setUp();
         verboseLog("DuringStaking1WithWithdral");
         debugLog("DuringStaking1WithWithdral setUp() end");
     }
-
     function checkUsersStake() public {
         checkAliceStake();
     }
@@ -562,6 +911,19 @@ contract DuringStaking1WithWithdral is DepositSetup1 {
             fail("DuringStaking1WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
             return;
         }
+
+
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+        // vm.startPrank(userAlice);
+        // stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        // emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // vm.stopPrank();
+        // TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
+        AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
 
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
@@ -625,7 +987,10 @@ contract DuringStaking1WithWithdral is DepositSetup1 {
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking2WithWithdral is DepositSetup2 {
+// contract DuringStaking2WithWithdral is DepositSetup2 {
+// contract DuringStaking2WithWithdral is StakingSetup2 {
+contract DuringStaking2WithWithdral is StakingSetup {
+
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
     /* solhint-disable var-name-mixedcase */
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
@@ -650,7 +1015,8 @@ contract DuringStaking2WithWithdral is DepositSetup2 {
 
     function setUp() public override {
         debugLog("DuringStaking2WithWithdral setUp() start");
-        DepositSetup2.setUp();
+        // DepositSetup2.setUp();
+        StakingSetup.setUp();
         verboseLog("DuringStaking2WithWithdral");
         debugLog("DuringStaking2WithWithdral setUp() end");
     }
@@ -666,10 +1032,17 @@ contract DuringStaking2WithWithdral is DepositSetup2 {
             return;
         }
 
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+
+        AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
+        BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
+
+        checkUsersStake();
         checkRewardPerToken(0, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
-        checkUsersStake();
 
         uint256 claimDelta = getClaimPercentDelta();
         uint256 rewardsDelta = getRewardPercentDelta();
@@ -737,7 +1110,8 @@ contract DuringStaking2WithWithdral is DepositSetup2 {
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking3WithWithdral is DepositSetup3 {
+// contract DuringStaking3WithWithdral is DepositSetup3 {
+contract DuringStaking3WithWithdral is StakingSetup {
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
     /* solhint-disable var-name-mixedcase */
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
@@ -756,7 +1130,7 @@ contract DuringStaking3WithWithdral is DepositSetup3 {
 
     function setUp() public override {
         debugLog("DuringStaking3WithWithdral setUp() start");
-        DepositSetup3.setUp();
+        StakingSetup.setUp();
         verboseLog("DuringStaking3WithWithdral");
         debugLog("DuringStaking3WithWithdral setUp() end");
     }
@@ -773,10 +1147,18 @@ contract DuringStaking3WithWithdral is DepositSetup3 {
             return;
         }
 
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+
+        AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
+        BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
+        CherryStakes(CHERRY_STAKINGERC20_MINTEDAMOUNT);
+
+        checkUsersStake();
         checkRewardPerToken(0, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
         checkStakingTotalSupplyStaked();
-        checkUsersStake();
 
         uint256 claimDelta = getClaimPercentDelta();
         uint256 rewardsPercentDelta = getRewardPercentDelta();

@@ -5,7 +5,8 @@ pragma solidity >= 0.8.0 < 0.9.0;
 import {
     StakingPreSetup,
     // , Erc20Setup1
-    Erc20Setup2
+    // Erc20Setup2
+    Erc20Setup
 } from
 // , Erc20Setup3
 "./StakingRewards2_commonbase.t.sol";
@@ -34,7 +35,8 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // ----------------
 
-contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
+// contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
+contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
     // address payable[] internal users;
     // address internal userAlice;
     //   uint256 internal immutable INITIAL_BLOCK_TIMESTAMP = block.timestamp;
@@ -57,12 +59,13 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
     uint256 BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
         /* solhint-enable var-name-mixedcase */
 
-    function setUp() public virtual override(Erc20Setup2, StakingPreSetup) {
+    // function setUp() public virtual override(Erc20Setup2, StakingPreSetup) {
+    function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
         //   function setUp() public virtual override(StakingPreSetup) {
         debugLog("CheckStakingConstantRewardLimits setUp() start");
         verboseLog("StakingSetup1");
         StakingPreSetup.setUp();
-        Erc20Setup2.setUp();
+        Erc20Setup.setUp();
         // utils = new Utils();
         // users = utils.createUsers(5);
         vm.prank(userStakingRewardAdmin);

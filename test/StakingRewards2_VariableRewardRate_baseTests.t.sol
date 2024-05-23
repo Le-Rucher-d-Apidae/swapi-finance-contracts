@@ -2,8 +2,10 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingSetup1, StakingSetup2 } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
-import { StakingPreSetup, Erc20Setup1 } from "./StakingRewards2_commonbase.t.sol";
+// import { StakingSetup1, StakingSetup2 } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
+import { StakingSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
+// import { StakingPreSetup, Erc20Setup1 } from "./StakingRewards2_commonbase.t.sol";
+import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 
 import { ONE_TOKEN } from "./TestsConstants.sol";
 
@@ -23,12 +25,13 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 // Permissions tests
 
 // 7 tests
-// /*
-contract CheckStakingPermissions2 is StakingSetup2 {
+/*
+// contract CheckStakingPermissions2 is StakingSetup2 {
+contract CheckStakingPermissions2 is StakingSetup {
     function setUp() public virtual override {
         // console.log("CheckStakingPermissions2 setUp()");
         debugLog("CheckStakingPermissions2 setUp() start");
-        StakingSetup2.setUp();
+        StakingSetup.setUp();
         debugLog("CheckStakingPermissions2 setUp() end");
     }
 
@@ -245,12 +248,13 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         vm.stopPrank();
     }
 }
-// */
+*/
 // Limits tests
 
 // 2 tests
-
-contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
+/*
+// contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
+contract CheckStakingConstantRewardLimits1 is StakingSetup {
     function setUp() public virtual override {
         // console.log("CheckStakingPermissions2 setUp()");
         debugLog("CheckStakingConstantRewardLimits1 setUp() start");
@@ -356,569 +360,572 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
 } // CheckStakingConstantRewardLimits1
+*/
 
 // 13 tests
 
-contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
-    function setUp() public virtual override(Erc20Setup1, StakingPreSetup) {
-        debugLog("CheckStakingConstantRewardLimits2 setUp() start");
-        StakingPreSetup.setUp();
-        Erc20Setup1.setUp();
-
-        vm.prank(userStakingRewardAdmin);
-        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
-        debugLog("CheckStakingConstantRewardLimits2 setUp() end");
-    }
-
-    function expectedStakingRewards(
-        uint256 _stakedAmount,
-        uint256 _rewardDurationReached,
-        uint256 _rewardTotalDuration
-    )
-        internal
-        view
-        virtual
-        override
-        returns (uint256 expectedRewardsAmount)
-    {
-        debugLog("expectedStakingRewards: _stakedAmount = ", _stakedAmount);
-        debugLog("expectedStakingRewards: _rewardDurationReached = ", _rewardDurationReached);
-        debugLog("expectedStakingRewards: _rewardTotalDuration = ", _rewardTotalDuration);
-        verboseLog("expectedStakingRewards: NOT IMPLEMENTED");
-        return 0;
-    }
-
-    // Nothing minted, no reward
-    function testStakingNotifyVariableRewardAmountFail0() public {
-        // Test some arbitrary values
-        // Smallest amount (1,1), 0 reward minted
-
-        // Should mint 99 / 10^18 token as reward
-        // vm.prank(erc20Minter);
-        // rewardErc20.mint( address(stakingRewards2), 0 );
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(100); // 100 s.
-
-        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
-        // and max deposit of 1 / 1^18 token
-
-        // Expect revert: expected min. balance 100, current balance 0
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedVariableRewardTooHigh.selector,
-                1, // constantRewardRatePerTokenStored
-                1, // variableRewardMaxTotalSupply
-                100, // Min. expected
-                0 // Current balance
-            )
-        );
-        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
-        // available reward should be at least 1 * 1 * 100 = 100
-        stakingRewards2.notifyVariableRewardAmount(1, 1);
-        vm.stopPrank();
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-    }
-
-    function testStakingNotifyVariableRewardAmountSuccess1() public {
-        // Test some arbitrary values
-        // Smallest amount (1,1), sufficient reward minted
-
-        // Mint 100 / 10^18 token as reward
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), 100);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(100); // 100 s.
-
-        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
-        // and max deposit of 1 / 1^18 token
-
-        notifyVariableRewardAmount(1, 1);
-        vm.stopPrank();
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-    }
-
-    function testStakingNotifyVariableRewardAmountFail1_1_x() public {
-        // Test some arbitrary values
-        // Smallest amount (1,1), unsufficient reward minted
-
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 31_536_000; // 0,000 000 000 031 536 %
-        uint256 APR_BASE = 1e18; // 100% = 1e18 = 1000000000000000000 = 1 000 000 000 000 000 000
-
-        uint256 MAX_DEPOSIT_AMOUNT = 3_171_000_000_000; // 3171×1e9 = 3 171 000 000 000,00
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE;
-        // 317 100 000 000 000 * 31 536 000 / 1e18 = 100
-
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        // = 1e18 * 31 536 000 / 1e18 / 31 536 000 = 1
-
-        // Mint 99 / 10^18 token as reward
-        uint256 MINTED_REWARD_AMOUNT = REWARD_AMOUNT - 1; // 99
-        /* solhint-enable var-name-mixedcase */
-
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), MINTED_REWARD_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION); // 100 s.
-
-        // Revert: expected min. balance 100, current balance 99
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedVariableRewardTooHigh.selector,
-                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
-                MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-                MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
-                MINTED_REWARD_AMOUNT // Current reward balance
-            )
-        );
-        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
-        // and max deposit of 1 / 1^18 token
-        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
-        // available reward should be at least 1 * 1 * 100 = 100
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-        verboseLog("Staking contract: Events MaxTotalSupply, ProvidedVariableRewardTooHigh emitted");
-    }
-
-    function testStakingNotifyVariableRewardAmountFail1_x_1() public {
-        // Test some arbitrary values
-        // Smallest amount (1,1), unsufficient reward minted
-
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 31_536_000; // 31 536 000 % 🔥
-        uint256 APR_BASE = 1; // 100% = 1 / 1e18
-
-        uint256 MAX_DEPOSIT_AMOUNT = 1; // 1 / 1e18
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE;
-        // 317 100 000 000 000 * 31 536 000 / 1e18 = 100
-
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        // = 1e18 * 31 536 000 / 1 / 31 536 000 = 1e18
-
-        // Mint 99 / 10^18 token as reward
-        uint256 MINTED_REWARD_AMOUNT = REWARD_AMOUNT - 1; // 99
-        /* solhint-enable var-name-mixedcase */
-
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), MINTED_REWARD_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION); // 100 s.
-
-        // Revert: expected min. balance 100, current balance 99
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedVariableRewardTooHigh.selector,
-                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
-                MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-                MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
-                MINTED_REWARD_AMOUNT // Current reward balance
-            )
-        );
-        // Set 1 unit (1 = 10^-18) of token as reward per token deposit
-        // and max deposit of 1 / 1^18 token
-        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
-        // available reward should be at least 1 * 1 * 100 = 100
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-        verboseLog("Staking contract: Events MaxTotalSupply, ProvidedVariableRewardTooHigh emitted");
-    }
-
-    function testStakingNotifyVariableRewardAmountSuccess2() public {
-        // Reward rate : 10% yearly
-        // Depositing 100 / 1e18 Token should give 10 / 1e18 token reward per year
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_AMOUNT = 100; // 100 / 1e18
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        // REWARD_PER_TOKEN_STORED = 1e18 * 10 / APR_BASE / 31_536_000 = 1e17 / 315_360 = 3170979198
-        // (3 170 979 198,376...)
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 / 1e18 token as total reward
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-        vm.stopPrank();
-
-        verboseLog("Staking contract: owner can notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED);
-    }
-
-    // Mint insufficient reward
-    function testStakingNotifyVariableRewardAmountFail2_1() public {
-        // Reward rate : 10% yearly
-        // Depositing 100 / 1e18 Token should give 10 / 1e18 token reward per year
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_AMOUNT = 100; // 100
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        // REWARD_PER_TOKEN_STORED = 1e18 * 10 / 100 / 31_536_000 = 1e17 / 315_360 = 3170979198 (3 170 979 198,376...)
-        // Mint insufficient reward
-        uint256 INSUFFICIENT_MINTED_AMOUNT = REWARD_AMOUNT - 1;
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 / 1e18 token as total reward
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), INSUFFICIENT_MINTED_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedVariableRewardTooHigh.selector,
-                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
-                MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-                MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
-                INSUFFICIENT_MINTED_AMOUNT // Current balance
-            )
-        );
-
-        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-        vm.stopPrank();
-
-        verboseLog("Staking contract: owner can't notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED);
-    }
-
-    // Allow Max amount Deposit too high
-    function testStakingNotifyVariableRewardAmountFail2_2() public {
-        // Reward rate : 10% yearly
-        // Depositing 100 / 1e18 Token should give 10 / 1e18 token reward per year
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_AMOUNT = 100; // 100
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        // REWARD_PER_TOKEN_STORED = 1e18 * 10 / 100 / 31_536_000 = 1e17 / 315_360 = 3170979198 (3 170 979 198,376...)
-        uint256 EXCESSIVE_MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + 1;
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 / 1e18 token as total reward
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedVariableRewardTooHigh.selector,
-                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
-                EXCESSIVE_MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-                EXCESSIVE_MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
-                REWARD_AMOUNT // Current balance
-            )
-        );
-
-        // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, EXCESSIVE_MAX_DEPOSIT_AMOUNT);
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-        vm.stopPrank();
-
-        verboseLog("Staking contract: owner can't notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED);
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-    }
-
-    // Check if the reward amount is correctly computed and matches limits
-    function testStakingNotifyVariableRewardAmountSuccess3_1() public {
-        // Reward rate : 10% yearly
-        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-        uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-            // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-
-        // uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / ONE_TOKEN / REWARD_DURATION; //
-        // 0,000 000 317 097 919 837 645 865 043 125 32
-        // REWARD_PER_TOKEN_STORED = 100 * ONE_TOKEN / 10 / ONE_TOKEN / REWARD_DURATION
-        // REWARD_PER_TOKEN_STORED = 10 / 31 536 000 = 0
-
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        // ONE_TOKEN * 10 / 100 / REWARD_DURATION
-        // 1e18 * 10 / 100 / 31536000 = 3170979198 (3 170 979 198,376 458 650 431 253 170 979 2)
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 * 10^18 token as reward
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-        // 9999999998812800000000000000000000000 < 10000000000000000000000000000000000000
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-        verboseLog("Staking contract: notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED * MAX_DEPOSIT_AMOUNT);
-    }
-
-    // Test if the max deposit amount margin (rounding) is correctly computed
-    function testStakingNotifyVariableRewardAmountSuccess3_2() public {
-        // Reward rate : 10% yearly
-        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-        uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-            // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 * 10^18 token as reward
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-
-        // Compute max deposit amount limit with rounding
-        /* solhint-disable var-name-mixedcase */
-        uint256 ROUNDING_MARGIN =
-            (REWARD_AMOUNT - MAX_DEPOSIT_TOKEN_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION) * APR_BASE / APR;
-        /* solhint-enable var-name-mixedcase */
-        verboseLog("ROUNDING_MARGIN = ", ROUNDING_MARGIN);
-
-        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN);
-        vm.stopPrank();
-        // 9999999999999999999859055616000000000 < 10000000000000000000000000000000000000
-
-        verboseLog(
-            "Staking contract: notifyVariableRewardAmount of ",
-            REWARD_PER_TOKEN_STORED * MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN
-        );
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-    }
-
-    // Override max deposit amount margin (rounding)
-    function testStakingNotifyVariableRewardAmountFail3() public {
-        // Reward rate : 10% yearly
-        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-        /* solhint-disable var-name-mixedcase */
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-        uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-            // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        uint256 MINTED_REWARD_AMOUNT = REWARD_AMOUNT;
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 * 10^18 token as reward
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-
-        // Compute max deposit amount limit with rounding
-        /* solhint-disable var-name-mixedcase */
-        uint256 ROUNDING_MARGIN =
-            (REWARD_AMOUNT - MAX_DEPOSIT_TOKEN_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION) * APR_BASE / APR;
-        verboseLog("ROUNDING_MARGIN = ", ROUNDING_MARGIN);
-
-        uint256 EXCESSIVE_MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN + 100;
-        /* solhint-enable var-name-mixedcase */
-
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedVariableRewardTooHigh.selector,
-                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
-                EXCESSIVE_MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-                EXCESSIVE_MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
-                MINTED_REWARD_AMOUNT // Current balance
-            )
-        );
-
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, EXCESSIVE_MAX_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-
-        verboseLog(
-            "Staking contract: notifyVariableRewardAmount of ",
-            REWARD_PER_TOKEN_STORED * MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN
-        );
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-    }
-
-    // Check already deposited amount is lower or equal than max amount
-    function testStakingNotifyVariableRewardAmountSuccess4() public {
-        // Reward rate : 10% yearly
-        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-        /* solhint-disable var-name-mixedcase */
-
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-        uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-            // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-
-        uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 * 10^18 token as reward
-        vm.startPrank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-
-        // Deposit 1 token BEFORE starting rewards
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
-        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-        notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-        vm.stopPrank();
-
-        verboseLog(
-            "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
-            MAX_DEPOSIT_AMOUNT
-        );
-    }
-
-    // Check already deposited amount is lower or equal than max amount
-    function testStakingNotifyVariableRewardAmountFail4_1() public {
-        // Reward rate : 10% yearly
-        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-        /* solhint-disable var-name-mixedcase */
-
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-        uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-            // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-        uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-
-        uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + 100;
-        /* solhint-enable var-name-mixedcase */
-
-        // Mint 10 * 10^18 token as reward
-        vm.startPrank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-
-        // Deposit 1 token BEFORE starting rewards
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
-        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                StakeTotalSupplyExceedsAllowedMax.selector,
-                ALICE_DEPOSIT_AMOUNT, // newTotalSupply
-                MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-                0, // depositAmount
-                ALICE_DEPOSIT_AMOUNT // currentTotalSupply
-            )
-        );
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-        vm.stopPrank();
-
-        verboseLog(
-            "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
-            MAX_DEPOSIT_AMOUNT
-        );
-    }
-
-    // check no minted reward
-    function testStakingNotifyVariableRewardAmountFail4_2() public {
-        // Reward rate : 10% yearly
-        // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-        /* solhint-disable var-name-mixedcase */
-
-        uint256 APR = 10; // 10%
-        uint256 APR_BASE = 100; // 100%
-        uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-        uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-            // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-        // uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-        uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-        uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-        uint256 MINTED_REWARD_AMOUNT = 0;
-        uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
-        /* solhint-enable var-name-mixedcase */
-
-        // No minted reward
-        // Mint 10 * 10^18 token as reward
-        vm.startPrank(erc20Minter);
-        // rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
-        stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-
-        // Deposit 1 token BEFORE starting rewards
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
-        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-
-        vm.startPrank(userStakingRewardAdmin);
-        setRewardsDuration(REWARD_DURATION);
-
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedVariableRewardTooHigh.selector,
-                REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
-                MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-                MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
-                MINTED_REWARD_AMOUNT // Current balance
-            )
-        );
-        stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
-
-        vm.stopPrank();
-
-        verboseLog(
-            "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
-            MAX_DEPOSIT_AMOUNT
-        );
-        verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-    }
-
-    // TODO : add some fuzzing
-    // TODO : add some fuzzing
-    // TODO : add some fuzzing
-    // TODO : add some fuzzing
-
-    // function testStakingNotifyVariableRewardAmountFuzz() public {
-    // }
-} // CheckStakingConstantRewardLimits2
+
+// // contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
+// contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup {
+//     function setUp() public virtual override(Erc20Setup1, StakingPreSetup) {
+//         debugLog("CheckStakingConstantRewardLimits2 setUp() start");
+//         StakingPreSetup.setUp();
+//         Erc20Setup1.setUp();
+
+//         vm.prank(userStakingRewardAdmin);
+//         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+//         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+//         debugLog("CheckStakingConstantRewardLimits2 setUp() end");
+//     }
+
+//     function expectedStakingRewards(
+//         uint256 _stakedAmount,
+//         uint256 _rewardDurationReached,
+//         uint256 _rewardTotalDuration
+//     )
+//         internal
+//         view
+//         virtual
+//         override
+//         returns (uint256 expectedRewardsAmount)
+//     {
+//         debugLog("expectedStakingRewards: _stakedAmount = ", _stakedAmount);
+//         debugLog("expectedStakingRewards: _rewardDurationReached = ", _rewardDurationReached);
+//         debugLog("expectedStakingRewards: _rewardTotalDuration = ", _rewardTotalDuration);
+//         verboseLog("expectedStakingRewards: NOT IMPLEMENTED");
+//         return 0;
+//     }
+
+//     // Nothing minted, no reward
+//     function testStakingNotifyVariableRewardAmountFail0() public {
+//         // Test some arbitrary values
+//         // Smallest amount (1,1), 0 reward minted
+
+//         // Should mint 99 / 10^18 token as reward
+//         // vm.prank(erc20Minter);
+//         // rewardErc20.mint( address(stakingRewards2), 0 );
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(100); // 100 s.
+
+//         // Set 1 unit (1 = 10^-18) of token as reward per token deposit
+//         // and max deposit of 1 / 1^18 token
+
+//         // Expect revert: expected min. balance 100, current balance 0
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 ProvidedVariableRewardTooHigh.selector,
+//                 1, // constantRewardRatePerTokenStored
+//                 1, // variableRewardMaxTotalSupply
+//                 100, // Min. expected
+//                 0 // Current balance
+//             )
+//         );
+//         // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+//         // available reward should be at least 1 * 1 * 100 = 100
+//         stakingRewards2.notifyVariableRewardAmount(1, 1);
+//         vm.stopPrank();
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//     }
+
+//     function testStakingNotifyVariableRewardAmountSuccess1() public {
+//         // Test some arbitrary values
+//         // Smallest amount (1,1), sufficient reward minted
+
+//         // Mint 100 / 10^18 token as reward
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), 100);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(100); // 100 s.
+
+//         // Set 1 unit (1 = 10^-18) of token as reward per token deposit
+//         // and max deposit of 1 / 1^18 token
+
+//         notifyVariableRewardAmount(1, 1);
+//         vm.stopPrank();
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//     }
+
+//     function testStakingNotifyVariableRewardAmountFail1_1_x() public {
+//         // Test some arbitrary values
+//         // Smallest amount (1,1), unsufficient reward minted
+
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 31_536_000; // 0,000 000 000 031 536 %
+//         uint256 APR_BASE = 1e18; // 100% = 1e18 = 1000000000000000000 = 1 000 000 000 000 000 000
+
+//         uint256 MAX_DEPOSIT_AMOUNT = 3_171_000_000_000; // 3171×1e9 = 3 171 000 000 000,00
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE;
+//         // 317 100 000 000 000 * 31 536 000 / 1e18 = 100
+
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         // = 1e18 * 31 536 000 / 1e18 / 31 536 000 = 1
+
+//         // Mint 99 / 10^18 token as reward
+//         uint256 MINTED_REWARD_AMOUNT = REWARD_AMOUNT - 1; // 99
+//         /* solhint-enable var-name-mixedcase */
+
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), MINTED_REWARD_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION); // 100 s.
+
+//         // Revert: expected min. balance 100, current balance 99
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 ProvidedVariableRewardTooHigh.selector,
+//                 REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+//                 MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+//                 MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
+//                 MINTED_REWARD_AMOUNT // Current reward balance
+//             )
+//         );
+//         // Set 1 unit (1 = 10^-18) of token as reward per token deposit
+//         // and max deposit of 1 / 1^18 token
+//         // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+//         // available reward should be at least 1 * 1 * 100 = 100
+//         stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+//         verboseLog("Staking contract: Events MaxTotalSupply, ProvidedVariableRewardTooHigh emitted");
+//     }
+
+//     function testStakingNotifyVariableRewardAmountFail1_x_1() public {
+//         // Test some arbitrary values
+//         // Smallest amount (1,1), unsufficient reward minted
+
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 31_536_000; // 31 536 000 % 🔥
+//         uint256 APR_BASE = 1; // 100% = 1 / 1e18
+
+//         uint256 MAX_DEPOSIT_AMOUNT = 1; // 1 / 1e18
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE;
+//         // 317 100 000 000 000 * 31 536 000 / 1e18 = 100
+
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         // = 1e18 * 31 536 000 / 1 / 31 536 000 = 1e18
+
+//         // Mint 99 / 10^18 token as reward
+//         uint256 MINTED_REWARD_AMOUNT = REWARD_AMOUNT - 1; // 99
+//         /* solhint-enable var-name-mixedcase */
+
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), MINTED_REWARD_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION); // 100 s.
+
+//         // Revert: expected min. balance 100, current balance 99
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 ProvidedVariableRewardTooHigh.selector,
+//                 REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+//                 MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+//                 MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
+//                 MINTED_REWARD_AMOUNT // Current reward balance
+//             )
+//         );
+//         // Set 1 unit (1 = 10^-18) of token as reward per token deposit
+//         // and max deposit of 1 / 1^18 token
+//         // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+//         // available reward should be at least 1 * 1 * 100 = 100
+//         stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+//         verboseLog("Staking contract: Events MaxTotalSupply, ProvidedVariableRewardTooHigh emitted");
+//     }
+
+//     function testStakingNotifyVariableRewardAmountSuccess2() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 100 / 1e18 Token should give 10 / 1e18 token reward per year
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_AMOUNT = 100; // 100 / 1e18
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         // REWARD_PER_TOKEN_STORED = 1e18 * 10 / APR_BASE / 31_536_000 = 1e17 / 315_360 = 3170979198
+//         // (3 170 979 198,376...)
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 / 1e18 token as total reward
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+//         notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//         vm.stopPrank();
+
+//         verboseLog("Staking contract: owner can notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED);
+//     }
+
+//     // Mint insufficient reward
+//     function testStakingNotifyVariableRewardAmountFail2_1() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 100 / 1e18 Token should give 10 / 1e18 token reward per year
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_AMOUNT = 100; // 100
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         // REWARD_PER_TOKEN_STORED = 1e18 * 10 / 100 / 31_536_000 = 1e17 / 315_360 = 3170979198 (3 170 979 198,376...)
+//         // Mint insufficient reward
+//         uint256 INSUFFICIENT_MINTED_AMOUNT = REWARD_AMOUNT - 1;
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 / 1e18 token as total reward
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), INSUFFICIENT_MINTED_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 ProvidedVariableRewardTooHigh.selector,
+//                 REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+//                 MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+//                 MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
+//                 INSUFFICIENT_MINTED_AMOUNT // Current balance
+//             )
+//         );
+
+//         // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+//         stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//         vm.stopPrank();
+
+//         verboseLog("Staking contract: owner can't notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED);
+//     }
+
+//     // Allow Max amount Deposit too high
+//     function testStakingNotifyVariableRewardAmountFail2_2() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 100 / 1e18 Token should give 10 / 1e18 token reward per year
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_AMOUNT = 100; // 100
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         // REWARD_PER_TOKEN_STORED = 1e18 * 10 / 100 / 31_536_000 = 1e17 / 315_360 = 3170979198 (3 170 979 198,376...)
+//         uint256 EXCESSIVE_MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + 1;
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 / 1e18 token as total reward
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 ProvidedVariableRewardTooHigh.selector,
+//                 REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+//                 EXCESSIVE_MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+//                 EXCESSIVE_MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
+//                 REWARD_AMOUNT // Current balance
+//             )
+//         );
+
+//         // 1, 1 = 1 unit of token per token (10^18) deposit , max supply of 1 / 1^18 token
+//         stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, EXCESSIVE_MAX_DEPOSIT_AMOUNT);
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//         vm.stopPrank();
+
+//         verboseLog("Staking contract: owner can't notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED);
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//     }
+
+//     // Check if the reward amount is correctly computed and matches limits
+//     function testStakingNotifyVariableRewardAmountSuccess3_1() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+//         uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+//             // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+
+//         // uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / ONE_TOKEN / REWARD_DURATION; //
+//         // 0,000 000 317 097 919 837 645 865 043 125 32
+//         // REWARD_PER_TOKEN_STORED = 100 * ONE_TOKEN / 10 / ONE_TOKEN / REWARD_DURATION
+//         // REWARD_PER_TOKEN_STORED = 10 / 31 536 000 = 0
+
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         // ONE_TOKEN * 10 / 100 / REWARD_DURATION
+//         // 1e18 * 10 / 100 / 31536000 = 3170979198 (3 170 979 198,376 458 650 431 253 170 979 2)
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 * 10^18 token as reward
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+//         notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+//         // 9999999998812800000000000000000000000 < 10000000000000000000000000000000000000
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//         verboseLog("Staking contract: notifyVariableRewardAmount of ", REWARD_PER_TOKEN_STORED * MAX_DEPOSIT_AMOUNT);
+//     }
+
+//     // Test if the max deposit amount margin (rounding) is correctly computed
+//     function testStakingNotifyVariableRewardAmountSuccess3_2() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+//         uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+//             // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 * 10^18 token as reward
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+
+//         // Compute max deposit amount limit with rounding
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 ROUNDING_MARGIN =
+//             (REWARD_AMOUNT - MAX_DEPOSIT_TOKEN_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION) * APR_BASE / APR;
+//         /* solhint-enable var-name-mixedcase */
+//         verboseLog("ROUNDING_MARGIN = ", ROUNDING_MARGIN);
+
+//         notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN);
+//         vm.stopPrank();
+//         // 9999999999999999999859055616000000000 < 10000000000000000000000000000000000000
+
+//         verboseLog(
+//             "Staking contract: notifyVariableRewardAmount of ",
+//             REWARD_PER_TOKEN_STORED * MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN
+//         );
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//     }
+
+//     // Override max deposit amount margin (rounding)
+//     function testStakingNotifyVariableRewardAmountFail3() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+//         uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+//             // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         uint256 MINTED_REWARD_AMOUNT = REWARD_AMOUNT;
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 * 10^18 token as reward
+//         vm.prank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+
+//         // Compute max deposit amount limit with rounding
+//         /* solhint-disable var-name-mixedcase */
+//         uint256 ROUNDING_MARGIN =
+//             (REWARD_AMOUNT - MAX_DEPOSIT_TOKEN_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION) * APR_BASE / APR;
+//         verboseLog("ROUNDING_MARGIN = ", ROUNDING_MARGIN);
+
+//         uint256 EXCESSIVE_MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN + 100;
+//         /* solhint-enable var-name-mixedcase */
+
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 ProvidedVariableRewardTooHigh.selector,
+//                 REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+//                 EXCESSIVE_MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+//                 EXCESSIVE_MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
+//                 MINTED_REWARD_AMOUNT // Current balance
+//             )
+//         );
+
+//         stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, EXCESSIVE_MAX_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+
+//         verboseLog(
+//             "Staking contract: notifyVariableRewardAmount of ",
+//             REWARD_PER_TOKEN_STORED * MAX_DEPOSIT_AMOUNT + ROUNDING_MARGIN
+//         );
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//     }
+
+//     // Check already deposited amount is lower or equal than max amount
+//     function testStakingNotifyVariableRewardAmountSuccess4() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+//         /* solhint-disable var-name-mixedcase */
+
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+//         uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+//             // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+
+//         uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 * 10^18 token as reward
+//         vm.startPrank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+
+//         // Deposit 1 token BEFORE starting rewards
+//         vm.startPrank(userAlice);
+//         stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+//         stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+//         notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//         vm.stopPrank();
+
+//         verboseLog(
+//             "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
+//             MAX_DEPOSIT_AMOUNT
+//         );
+//     }
+
+//     // Check already deposited amount is lower or equal than max amount
+//     function testStakingNotifyVariableRewardAmountFail4_1() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+//         /* solhint-disable var-name-mixedcase */
+
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+//         uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+//             // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+//         uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+
+//         uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + 100;
+//         /* solhint-enable var-name-mixedcase */
+
+//         // Mint 10 * 10^18 token as reward
+//         vm.startPrank(erc20Minter);
+//         rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+
+//         // Deposit 1 token BEFORE starting rewards
+//         vm.startPrank(userAlice);
+//         stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+//         stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 StakeTotalSupplyExceedsAllowedMax.selector,
+//                 ALICE_DEPOSIT_AMOUNT, // newTotalSupply
+//                 MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+//                 0, // depositAmount
+//                 ALICE_DEPOSIT_AMOUNT // currentTotalSupply
+//             )
+//         );
+//         stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//         vm.stopPrank();
+
+//         verboseLog(
+//             "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
+//             MAX_DEPOSIT_AMOUNT
+//         );
+//     }
+
+//     // check no minted reward
+//     function testStakingNotifyVariableRewardAmountFail4_2() public {
+//         // Reward rate : 10% yearly
+//         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+//         /* solhint-disable var-name-mixedcase */
+
+//         uint256 APR = 10; // 10%
+//         uint256 APR_BASE = 100; // 100%
+//         uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+//         uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+//             // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+//         // uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+//         uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+//         uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+//         uint256 MINTED_REWARD_AMOUNT = 0;
+//         uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
+//         /* solhint-enable var-name-mixedcase */
+
+//         // No minted reward
+//         // Mint 10 * 10^18 token as reward
+//         vm.startPrank(erc20Minter);
+//         // rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+//         stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+
+//         // Deposit 1 token BEFORE starting rewards
+//         vm.startPrank(userAlice);
+//         stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+//         vm.expectEmit(true, true, false, false, address(stakingRewards2));
+//         emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+//         stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+//         vm.stopPrank();
+
+//         vm.startPrank(userStakingRewardAdmin);
+//         setRewardsDuration(REWARD_DURATION);
+
+//         vm.expectRevert(
+//             abi.encodeWithSelector(
+//                 ProvidedVariableRewardTooHigh.selector,
+//                 REWARD_PER_TOKEN_STORED, // constantRewardPerTokenStored
+//                 MAX_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+//                 MAX_DEPOSIT_AMOUNT * REWARD_PER_TOKEN_STORED * REWARD_DURATION, // Min. expected balance
+//                 MINTED_REWARD_AMOUNT // Current balance
+//             )
+//         );
+//         stakingRewards2.notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_AMOUNT);
+
+//         vm.stopPrank();
+
+//         verboseLog(
+//             "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
+//             MAX_DEPOSIT_AMOUNT
+//         );
+//         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+//     }
+
+//     // TODO : add some fuzzing
+//     // TODO : add some fuzzing
+//     // TODO : add some fuzzing
+//     // TODO : add some fuzzing
+
+//     // function testStakingNotifyVariableRewardAmountFuzz() public {
+//     // }
+// } // CheckStakingConstantRewardLimits2

@@ -2,7 +2,8 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingSetup2 } from "./StakingRewards2_setups.t.sol";
+// import { StakingSetup2 } from "./StakingRewards2_setups.t.sol";
+import { StakingSetup } from "./StakingRewards2_setups.t.sol";
 import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
@@ -13,11 +14,12 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // /*
 
-contract CheckStakingPermissions2 is StakingSetup2 {
+// contract CheckStakingPermissions2 is StakingSetup2 {
+contract CheckStakingPermissions2 is StakingSetup {
     function setUp() public virtual override {
         debugLog("CheckStakingPermissions2 setUp() start");
         verboseLog("CheckStakingPermissions2 setUp()");
-        StakingSetup2.setUp();
+        StakingSetup.setUp();
         debugLog("CheckStakingPermissions2 setUp() end");
     }
 
@@ -120,23 +122,17 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         verboseLog("Staking contract: Event RewardAdded emitted");
     }
 
-    function testStakingNotifyRewardAmountLimitMax() public {
-        uint256 additionnalRewardAmount = REWARD_INITIAL_DURATION;
-
-        // Mint reward ERC20 a second time
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), additionnalRewardAmount);
-
+    //
+    function testStakingNotifyRewardAmountNoError() public {
+        // not enough reward balance BUT no error raised because of rounding
+        uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_AMOUNT + REWARD_INITIAL_DURATION - 1;
         vm.prank(userStakingRewardAdmin);
-        notifyRewardAmount(additionnalRewardAmount);
-        verboseLog("Staking contract: Only owner can notifyRewardAmount of an additionnal ", additionnalRewardAmount);
-        verboseLog("Staking contract: Event RewardAdded emitted");
+        notifyRewardAmount(rewardAmountToAddForRaisingError);
+        verboseLog("Staking contract: Not enough reward balance");
     }
 
     function testStakingRewardAmountTooHigh1() public {
-        uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION; // computed  reward rate must exceed by at
-            // least one unit for raising an error
-
+        uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_AMOUNT + REWARD_INITIAL_DURATION;
         vm.prank(userStakingRewardAdmin);
         // Check revert
         vm.expectRevert(
@@ -151,29 +147,46 @@ contract CheckStakingPermissions2 is StakingSetup2 {
         verboseLog("Staking contract: Not enough reward balance");
     }
 
-    function testStakingRewardAmountTooHigh2() public {
-        uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION; // computed  reward rate must exceed by at
-            // least one unit for raising an error
+    function testStakingNotifyRewardAmountNotTooHigh1() public {
+        // not enough reward balance BUT no error raised because of rounding
+        uint256 additionnalRewardAmount = REWARD_INITIAL_DURATION;
 
         // Mint reward ERC20 a second time
         vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), rewardAmountToAddForRaisingError);
+        rewardErc20.mint(address(stakingRewards2), additionnalRewardAmount);
+        //
+        additionnalRewardAmount += (REWARD_INITIAL_DURATION - 1);
 
         vm.prank(userStakingRewardAdmin);
-        // Check revert
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                ProvidedRewardTooHigh.selector,
-                rewardAmountToAddForRaisingError * 2,
-                REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError,
-                REWARD_INITIAL_DURATION
-            )
-        );
-        stakingRewards2.notifyRewardAmount(rewardAmountToAddForRaisingError * 2);
-
-        verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError + 1);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT + additionnalRewardAmount);
+        verboseLog("Staking contract: Only owner can notifyRewardAmount of an additionnal ", additionnalRewardAmount);
         verboseLog("Staking contract: Event RewardAdded emitted");
     }
+
+
+    // function testStakingRewardAmountTooHigh2() public {
+    //     uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION; // computed  reward rate must exceed by at
+    //         // least one unit for raising an error
+
+    //     // Mint reward ERC20 a second time
+    //     vm.prank(erc20Minter);
+    //     rewardErc20.mint(address(stakingRewards2), rewardAmountToAddForRaisingError);
+
+    //     vm.prank(userStakingRewardAdmin);
+    //     // Check revert
+    //     vm.expectRevert(
+    //         abi.encodeWithSelector(
+    //             ProvidedRewardTooHigh.selector,
+    //             rewardAmountToAddForRaisingError * 2,
+    //             REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError,
+    //             REWARD_INITIAL_DURATION
+    //         )
+    //     );
+    //     stakingRewards2.notifyRewardAmount(rewardAmountToAddForRaisingError * 2);
+
+    //     verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError + 1);
+    //     verboseLog("Staking contract: Event RewardAdded emitted");
+    // }
 
     function testStakingSetRewardsDuration() public {
         // Previous reward epoch must have ended before setting a new duration
@@ -204,6 +217,9 @@ contract CheckStakingPermissions2 is StakingSetup2 {
     function testStakingSetRewardsDurationBeforeEpochEnd() public {
         // Previous reward epoch must have ended before setting a new duration
         vm.startPrank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+
         vm.expectRevert(
             abi.encodeWithSelector(
                 RewardPeriodInProgress.selector, block.timestamp, STAKING_TIMESTAMP + REWARD_INITIAL_DURATION

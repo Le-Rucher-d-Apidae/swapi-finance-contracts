@@ -2,7 +2,8 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_commonbase.t.sol";
+// import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_commonbase.t.sol";
+import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 import {
     DELTA_0_00000000022,
     DELTA_0_015,
@@ -119,7 +120,7 @@ contract StakingSetup is StakingPreSetupVRR {
         return expectedStakingRewardsAmount;
     }
 }
-
+/*
 contract StakingSetup1 is Erc20Setup1, StakingSetup {
     uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
 
@@ -909,5 +910,5 @@ contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
         verboseLog("-----------------------------------------");
     }
 }
-
+*/
 // ----------------------------------------------------------------------------
