@@ -2,54 +2,34 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import {
-    StakingPreSetup,
-    Erc20Setup
-} from
+import { StakingPreSetup, Erc20Setup } from
 // , Erc20Setup3
 "./StakingRewards2_commonbase.t.sol";
-import {
-    DELTA_0_015,
-    DELTA_0_04,
-    DELTA_0_31,
-    DELTA_0_4,
-    PERCENT_10,
-    PERCENT_100,
-    DELTA_0,
-    ONE_TOKEN
-} from "./TestsConstants.sol";
+import { DELTA_0_015, ONE_TOKEN } from "./TestsConstants.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
-import {
-    RewardPeriodInProgress,
-    ProvidedVariableRewardTooHigh,
-    StakeTotalSupplyExceedsAllowedMax
-} from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
-import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
-import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // ----------------
 
 contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
-
     // Reward rate : 10% yearly
     // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
 
     /* solhint-disable var-name-mixedcase */
-    uint256 APR = 10; // 10%
-    uint256 APR_BASE = 100; // 100%
-    uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN;
+    uint256 internal constant APR = 10; // 10%
+    uint256 internal constant APR_BASE = 100; // 100%
+    uint256 internal constant MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+    uint256 internal constant MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN;
     // 100 token = 100 000 000 000 000 000 000 = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-    uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-    uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 CONSTANT_REWARDRATE_PERTOKENSTORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 internal constant REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+    uint256 internal constant REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+    uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
 
-    uint256 ALICE_DEPOSIT_AMOUNT = 20 * ONE_TOKEN; // 20 tokens
-    uint256 BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
+    uint256 internal constant ALICE_DEPOSIT_AMOUNT = 20 * ONE_TOKEN; // 20 tokens
+    uint256 internal constant BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
     /* solhint-enable var-name-mixedcase */
 
     function setUp() public virtual override(Erc20Setup, StakingPreSetup) {

@@ -2,11 +2,6 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import { console } from "forge-std/src/console.sol";
-// import { stdMath } from "forge-std/src/StdMath.sol";
-
-// import "./StakingRewards2_commonbase.t.sol";
-// import { StakingPreSetup, UsersSetup0, Erc20Setup0, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_commonbase.t.sol";
 import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 import {
     DELTA_0_00000000022,
@@ -21,13 +16,9 @@ import {
 } from "./TestsConstants.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
-// import "../src/contracts/StakingRewards2Errors.sol";
-import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
-import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
-import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // ----------------
 
@@ -67,15 +58,15 @@ abstract contract StakingPreSetupCRR is StakingPreSetup {
         debugLog("StakingPreSetupVRR: checkRewardForDuration");
         _checkRewardForDuration(_delta);
     }
-
 } // StakingPreSetupCRR
 
 // contract StakingSetup is StakingPreSetupCRR {
 contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
-
+    /* solhint-disable var-name-mixedcase */
     uint256 internal ALICE_STAKINGERC20_STAKEDAMOUNT;
     uint256 internal BOB_STAKINGERC20_STAKEDAMOUNT;
     uint256 internal CHERRY_STAKINGERC20_STAKEDAMOUNT;
+    /* solhint-enable var-name-mixedcase */
 
     function setUp() public virtual override(Erc20Setup, StakingPreSetupCRR) {
         debugLog("StakingSetup setUp() start");
@@ -130,12 +121,17 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
         vm.startPrank(_userAddress);
         stakingERC20.approve(address(stakingRewards2), _amount);
 
-
-        debugLog("StakingSetup _userStakes stakingERC20 address: %s", address(stakingERC20) );
-        debugLog("StakingSetup _userStakes stakingRewards2 address: %s", address(stakingRewards2) );
-        debugLog("StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
+        debugLog("StakingSetup _userStakes stakingERC20 address: %s", address(stakingERC20));
+        debugLog("StakingSetup _userStakes stakingRewards2 address: %s", address(stakingRewards2));
+        debugLog(
+            "StakingSetup _userStakes _userAddress stakingERC20 allowance",
+            stakingERC20.allowance(_userAddress, address(stakingRewards2))
+        );
         debugLog("StakingSetup _userStakes _userStakes() balanceOf", stakingERC20.balanceOf(_userAddress));
-        debugLog("StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
+        debugLog(
+            "StakingSetup _userStakes _userAddress stakingERC20 allowance",
+            stakingERC20.allowance(_userAddress, address(stakingRewards2))
+        );
 
         // Check expected events
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
@@ -145,7 +141,6 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
         TOTAL_STAKED_AMOUNT += _amount;
         debugLog("StakingSetup _userStakes() end");
     }
-
 
     function AliceStakes(uint256 _amount) internal {
         debugLog("StakingSetup AliceStakes() start");
@@ -158,34 +153,35 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
         // vm.stopPrank();
         // TOTAL_STAKED_AMOUNT += _amount;
         _userStakes(userAlice, "Alice", _amount);
-        ALICE_STAKINGERC20_STAKEDAMOUNT+=_amount;
+        ALICE_STAKINGERC20_STAKEDAMOUNT += _amount;
         debugLog("StakingSetup AliceStakes() end");
     }
+
     function BobStakes(uint256 _amount) internal {
         debugLog("StakingSetup BobStakes() start");
         _userStakes(userBob, "Bob", _amount);
-        BOB_STAKINGERC20_STAKEDAMOUNT+=_amount;
+        BOB_STAKINGERC20_STAKEDAMOUNT += _amount;
         debugLog("StakingSetup BobStakes() end");
     }
 
     function CherryStakes(uint256 _amount) internal {
         debugLog("StakingSetup CherryStakes() start");
         _userStakes(userCherry, "Cherry", _amount);
-        CHERRY_STAKINGERC20_STAKEDAMOUNT+=_amount;
+        CHERRY_STAKINGERC20_STAKEDAMOUNT += _amount;
         debugLog("StakingSetup CherryStakes() end");
     }
 
     function checkAliceStake() internal {
         itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
     }
+
     function checkBobStake() internal {
         itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
     }
+
     function checkCherryStake() internal {
         itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
     }
-
-
 }
 
 // contract StakingSetup1 is Erc20Setup1, StakingSetup {
@@ -246,7 +242,6 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
 //         debugLog("StakingSetup1 setUp() end");
 //     }
 
-
 //     function _userStakes(address _userAddress, string memory _userName, uint256 _amount) internal {
 //         debugLog("_StakingSetup _userStakes() start");
 //         debugLog("_StakingSetup _userStakes userAddress", _userAddress);
@@ -256,12 +251,13 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
 //         vm.startPrank(_userAddress);
 //         stakingERC20.approve(address(stakingRewards2), _amount);
 
-
 //         debugLog("_StakingSetup _userStakes stakingERC20 address: %s", address(stakingERC20) );
 //         debugLog("_StakingSetup _userStakes stakingRewards2 address: %s", address(stakingRewards2) );
-//         debugLog("_StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
+//         debugLog("_StakingSetup _userStakes _userAddress stakingERC20 allowance",
+// stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
 //         debugLog("_StakingSetup _userStakes _userStakes() balanceOf", stakingERC20.balanceOf(_userAddress));
-//         debugLog("_StakingSetup _userStakes _userAddress stakingERC20 allowance", stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
+//         debugLog("_StakingSetup _userStakes _userAddress stakingERC20 allowance",
+// stakingERC20.allowance(_userAddress, address(stakingRewards2)) );
 
 //         // Check expected events
 //         vm.expectEmit(true, true, false, false, address(stakingRewards2));
@@ -276,8 +272,6 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
 
 // Init stakingRewards2 contract with rewardErc20 and stakingERC20, set rewards duration and mint reward amount
 // contract _StakingSetup is StakingSetup {
-
-
 
 // Init stakingRewards2 contract with rewardErc20 and stakingERC20, set rewards duration and mint reward amount
 // contract StakingSetup1 is Erc20Setup1, StakingSetup {
@@ -414,7 +408,6 @@ contract StakingSetup is StakingPreSetupCRR, Erc20Setup {
 //     function checkBobStake() internal {
 //         itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
 //     }
-
 
 //     function BobStakes(uint256 _amount) internal {
 //         debugLog("StakingSetup1 BobStakes() start");
@@ -622,8 +615,6 @@ contract DuringStaking1WithoutWithdral is StakingSetup {
     }
 
     function testUsersStakingRewards() public {
-
-
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         debugLog("Staking start time", STAKING_TIMESTAMP);
@@ -636,7 +627,6 @@ contract DuringStaking1WithoutWithdral is StakingSetup {
         // vm.stopPrank();
         // TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
-
 
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
         checkUsersStake();
@@ -701,14 +691,12 @@ contract DuringStaking2WithoutWithdral is StakingSetup {
     }
 
     function testUsersStakingRewards() public {
-
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
-
 
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
@@ -764,7 +752,6 @@ contract DuringStaking2WithoutWithdral is StakingSetup {
 
 // contract DuringStaking3WithoutWithdral is DepositSetup3 {
 contract DuringStaking3WithoutWithdral is StakingSetup {
-
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
@@ -784,7 +771,6 @@ contract DuringStaking3WithoutWithdral is StakingSetup {
     }
 
     function testUsersStakingRewards() public {
-
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
@@ -902,6 +888,7 @@ contract DuringStaking1WithWithdral is StakingSetup {
         verboseLog("DuringStaking1WithWithdral");
         debugLog("DuringStaking1WithWithdral setUp() end");
     }
+
     function checkUsersStake() public {
         checkAliceStake();
     }
@@ -911,7 +898,6 @@ contract DuringStaking1WithWithdral is StakingSetup {
             fail("DuringStaking1WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
             return;
         }
-
 
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -990,7 +976,6 @@ contract DuringStaking1WithWithdral is StakingSetup {
 // contract DuringStaking2WithWithdral is DepositSetup2 {
 // contract DuringStaking2WithWithdral is StakingSetup2 {
 contract DuringStaking2WithWithdral is StakingSetup {
-
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
     /* solhint-disable var-name-mixedcase */
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
@@ -1243,5 +1228,3 @@ contract DuringStaking3WithWithdral is StakingSetup {
 }
 
 // --------------------------------------------------------
-
-

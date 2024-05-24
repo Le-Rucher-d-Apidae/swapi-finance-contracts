@@ -31,7 +31,6 @@ import {
 
 // TODO : move to utils
 contract TestLog is Test {
-
     bool internal debug = true; // TODO : set to false
     bool internal verbose = true; // TODO : set to false
     Utils internal utils;
@@ -170,7 +169,9 @@ contract TestLog is Test {
 contract UsersSetup is TestLog {
     address payable[] internal users;
 
+    /* solhint-disable var-name-mixedcase */
     uint256 internal constant MAX_USERS = 6;
+    /* solhint-enable var-name-mixedcase */
     address internal erc20Admin;
     address internal erc20Minter;
     address internal userStakingRewardAdmin;
@@ -207,11 +208,11 @@ contract Erc20Setup is UsersSetup {
     RewardERC20 internal rewardErc20;
     StakingERC20 internal stakingERC20;
 
-
+    /* solhint-disable var-name-mixedcase */
     uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
     uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
     uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
-
+    /* solhint-enable var-name-mixedcase */
 
     // function setUp() public virtual override(UsersSetup0) {
     function setUp() public virtual override(UsersSetup) {
@@ -238,6 +239,8 @@ contract Erc20Setup is UsersSetup {
 } // Erc20Setup
 
 // --------------------------------------------------------
+
+/* solhint-disable contract-name-camelcase */
 
 abstract contract _StakingPreSetup is TestLog {
     // Rewards constants
@@ -513,7 +516,9 @@ abstract contract StakingPreSetup is _StakingPreSetup {
             warningLog("_checkRewardForDuration: REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION");
             warningLog("_checkRewardForDuration: => reward is likely to be ZERO !");
         }
+        /* solhint-disable var-name-mixedcase */
         uint256 INITIAL_BLOCK_TIMESTAMP = block.timestamp;
+        /* solhint-enable var-name-mixedcase */
         uint256 rewardForDuration;
         rewardForDuration = stakingRewards2.getRewardForDuration();
         debugLog("_checkRewardForDuration: getRewardForDuration  = ", rewardForDuration);
@@ -636,7 +641,7 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         );
         debugLog("notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ", _variableRewardMaxTotalSupply);
 
-        if (_userStakingRewardAdmin!= address(0)) vm.prank(_userStakingRewardAdmin);
+        if (_userStakingRewardAdmin != address(0)) vm.prank(_userStakingRewardAdmin);
         // Check emitted events
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.MaxTotalSupply(_variableRewardMaxTotalSupply);
@@ -644,20 +649,15 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         emit StakingRewards2Events.RewardAddedPerTokenStored(_constantRewardRatePerTokenStored);
         stakingRewards2.notifyVariableRewardAmount(_constantRewardRatePerTokenStored, _variableRewardMaxTotalSupply);
         STAKING_TIMESTAMP = block.timestamp;
-
     }
 
-    function notifyRewardAmount(
-        uint256 _reward
-    )
-        internal
-    {
+    function notifyRewardAmount(uint256 _reward) internal {
         notifyRewardAmount(_reward, address(0));
     }
 
     function notifyRewardAmount(uint256 _reward, address _userStakingRewardAdmin) internal {
         debugLog("notifyRewardAmount: reward : ", _reward);
-        if (_userStakingRewardAdmin!= address(0)) vm.prank(_userStakingRewardAdmin);
+        if (_userStakingRewardAdmin != address(0)) vm.prank(_userStakingRewardAdmin);
         // Check emitted event
         vm.expectEmit(true, false, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardAdded(1);
@@ -671,7 +671,7 @@ abstract contract StakingPreSetup is _StakingPreSetup {
 
     function setRewardsDuration(uint256 _rewardsDuration, address _userStakingRewardAdmin) internal {
         debugLog("setRewardsDuration: _rewardsDuration : ", _rewardsDuration);
-        if (_userStakingRewardAdmin!= address(0)) vm.prank(_userStakingRewardAdmin);
+        if (_userStakingRewardAdmin != address(0)) vm.prank(_userStakingRewardAdmin);
         // Check emitted event
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardsDurationUpdated(_rewardsDuration);
@@ -692,3 +692,5 @@ abstract contract StakingPreSetup is _StakingPreSetup {
         debugLog("displayEarned: stakerRewards = %d ", stakerRewards);
     }
 } // _StakingPreSetup
+
+/* solhint-enable contract-name-camelcase */

@@ -116,7 +116,7 @@ contract CheckStakingPermissions2 is StakingSetup {
         // one unit equals to REWARD_INITIAL_DURATION
         uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION - 1;
         vm.prank(userStakingRewardAdmin);
-        notifyRewardAmount( REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError );
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError);
         verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError - 1);
         verboseLog("Staking contract: Event RewardAdded emitted");
     }

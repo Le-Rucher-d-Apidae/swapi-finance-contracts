@@ -138,7 +138,6 @@ contract CheckStakingPermissions2 is StakingSetup {
     }
 
     function testStakingNotifyVariableRewardAmount() public {
-
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
         verboseLog("Only staking reward contract owner can notifyVariableRewardAmount");
@@ -169,7 +168,6 @@ contract CheckStakingPermissions2 is StakingSetup {
 
     // Previous reward epoch must have ended before setting a new duration
     function testStakingSetRewardsDurationAfterEpochEnd() public {
-
         vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
 
         vm.prank(userAlice);
@@ -194,7 +192,6 @@ contract CheckStakingPermissions2 is StakingSetup {
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
         verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
-
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -269,6 +266,7 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup {
     // Test that the owner can notifyVariableRewardAmount with a reward max total supply amount that is just low
     // enough
     function testStakingNotifyVariableRewardAmountSuccess1() public {
+        /* solhint-disable var-name-mixedcase */
         uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2));
         // Should be REWARD_INITIAL_AMOUNT
         assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
@@ -285,6 +283,7 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup {
             }
         }
         uint256 MAXTOTALSUPPLY_EXTRA_OK = MAXTOTALSUPPLY_EXTRA_OVERFLOW - REWARD_INITIAL_DURATION;
+        /* solhint-enable var-name-mixedcase */
         vm.prank(userStakingRewardAdmin);
 
         notifyVariableRewardAmount(
@@ -300,6 +299,7 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup {
 
     // Test that the owner can't notifyVariableRewardAmount with a reward max total supply amount that is too high
     function testStakingNotifyVariableRewardAmountFail1() public {
+        /* solhint-disable var-name-mixedcase */
         uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2));
         // Should be REWARD_INITIAL_AMOUNT
         assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
@@ -308,6 +308,8 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup {
         uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
         uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
         uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
+        /* solhint-enable var-name-mixedcase */
+
         for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
             if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
                 debugLog("testStakingNotifyVariableRewardAmountFail1: i   = ", i);
@@ -870,7 +872,6 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup {
 
     // check no minted reward
     function testStakingNotifyVariableRewardAmountFail4_2() public {
-
         // Reward rate : 10% yearly
         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
         /* solhint-disable var-name-mixedcase */
