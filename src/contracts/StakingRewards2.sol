@@ -140,7 +140,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         updateReward(msg.sender)
         _stake(amount, msg.sender)
         stake_(amount, msg.sender)
-    {
     /* solhint-disable-next-line no-empty-blocks */
     { }
 
