@@ -12,36 +12,6 @@ import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts@5.0.2/utils/ReentrancyGuard.sol";
 
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-import { console2 } from "forge-std/src/console2.sol";
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-// DEBUG
-
 import {
     RewardPeriodInProgress,
     CantWithdrawStakingToken,
@@ -146,8 +116,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
 
     function earned(address account) public view returns (uint256) {
         if (isVariableRewardRate) {
-            // return _balances[account] * constantRewardRatePerTokenStored
-            //     * (lastTimeRewardApplicable() - userLastUpdateTime[account]) / ONE_TOKEN + rewards[account];
             return _balances[account] * constantRewardRatePerTokenStored
                 * (lastTimeRewardApplicable() - getUserLastUpdateTime(account)) / ONE_TOKEN + rewards[account];
         }
@@ -156,92 +124,14 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     }
 
     function getRewardForDuration() external view returns (uint256) {
-        console2.log("StakingRewards2::getRewardForDuration");
         if (isVariableRewardRate) {
-            console2.log("StakingRewards2::getRewardForDuration: isVariableRewardRate");
             // Current MAX possible reward for duration
-            console2.log(
-                "StakingRewards2::getRewardForDuration: constantRewardRatePerTokenStored = %d",
-                constantRewardRatePerTokenStored
-            );
-            console2.log("StakingRewards2::getRewardForDuration: rewardsDuration = %d", rewardsDuration);
-            console2.log(
-                "StakingRewards2::getRewardForDuration: constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN = %d",
-                constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN
-            );
             return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN;
         }
-        console2.log("StakingRewards2::getRewardForDuration: NOT isVariableRewardRate");
-        console2.log("StakingRewards2::getRewardForDuration: rewardRate = %d", rewardRate);
-        console2.log("StakingRewards2::getRewardForDuration: rewardsDuration = %d", rewardsDuration);
-        console2.log(
-            "StakingRewards2::getRewardForDuration: rewardRate * rewardsDuration = %d", rewardRate * rewardsDuration
-        );
         return rewardRate * rewardsDuration;
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
-    /*
-    function stake(uint256 amount) external nonReentrant whenNotPaused updateReward(msg.sender) {
-        if (amount == 0) revert StakeZero();
-        _totalSupply = _totalSupply + amount;
-        if (isVariableRewardRate) {
-            if (_totalSupply > variableRewardMaxTotalSupply) {
-                revert StakeTotalSupplyExceedsAllowedMax({
-                    newTotalSupply: _totalSupply,
-                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
-                    depositAmount: amount,
-                    currentTotalSupply: _totalSupply - amount
-                });
-            }
-        }
-        _balances[msg.sender] = _balances[msg.sender] + amount;
-        stakingToken.safeTransferFrom(msg.sender, address(this), amount);
-
-        if (isVariableRewardRate) {
-            // Update variable reward rate
-            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
-        }
-        emit Staked(msg.sender, amount);
-    }
-
-    function stakeWithPermit(
-        uint256 amount,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    )
-        external
-        nonReentrant
-        whenNotPaused
-        updateReward(msg.sender)
-    {
-        if (amount == 0) revert StakeZero();
-        _totalSupply = _totalSupply + amount;
-        if (isVariableRewardRate) {
-            if (_totalSupply > variableRewardMaxTotalSupply) {
-                revert StakeTotalSupplyExceedsAllowedMax({
-                    newTotalSupply: _totalSupply,
-                    variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
-                    depositAmount: amount,
-                    currentTotalSupply: _totalSupply - amount
-                });
-            }
-        }
-        _balances[msg.sender] = _balances[msg.sender] + amount;
-
-        // permit
-        IUniswapV2ERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
-
-        stakingToken.safeTransferFrom(msg.sender, address(this), amount);
-        if (isVariableRewardRate) {
-            // Update variable reward rate
-            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply; // WRONG
-        }
-        emit Staked(msg.sender, amount);
-    }
-    */
 
     function stake(uint256 amount)
         external
@@ -251,7 +141,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         _stake(amount, msg.sender)
         stake_(amount, msg.sender)
     {
-        console2.log("StakingRewards2::stake");
     }
 
     function stakeWithPermit(
@@ -268,9 +157,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         _stake(amount, msg.sender)
         stake_(amount, msg.sender)
     {
-        console2.log("StakingRewards2::stakeWithPermit");
         // permit
-        console2.log("StakingRewards2::stakeWithPermit: permit");
         IUniswapV2ERC20(address(stakingToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
     }
 
@@ -284,10 +171,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         _totalSupply = _totalSupply - amount;
         _balances[msg.sender] = _balances[msg.sender] - amount;
         stakingToken.safeTransfer(msg.sender, amount);
-        if (isVariableRewardRate) {
-            // Update variable reward rate
-            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply; // WRONG
-        }
         emit Withdrawn(msg.sender, amount);
     }
 
@@ -318,8 +201,6 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
                     variableRewardMaxTotalSupply: variableRewardMaxTotalSupply
                 });
             }
-            // Update variable reward rate
-            // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply; // WRONG
         }
     }
 
@@ -345,18 +226,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         external
         onlyOwner
     {
-        console2.log("StakingRewards2::notifyVariableRewardAmount");
-        console2.log(
-            "StakingRewards2::notifyVariableRewardAmount: _constantRewardRatePerTokenStored = %d",
-            _constantRewardRatePerTokenStored
-        );
-        console2.log(
-            "StakingRewards2::notifyVariableRewardAmount: _variableRewardMaxTotalSupply = %d",
-            _variableRewardMaxTotalSupply
-        );
         isVariableRewardRate = true;
         constantRewardRatePerTokenStored = _constantRewardRatePerTokenStored;
-        // variableRewardRate = constantRewardRatePerTokenStored * _totalSupply;
         variableRewardMaxTotalSupply = _variableRewardMaxTotalSupply; // Set max LP cap ; if 0, no cap
 
         // Ensure the provided reward amount is not more than the balance in the contract.
@@ -364,12 +235,9 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
-        console2.log("StakingRewards2::notifyVariableRewardAmount: balance = %d", balance);
         // Substract total supply if staking token is the same as rewards token
         if (stakingToken == rewardsToken) {
-            console2.log("StakingRewards2::notifyVariableRewardAmount: stakingToken == rewardsToken = %d", balance);
             balance = balance - _totalSupply;
-            console2.log("StakingRewards2::notifyVariableRewardAmount: rewardsToken real balance = %d", balance);
         }
         if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN)
         {
@@ -425,51 +293,29 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     }
 
     function notifyRewardAmount(uint256 reward) external onlyOwner updateReward(address(0)) {
-        console2.log("StakingRewards2::notifyRewardAmount");
         isVariableRewardRate = false;
 
         if (block.timestamp >= periodFinish) {
-            console2.log("StakingRewards2::notifyRewardAmount block.timestamp >= periodFinish");
             rewardRate = reward / rewardsDuration;
-            console2.log("StakingRewards2::notifyRewardAmount reward = %s", reward);
-            console2.log("StakingRewards2::notifyRewardAmount rewardsDuration = %s", rewardsDuration);
-            console2.log("StakingRewards2::notifyRewardAmount rewardRate = %s", rewardRate);
         } else {
-            console2.log("StakingRewards2::notifyRewardAmount block.timestamp >= periodFinish");
-            console2.log("StakingRewards2::notifyRewardAmount periodFinish = %s", periodFinish);
-            console2.log("StakingRewards2::notifyRewardAmount block.timestamp = %s", block.timestamp);
             uint256 remaining = periodFinish - block.timestamp;
-            console2.log("StakingRewards2::notifyRewardAmount remaining = %s", remaining);
-            console2.log("StakingRewards2::notifyRewardAmount rewardRate = %s", rewardRate);
             uint256 leftover = remaining * rewardRate;
-            console2.log("StakingRewards2::notifyRewardAmount leftover = %s", leftover);
             rewardRate = (reward + leftover) / rewardsDuration;
-            console2.log("StakingRewards2::notifyRewardAmount reward = %s", reward);
-            console2.log("StakingRewards2::notifyRewardAmount rewardsDuration = %s", rewardsDuration);
-            console2.log("StakingRewards2::notifyRewardAmount rewardRate = %s", rewardRate);
         }
         // Ensure the provided reward amount is not more than the balance in the contract.
         // This keeps the reward rate in the right range, preventing overflows due to
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint256 balance = rewardsToken.balanceOf(address(this));
-        console2.log("StakingRewards2::notifyRewardAmount balance = %s", balance);
         // Substract total supply if staking token is the same as rewards token
         if (stakingToken == rewardsToken) {
-            console2.log("StakingRewards2::notifyRewardAmount stakingToken == rewardsToken");
-            console2.log("StakingRewards2::notifyRewardAmount balance = %s", balance);
-            console2.log("StakingRewards2::notifyRewardAmount _totalSupply = %s", _totalSupply);
             balance = balance - _totalSupply;
-            console2.log("StakingRewards2::notifyRewardAmount balance = %s", balance);
         }
         if (rewardRate > balance / rewardsDuration) {
-            console2.log("StakingRewards2::notifyRewardAmount rewardRate > balance / rewardsDuration");
             revert ProvidedRewardTooHigh({ reward: reward, rewardBalance: balance, rewardsDuration: rewardsDuration });
         }
         lastUpdateTime = block.timestamp;
-        console2.log("StakingRewards2::notifyRewardAmount lastUpdateTime = %s", lastUpdateTime);
         periodFinish = block.timestamp + rewardsDuration;
-        console2.log("StakingRewards2::notifyRewardAmount periodFinish = %s", periodFinish);
         emit RewardAdded(reward);
     }
 
@@ -491,44 +337,15 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     /* ========== MODIFIERS ========== */
 
     modifier updateReward(address account) {
-        console2.log("StakingRewards2::updateReward");
-        console2.log("StakingRewards2::updateReward account = %s", account);
         if (isVariableRewardRate) {
-            console2.log("StakingRewards2::updateReward:isVariableRewardRate");
             // Update variable reward rate
-            // rewardPerTokenStored = constantRewardRatePerTokenStored; // Useless
-
             lastUpdateTime = lastTimeRewardApplicable(); // not useful for rewards computations when variable reward
-            console2.log("StakingRewards2::updateReward: lastUpdateTime = %s", lastUpdateTime);
             if (account != address(0)) {
                 rewards[account] = earned(account);
                 userLastUpdateTime[account] = lastUpdateTime;
-                console2.log(
-                    "StakingRewards2::updateReward: userLastUpdateTime[account] = %s", userLastUpdateTime[account]
-                );
             }
             // rate
         } else {
-            console2.log("StakingRewards2::updateReward: NOT isVariableRewardRate");
-            rewardPerTokenStored = rewardPerToken();
-            console2.log("StakingRewards2::updateReward: rewardPerTokenStored = %s", rewardPerTokenStored);
-            lastUpdateTime = lastTimeRewardApplicable();
-            console2.log("StakingRewards2::updateReward: lastUpdateTime = %s", lastUpdateTime);
-            if (account != address(0)) {
-                rewards[account] = earned(account);
-                console2.log("StakingRewards2::updateReward: rewards[account] = %s", rewards[account]);
-                userRewardPerTokenPaid[account] = rewardPerTokenStored;
-                console2.log(
-                    "StakingRewards2::updateReward: userRewardPerTokenPaid[account] = %s",
-                    userRewardPerTokenPaid[account]
-                );
-            }
-        }
-        _;
-    }
-    /*
-    modifier updateReward(address account) {
-        if (!isVariableRewardRate) {
             rewardPerTokenStored = rewardPerToken();
             lastUpdateTime = lastTimeRewardApplicable();
             if (account != address(0)) {
@@ -538,20 +355,12 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
         }
         _;
     }
-    */
 
     modifier _stake(uint256 amount, address account) {
-        console2.log("StakingRewards2::_stake");
-        console2.log("StakingRewards2::amount = %d", amount);
-        console2.log("StakingRewards2::account = %s", account);
         if (amount == 0) revert StakeZero();
-        console2.log("StakingRewards2::_totalSupply before stake = %d", _totalSupply);
         _totalSupply = _totalSupply + amount;
-        console2.log("StakingRewards2::_totalSupply after stake = %d", _totalSupply);
         if (isVariableRewardRate) {
-            console2.log("StakingRewards2::isVariableRewardRate");
             if (_totalSupply > variableRewardMaxTotalSupply) {
-                console2.log("StakingRewards2::_totalSupply > variableRewardMaxTotalSupply");
                 revert StakeTotalSupplyExceedsAllowedMax({
                     newTotalSupply: _totalSupply,
                     variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
@@ -560,18 +369,13 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
                 });
             }
         }
-        console2.log("StakingRewards2::_balances[account] before update = %d", _balances[account]);
         _balances[account] = _balances[account] + amount;
-        console2.log("StakingRewards2::_balances[account] after update = %d", _balances[account]);
         _;
     }
 
     modifier stake_(uint256 amount, address account) {
-        console2.log("StakingRewards2::stake_");
         _;
-        console2.log("StakingRewards2::stake_ safeTransferFrom");
         stakingToken.safeTransferFrom(account, address(this), amount);
-        console2.log("StakingRewards2::stake_ Event Staked");
         emit Staked(msg.sender, amount);
     }
 

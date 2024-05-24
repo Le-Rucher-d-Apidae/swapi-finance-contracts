@@ -44,6 +44,7 @@ import {
 // 42+ tests
 
 // /*
+
 contract DuringStakingConstantReward1_WithoutWithdral_0 is
     DuringStakingVariableRewardRate1WithoutWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -223,8 +224,8 @@ contract DuringStakingConstantReward1_WithoutWithdral_220__99 is
 // 2 stakers deposit right after staking starts and keep staked amount until the end of staking period
 // 42+ tests
 
-
 // /*
+
 contract DuringStakingConstantReward2_WithoutWithdral_0__0 is
     DuringStakingVariableRewardRate2WithoutWithdral(PERCENT_0, PERCENT_0)
 { }
@@ -406,12 +407,14 @@ contract DuringStakingConstantReward2_WithoutWithdral_220__99 is
 { }
 
 // */
+
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and keep staked amount until the end of staking period
 // 42+ tests
 
 // /*
+
 contract DuringStakingConstantReward3_WithoutWithdral_0 is
     DuringStakingVariableRewardRate3WithoutWithdral(PERCENT_0, PERCENT_0)
 { }

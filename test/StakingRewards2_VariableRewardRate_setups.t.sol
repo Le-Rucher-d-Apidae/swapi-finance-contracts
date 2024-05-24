@@ -2,7 +2,6 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import { StakingPreSetup, Erc20Setup1, Erc20Setup2, Erc20Setup3 } from "./StakingRewards2_commonbase.t.sol";
 import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 import {
     DELTA_0_00000000022,
@@ -37,16 +36,9 @@ abstract contract StakingPreSetupVRR is StakingPreSetup {
     // Limit max LP tokens staked
     uint256 internal constant CONSTANT_REWARD_MAXTOTALSUPPLY_LP = 6; // Max LP : 6
     uint256 internal constant CONSTANT_REWARD_MAXTOTALSUPPLY = CONSTANT_REWARD_MAXTOTALSUPPLY_LP * ONE_TOKEN;
-    // uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = 1e3; // 1 000 ; for each LP token earn 1 000
-    // reward
-    // uint256 internal constant CONSTANT_REWARDRATE = 1e3; // 1 000 ; for each LP token earn 1 000 reward
 
     uint256 internal constant APR = 10; // 10%
     uint256 internal constant APR_BASE = 100; // 100%
-    // uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = 1e3 * ONE_TOKEN ; // 1 000 * 1e18 ; for each LP
-    // token earn 1 000 reward
-    // uint256 internal constant REWARD_AMOUNT = CONSTANT_REWARD_MAXTOTALSUPPLY * APR / APR_BASE; // 10% of max supply
-    // during reward duration
 
     // per second for one LP token
     uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED =
@@ -61,10 +53,7 @@ abstract contract StakingPreSetupVRR is StakingPreSetup {
         }
 
         // Max. budget for rewards
-        // REWARD_INITIAL_AMOUNT =
-        //     CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY * REWARD_INITIAL_DURATION;
         REWARD_INITIAL_AMOUNT = CONSTANT_REWARD_MAXTOTALSUPPLY * APR / APR_BASE;
-        // allocated to rewards
 
         debugLog("StakingPreSetupCRR APR = ", APR);
         debugLog("StakingPreSetupCRR APR_BASE = ", APR_BASE);
@@ -92,7 +81,6 @@ abstract contract StakingPreSetupVRR is StakingPreSetup {
     }
 }
 
-// contract StakingSetup is StakingPreSetupVRR {
 contract StakingSetup is StakingPreSetupVRR, Erc20Setup {
 
     uint256 internal ALICE_STAKINGERC20_STAKEDAMOUNT;
@@ -169,14 +157,6 @@ contract StakingSetup is StakingPreSetupVRR, Erc20Setup {
 
     function AliceStakes(uint256 _amount) internal {
         debugLog("StakingSetup AliceStakes() start");
-        // vm.startPrank(userAlice);
-        // stakingERC20.approve(address(stakingRewards2), _amount);
-        // // Check expected events
-        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        // emit StakingRewards2Events.Staked(userAlice, _amount);
-        // stakingRewards2.stake(_amount);
-        // vm.stopPrank();
-        // TOTAL_STAKED_AMOUNT += _amount;
         _userStakes(userAlice, "Alice", _amount);
         ALICE_STAKINGERC20_STAKEDAMOUNT+=_amount;
         debugLog("StakingSetup AliceStakes() end");
@@ -207,218 +187,13 @@ contract StakingSetup is StakingPreSetupVRR, Erc20Setup {
 
 
 }
-/*
-contract StakingSetup1 is Erc20Setup1, StakingSetup {
-    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-
-    function setUp() public virtual override(Erc20Setup1, StakingSetup) {
-        debugLog("StakingSetup1 setUp() start");
-        verboseLog("StakingSetup1");
-        Erc20Setup1.setUp();
-        StakingSetup.setUp();
-        vm.prank(userStakingRewardAdmin);
-        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
-        vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
-
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
-
-        vm.prank(userStakingRewardAdmin);
-        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-
-        debugLog("Staking start time", STAKING_TIMESTAMP);
-        debugLog("StakingSetup1 setUp() end");
-    }
-
-    function checkAliceStake() internal {
-        itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
-    }
-}
-
-// ----------------
-
-contract StakingSetup2 is Erc20Setup2, StakingSetup {
-    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
-
-    function setUp() public virtual override(Erc20Setup2, StakingSetup) {
-        debugLog("StakingSetup2 setUp() start");
-        verboseLog("StakingSetup2");
-        Erc20Setup2.setUp();
-        StakingSetup.setUp();
-        vm.prank(userStakingRewardAdmin);
-        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
-        // checkOnlyAddressCanInvoke( userStakingRewardAdmin, address[](users), address(stakingRewards2),
-        // bytes4(keccak256("setRewardsDuration")) );
-
-        vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
-
-        vm.prank(erc20Minter);
-
-        // console.log("StakingSetup2 setUp() mint REWARD_INITIAL_AMOUNT to contract", REWARD_INITIAL_AMOUNT);
-        rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
-
-        vm.prank(userStakingRewardAdmin);
-
-        // Check emitted events
-        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-
-        debugLog("Staking start time", STAKING_TIMESTAMP);
-        debugLog("StakingSetup2 setUp() end");
-    }
-
-    function checkAliceStake() internal {
-        itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
-    }
-
-    function checkBobStake() internal {
-        itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
-    }
-}
-
-// ----------------
-
-contract StakingSetup3 is Erc20Setup3, StakingSetup {
-    uint256 internal constant ALICE_STAKINGERC20_STAKEDAMOUNT = ALICE_STAKINGERC20_MINTEDAMOUNT;
-    uint256 internal constant BOB_STAKINGERC20_STAKEDAMOUNT = BOB_STAKINGERC20_MINTEDAMOUNT;
-    uint256 internal constant CHERRY_STAKINGERC20_STAKEDAMOUNT = CHERRY_STAKINGERC20_MINTEDAMOUNT;
-
-    function setUp() public virtual override(Erc20Setup3, StakingSetup) {
-        // console.log("StakingSetup3 setUp()");
-        debugLog("StakingSetup3 setUp() start");
-        verboseLog("StakingSetup3");
-        Erc20Setup3.setUp();
-        StakingSetup.setUp();
-        vm.prank(userStakingRewardAdmin);
-        stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
-        assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
-        // checkOnlyAddressCanInvoke( userStakingRewardAdmin, address[](users), address(stakingRewards2),
-        // bytes4(keccak256("setRewardsDuration")) );
-
-        vm.prank(userStakingRewardAdmin);
-        // Check emitted events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.RewardsDurationUpdated(REWARD_INITIAL_DURATION);
-        stakingRewards2.setRewardsDuration(REWARD_INITIAL_DURATION);
-
-        vm.prank(erc20Minter);
-        rewardErc20.mint(address(stakingRewards2), REWARD_INITIAL_AMOUNT);
-
-        vm.prank(userStakingRewardAdmin);
-        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-
-        debugLog("Staking start time", STAKING_TIMESTAMP);
-        debugLog("StakingSetup3 setUp() end");
-    }
-
-    function checkAliceStake() internal {
-        itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
-    }
-
-    function checkBobStake() internal {
-        itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
-    }
-
-    function checkCherryStake() internal {
-        itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
-    }
-}
-
-// ------------------------------------
-
-contract DepositSetup1 is StakingSetup1 {
-    // uint256 constant internal TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
-
-    function setUp() public virtual override {
-        debugLog("DepositSetup1 setUp() start");
-        verboseLog("DepositSetup1 setUp()");
-        StakingSetup1.setUp();
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.stopPrank();
-        TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT;
-        debugLog("DepositSetup1 setUp() end");
-    }
-}
-
-// ----------------
-
-contract DepositSetup2 is StakingSetup2 {
-    function setUp() public virtual override {
-        debugLog("DepositSetup2 setUp() start");
-        verboseLog("DepositSetup2 setUp()");
-        StakingSetup2.setUp();
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.startPrank(userBob);
-        stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.stopPrank();
-        TOTAL_STAKED_AMOUNT = ALICE_STAKINGERC20_STAKEDAMOUNT + BOB_STAKINGERC20_STAKEDAMOUNT;
-        debugLog("DepositSetup2 setUp() end");
-    }
-}
-
-// ----------------
-
-contract DepositSetup3 is StakingSetup3 {
-    function setUp() public virtual override {
-        debugLog("DepositSetup3 setUp() start");
-        verboseLog("DepositSetup3 setUp()");
-        StakingSetup3.setUp();
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(ALICE_STAKINGERC20_STAKEDAMOUNT);
-        vm.startPrank(userBob);
-        stakingERC20.approve(address(stakingRewards2), BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(BOB_STAKINGERC20_STAKEDAMOUNT);
-        vm.startPrank(userCherry);
-        stakingERC20.approve(address(stakingRewards2), CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        stakingRewards2.stake(CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        vm.stopPrank();
-        TOTAL_STAKED_AMOUNT =
-            ALICE_STAKINGERC20_STAKEDAMOUNT + BOB_STAKINGERC20_STAKEDAMOUNT + CHERRY_STAKINGERC20_STAKEDAMOUNT;
-        debugLog("DepositSetup3 setUp() end");
-    }
-}
-*/
 
 // ----------------------------------------------------------------------------
 
-// contract DuringStakingVariableRewardRate1WithoutWithdral is DepositSetup1 {
 contract DuringStakingVariableRewardRate1WithoutWithdral is StakingSetup {
+
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration,
-        // "DuringStakingVariableRewardRate1WithoutWithdral:
-        // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
@@ -488,13 +263,10 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is StakingSetup {
 
 // ------------------------------------
 
-// contract DuringStakingVariableRewardRate2WithoutWithdral is DepositSetup2 {
 contract DuringStakingVariableRewardRate2WithoutWithdral is StakingSetup {
+
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration,
-        // "DuringStakingVariableRewardRate2WithoutWithdral:
-        // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
@@ -578,13 +350,10 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is StakingSetup {
 
 // ------------------------------------
 
-// contract DuringStakingVariableRewardRate3WithoutWithdral is DepositSetup3 {
 contract DuringStakingVariableRewardRate3WithoutWithdral is StakingSetup {
+
     constructor(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) {
         STAKING_PERCENTAGE_DURATION = _stakingPercentageDuration;
-        // require(_claimPercentageDuration <= _stakingPercentageDuration,
-        // "DuringStakingVariableRewardRate3WithoutWithdral:
-        // _claimPercentageDuration > _stakingPercentageDuration");
         CLAIM_PERCENTAGE_DURATION = _claimPercentageDuration;
     }
 
@@ -688,8 +457,8 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is StakingSetup {
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
-// contract DuringStakingVariableRewardRate1WithWithdral is DepositSetup1 {
 contract DuringStakingVariableRewardRate1WithWithdral is StakingSetup {
+
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
@@ -737,9 +506,6 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingSetup {
         uint256 userAliceClaimedRewards;
         if (CLAIM_PERCENTAGE_DURATION > 0) {
             gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
-            // uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
-            // / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
-            // checkRewardPerToken( expectedRewardPerToken, 0, 0 ); // no delta needed
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
         }
@@ -785,11 +551,12 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingSetup {
 }
 
 // ------------------------------------
+
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-// contract DuringStakingVariableRewardRate2WithWithdral is DepositSetup2 {
 contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
+
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
@@ -842,9 +609,6 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
 
         if (CLAIM_PERCENTAGE_DURATION > 0) {
             gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
-            // uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
-            // / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
-            // checkRewardPerToken( expectedRewardPerToken, 0, 0 ); // no delta needed
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
             userBobClaimedRewards =
@@ -864,7 +628,6 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
         );
         debugLog(
             "Staking duration (%%) total staking reward duration = ",
-            // STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
             stakingPercentageDurationReached * REWARD_INITIAL_DURATION / PERCENT_100
         );
 
@@ -880,8 +643,8 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%     ) :  1000000000000000000");
 
-        uint256 delta = STAKING_PERCENTAGE_DURATION < PERCENT_10 ? DELTA_0_4 : DELTA_0_04; // Longer staking period =
-            // better accuracy : less delta
+        // Longer staking period = better accuracy : less delta
+        uint256 delta = STAKING_PERCENTAGE_DURATION < PERCENT_10 ? DELTA_0_4 : DELTA_0_04;
 
         userAliceTotalExpectedRewards =
             expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
@@ -911,8 +674,8 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-// contract DuringStakingVariableRewardRate3WithWithdral is DepositSetup3 {
 contract DuringStakingVariableRewardRate3WithWithdral is StakingSetup {
+
     // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
     uint8 internal immutable DIVIDE = 2; // Liquidity is withdrawn at 50% of the staking duration
 
@@ -971,9 +734,6 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingSetup {
 
         if (CLAIM_PERCENTAGE_DURATION > 0) {
             gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
-            // uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
-            // / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
-            // checkRewardPerToken( expectedRewardPerToken, 0, 0 ); // no delta needed
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
             userBobClaimedRewards =
@@ -995,7 +755,6 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingSetup {
         );
         debugLog(
             "Staking duration (%%) total staking reward duration = ",
-            // STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
             stakingPercentageDurationReached * REWARD_INITIAL_DURATION / PERCENT_100
         );
         checkStakingPeriod(stakingPercentageDurationReached);
@@ -1013,8 +772,8 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingSetup {
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%     ) :  1000000000000000000");
 
-        uint256 delta = STAKING_PERCENTAGE_DURATION < PERCENT_10 ? DELTA_0_4 : DELTA_0_04; // Longer staking period =
-            // better accuracy : less delta
+        // Longer staking period = better accuracy : less delta
+        uint256 delta = STAKING_PERCENTAGE_DURATION < PERCENT_10 ? DELTA_0_4 : DELTA_0_04;
 
         userAliceTotalExpectedRewards =
             expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);

@@ -2,9 +2,7 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import { StakingSetup1, StakingSetup2 } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
 import { StakingSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
-// import { StakingPreSetup, Erc20Setup1 } from "./StakingRewards2_commonbase.t.sol";
 import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 
 import { ONE_TOKEN } from "./TestsConstants.sol";
@@ -28,10 +26,8 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // /*
 
-// contract CheckStakingPermissions2 is StakingSetup2 {
 contract CheckStakingPermissions2 is StakingSetup {
     function setUp() public virtual override {
-        // console.log("CheckStakingPermissions2 setUp()");
         debugLog("CheckStakingPermissions2 setUp() start");
         StakingSetup.setUp();
         debugLog("CheckStakingPermissions2 setUp() end");
@@ -142,8 +138,6 @@ contract CheckStakingPermissions2 is StakingSetup {
     }
 
     function testStakingNotifyVariableRewardAmount() public {
-        // vm.prank(erc20Minter);
-        // rewardErc20.mint( address(stakingRewards2), REWARD_INITIAL_AMOUNT );
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -173,8 +167,9 @@ contract CheckStakingPermissions2 is StakingSetup {
         verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
     }
 
+    // Previous reward epoch must have ended before setting a new duration
     function testStakingSetRewardsDurationAfterEpochEnd() public {
-        // Previous reward epoch must have ended before setting a new duration
+
         vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
 
         vm.prank(userAlice);
@@ -264,10 +259,8 @@ contract CheckStakingPermissions2 is StakingSetup {
 
 // /*
 
-// contract CheckStakingConstantRewardLimits1 is StakingSetup1 {
 contract CheckStakingConstantRewardLimits1 is StakingSetup {
     function setUp() public virtual override {
-        // console.log("CheckStakingPermissions2 setUp()");
         debugLog("CheckStakingConstantRewardLimits1 setUp() start");
         StakingSetup.setUp();
         debugLog("CheckStakingConstantRewardLimits1 setUp() end");
@@ -376,8 +369,6 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup {
 
 // 13 tests
 
-
-// contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup1 {
 contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup {
     function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
         debugLog("CheckStakingConstantRewardLimits2 setUp() start");
@@ -879,6 +870,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup {
 
     // check no minted reward
     function testStakingNotifyVariableRewardAmountFail4_2() public {
+
         // Reward rate : 10% yearly
         // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
         /* solhint-disable var-name-mixedcase */

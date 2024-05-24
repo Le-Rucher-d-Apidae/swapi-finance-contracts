@@ -4,8 +4,6 @@ pragma solidity >= 0.8.0 < 0.9.0;
 
 import {
     StakingPreSetup,
-    // , Erc20Setup1
-    // Erc20Setup2
     Erc20Setup
 } from
 // , Erc20Setup3
@@ -35,39 +33,30 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // ----------------
 
-// contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup2 {
 contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
-    // address payable[] internal users;
-    // address internal userAlice;
-    //   uint256 internal immutable INITIAL_BLOCK_TIMESTAMP = block.timestamp;
-    //   uint256 internal immutable INITIAL_BLOCK_NUMBER = block.number;
 
     // Reward rate : 10% yearly
     // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
-    /* solhint-disable var-name-mixedcase */
 
+    /* solhint-disable var-name-mixedcase */
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
-        // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN;
+    // 100 token = 100 000 000 000 000 000 000 = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
     uint256 CONSTANT_REWARDRATE_PERTOKENSTORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
 
     uint256 ALICE_DEPOSIT_AMOUNT = 20 * ONE_TOKEN; // 20 tokens
     uint256 BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
-        /* solhint-enable var-name-mixedcase */
+    /* solhint-enable var-name-mixedcase */
 
-    // function setUp() public virtual override(Erc20Setup2, StakingPreSetup) {
     function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
-        //   function setUp() public virtual override(StakingPreSetup) {
         debugLog("CheckStakingConstantRewardLimits setUp() start");
         verboseLog("StakingSetup1");
         StakingPreSetup.setUp();
         Erc20Setup.setUp();
-        // utils = new Utils();
-        // users = utils.createUsers(5);
         vm.prank(userStakingRewardAdmin);
         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
@@ -141,6 +130,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
         debugLog("Set rewards duration at :");
         displayTime();
 
+        // Start rewarding
         vm.startPrank(userStakingRewardAdmin);
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
         emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
@@ -187,16 +177,16 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
 
         gotoTimestamp(STAKING_TIMESTAMP + 200);
         /*
-      // Alice deposit tokens AFTER rewards start
-      debugLog("Alice deposit tokens AFTER rewards start at :");
-      displayTime();
+        // Alice deposit tokens AFTER rewards start
+        debugLog("Alice deposit tokens AFTER rewards start at :");
+        displayTime();
 
-      vm.startPrank(userAlice);
-      stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
-      vm.expectEmit(true, true, false, false, address(stakingRewards2));
-      emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
-      stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
-      vm.stopPrank();
+        vm.startPrank(userAlice);
+        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+        vm.stopPrank();
         */
 
         // Check Alice and Bob staking balances
@@ -220,5 +210,3 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
         checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
     }
 } // CheckStakingConstantRewardLimits2
-
-// // */

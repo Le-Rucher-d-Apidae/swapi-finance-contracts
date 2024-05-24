@@ -2,7 +2,6 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import { StakingSetup2 } from "./StakingRewards2_setups.t.sol";
 import { StakingSetup } from "./StakingRewards2_setups.t.sol";
 import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
@@ -14,7 +13,6 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // /*
 
-// contract CheckStakingPermissions2 is StakingSetup2 {
 contract CheckStakingPermissions2 is StakingSetup {
     function setUp() public virtual override {
         debugLog("CheckStakingPermissions2 setUp() start");
@@ -114,21 +112,13 @@ contract CheckStakingPermissions2 is StakingSetup {
     }
 
     function testStakingNotifyRewardAmountLimit1() public {
-        uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION; // computed  reward rate must exceed by at
-            // least one unit for raising an error
+        // computed reward rate must exceed by at least one unit for raising an error
+        // one unit equals to REWARD_INITIAL_DURATION
+        uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION - 1;
         vm.prank(userStakingRewardAdmin);
-        notifyRewardAmount(rewardAmountToAddForRaisingError - 1);
+        notifyRewardAmount( REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError );
         verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError - 1);
         verboseLog("Staking contract: Event RewardAdded emitted");
-    }
-
-    //
-    function testStakingNotifyRewardAmountNoError() public {
-        // not enough reward balance BUT no error raised because of rounding
-        uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_AMOUNT + REWARD_INITIAL_DURATION - 1;
-        vm.prank(userStakingRewardAdmin);
-        notifyRewardAmount(rewardAmountToAddForRaisingError);
-        verboseLog("Staking contract: Not enough reward balance");
     }
 
     function testStakingRewardAmountTooHigh1() public {
@@ -147,11 +137,11 @@ contract CheckStakingPermissions2 is StakingSetup {
         verboseLog("Staking contract: Not enough reward balance");
     }
 
-    function testStakingNotifyRewardAmountNotTooHigh1() public {
-        // not enough reward balance BUT no error raised because of rounding
+    // not enough reward balance BUT no error raised because of rounding
+    function testStakingNotifyRewardAmountNotTooHighEnough1() public {
         uint256 additionnalRewardAmount = REWARD_INITIAL_DURATION;
 
-        // Mint reward ERC20 a second time
+        // Mint additionnal reward ERC20
         vm.prank(erc20Minter);
         rewardErc20.mint(address(stakingRewards2), additionnalRewardAmount);
         //
@@ -162,31 +152,6 @@ contract CheckStakingPermissions2 is StakingSetup {
         verboseLog("Staking contract: Only owner can notifyRewardAmount of an additionnal ", additionnalRewardAmount);
         verboseLog("Staking contract: Event RewardAdded emitted");
     }
-
-
-    // function testStakingRewardAmountTooHigh2() public {
-    //     uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION; // computed  reward rate must exceed by at
-    //         // least one unit for raising an error
-
-    //     // Mint reward ERC20 a second time
-    //     vm.prank(erc20Minter);
-    //     rewardErc20.mint(address(stakingRewards2), rewardAmountToAddForRaisingError);
-
-    //     vm.prank(userStakingRewardAdmin);
-    //     // Check revert
-    //     vm.expectRevert(
-    //         abi.encodeWithSelector(
-    //             ProvidedRewardTooHigh.selector,
-    //             rewardAmountToAddForRaisingError * 2,
-    //             REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError,
-    //             REWARD_INITIAL_DURATION
-    //         )
-    //     );
-    //     stakingRewards2.notifyRewardAmount(rewardAmountToAddForRaisingError * 2);
-
-    //     verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError + 1);
-    //     verboseLog("Staking contract: Event RewardAdded emitted");
-    // }
 
     function testStakingSetRewardsDuration() public {
         // Previous reward epoch must have ended before setting a new duration
@@ -225,7 +190,6 @@ contract CheckStakingPermissions2 is StakingSetup {
                 RewardPeriodInProgress.selector, block.timestamp, STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
             )
         );
-        // vm.expectRevert( bytes(_MMPOR000) );
         stakingRewards2.setRewardsDuration(1);
 
         // Previous reward epoch must have ended before setting a new duration

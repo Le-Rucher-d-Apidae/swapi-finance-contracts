@@ -44,6 +44,7 @@ import {
 // 42+ tests
 
 // /*
+
 contract DuringStaking1_WithoutWithdral_0 is DuringStaking1WithoutWithdral(PERCENT_0, PERCENT_0) { }
 
 contract DuringStaking1_WithoutWithdral_1_0_1 is DuringStaking1WithoutWithdral(PERCENT_1, PERCENT_0_1) { }
@@ -127,6 +128,7 @@ contract DuringStaking1_WithoutWithdral_201__90 is DuringStaking1WithoutWithdral
 contract DuringStaking1_WithoutWithdral_220__0 is DuringStaking1WithoutWithdral(PERCENT_220, PERCENT_0) { }
 
 contract DuringStaking1_WithoutWithdral_220__99 is DuringStaking1WithoutWithdral(PERCENT_220, PERCENT_99) { }
+
 // */
 
 // ------------------------------------
@@ -220,6 +222,7 @@ contract DuringStaking2_WithoutWithdral_201__90 is DuringStaking2WithoutWithdral
 contract DuringStaking2_WithoutWithdral_220__0 is DuringStaking2WithoutWithdral(PERCENT_220, PERCENT_0) { }
 
 contract DuringStaking2_WithoutWithdral_220__99 is DuringStaking2WithoutWithdral(PERCENT_220, PERCENT_99) { }
+
 // */
 // ------------------------------------
 
@@ -309,6 +312,7 @@ contract DuringStaking3_WithoutWithdral_201__90 is DuringStaking3WithoutWithdral
 contract DuringStaking3_WithoutWithdral_220__0 is DuringStaking3WithoutWithdral(PERCENT_220, PERCENT_0) { }
 
 contract DuringStaking3_WithoutWithdral_220__99 is DuringStaking3WithoutWithdral(PERCENT_220, PERCENT_99) { }
+
 // */
 
 // ----------------------------------------------------------------------------

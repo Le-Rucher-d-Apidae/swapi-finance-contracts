@@ -31,6 +31,7 @@ import {
 
 // TODO : move to utils
 contract TestLog is Test {
+
     bool internal debug = true; // TODO : set to false
     bool internal verbose = true; // TODO : set to false
     Utils internal utils;
@@ -166,140 +167,6 @@ contract TestLog is Test {
 
 // ----------------
 
-// contract UsersSetup0 is TestLog {
-//     address payable[] internal users;
-
-//     uint256 internal constant MAX_USERS = 6;
-//     address internal erc20Admin;
-//     address internal erc20Minter;
-//     address internal userStakingRewardAdmin;
-
-//     function setUp() public virtual {
-//         verboseLog("UsersSetup0 setUp()");
-//         debugLog("UsersSetup0 setUp() start");
-//         utils = new Utils();
-//         users = utils.createUsers(MAX_USERS);
-
-//         erc20Admin = users[0];
-//         vm.label(erc20Admin, "ERC20Admin");
-//         erc20Minter = users[1];
-//         vm.label(erc20Minter, "ERC20Minter");
-//         userStakingRewardAdmin = users[2];
-//         vm.label(userStakingRewardAdmin, "StakingRewardAdmin");
-//     }
-// } // UsersSetup0
-
-// contract UsersSetup1 is UsersSetup0 {
-//     address internal userAlice;
-
-//     function setUp() public virtual override {
-//         verboseLog("UsersSetup1 setUp()");
-//         debugLog("UsersSetup1 setUp() start");
-//         UsersSetup0.setUp();
-
-//         userAlice = users[3];
-//         vm.label(userAlice, "Alice");
-//         debugLog("UsersSetup1 setUp() end");
-//     }
-// } // UsersSetup1
-
-// contract UsersSetup2 is UsersSetup1 {
-//     address internal userBob;
-
-//     function setUp() public virtual override {
-//         verboseLog("UsersSetup2 setUp()");
-//         debugLog("UsersSetup2 setUp() start");
-
-//         UsersSetup1.setUp();
-
-//         userBob = users[4];
-//         vm.label(userBob, "Bob");
-
-//         debugLog("UsersSetup2 setUp() end");
-//     }
-// } // UsersSetup2
-
-// // ----------------
-
-// contract UsersSetup3 is UsersSetup2 {
-//     address internal userCherry;
-
-//     function setUp() public virtual override {
-//         verboseLog("UsersSetup3 setUp()");
-//         debugLog("UsersSetup3 setUp() start");
-//         UsersSetup2.setUp();
-
-//         userCherry = users[5];
-//         vm.label(userCherry, "Cherry");
-
-//         debugLog("UsersSetup3 setUp() end");
-//     }
-// } // UsersSetup3
-
-// ------------------------------------
-
-
-// contract Erc20Setup0 is UsersSetup0 {
-//     RewardERC20 internal rewardErc20;
-//     StakingERC20 internal stakingERC20;
-
-//     function setUp() public virtual override(UsersSetup0) {
-//         debugLog("Erc20Setup0 setUp() start");
-//         UsersSetup0.setUp();
-//         verboseLog("Erc20Setup0 setUp()");
-//         rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-//         stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
-//         debugLog("Erc20Setup0 setUp() end");
-//     }
-// } // Erc20Setup0
-
-// contract Erc20Setup1 is Erc20Setup0, UsersSetup1 {
-//     uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
-
-//     function setUp() public virtual override(Erc20Setup0, UsersSetup1) {
-//         debugLog("Erc20Setup1 setUp() start");
-//         UsersSetup1.setUp();
-//         verboseLog("Erc20Setup1 setUp()");
-//         vm.startPrank(erc20Minter);
-//         debugLog("Erc20Setup1 setUp() minting Alice : %s", ALICE_STAKINGERC20_MINTEDAMOUNT);
-//         stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
-//         vm.stopPrank();
-//         debugLog("Erc20Setup1 setUp() end");
-//     }
-// } // Erc20Setup1
-
-// contract Erc20Setup2 is Erc20Setup1, UsersSetup2 {
-//     uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
-
-//     function setUp() public virtual override(Erc20Setup1, UsersSetup2) {
-//         debugLog("Erc20Setup2 setUp() start");
-//         Erc20Setup1.setUp();
-//         UsersSetup2.setUp();
-//         verboseLog("Erc20Setup2 setUp()");
-//         vm.startPrank(erc20Minter);
-//         stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
-//         vm.stopPrank();
-//         debugLog("Erc20Setup2 setUp() end");
-//     }
-// } // Erc20Setup2
-
-// contract Erc20Setup3 is Erc20Setup2, UsersSetup3 {
-//     uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
-
-//     function setUp() public virtual override(Erc20Setup2, UsersSetup3) {
-//         debugLog("Erc20Setup3 setUp() start");
-//         Erc20Setup2.setUp();
-//         UsersSetup3.setUp();
-//         verboseLog("Erc20Setup3 setUp()");
-//         vm.startPrank(erc20Minter);
-//         stakingERC20.mint(userCherry, CHERRY_STAKINGERC20_MINTEDAMOUNT);
-//         vm.stopPrank();
-//         debugLog("Erc20Setup3 setUp() end");
-//     }
-// } // Erc20Setup3
-
-
-
 contract UsersSetup is TestLog {
     address payable[] internal users;
 
@@ -369,8 +236,6 @@ contract Erc20Setup is UsersSetup {
         debugLog("Erc20Setup0 setUp() end");
     }
 } // Erc20Setup
-
-
 
 // --------------------------------------------------------
 
@@ -590,18 +455,14 @@ abstract contract StakingPreSetup is _StakingPreSetup {
                     debugLog("checkStakingRewards: assertApproxEqAbs stakerRewards= ", _unitsDelta);
                     assertApproxEqAbs(stakerRewards, _expectedRewardAmount, _unitsDelta);
                 } else {
-                    // debugLog("checkStakingRewards: 1");
                     if (_percentDelta == 0) {
-                        // debugLog("checkStakingRewards: 2");
                         assertEq(stakerRewards, _expectedRewardAmount);
                     } else {
-                        // debugLog("checkStakingRewards: 3");
                         assertApproxEqRel(stakerRewards, _expectedRewardAmount, _percentDelta);
                     }
                 }
             }
         }
-        // debugLog("checkStakingRewards: 4");
         verboseLog(_stakerName);
         verboseLog(" rewards: ", stakerRewards);
     }
