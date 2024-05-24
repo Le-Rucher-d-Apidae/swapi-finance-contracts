@@ -85,6 +85,14 @@ contract CheckStakingPermissions2 is StakingSetup {
         vm.stopPrank();
     }
 
+    function testStakingPauseDuringRewarding() public {
+        // start rewarding
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
+        testStakingPause();
+    }
+
     function testStakingNotifyRewardAmountMin() public {
         verboseLog("Only staking reward contract owner can notifyRewardAmount");
 
@@ -153,9 +161,13 @@ contract CheckStakingPermissions2 is StakingSetup {
         verboseLog("Staking contract: Event RewardAdded emitted");
     }
 
-    function testStakingSetRewardsDuration() public {
+    function testSetRewardsDurationAfterRewardEnd() public {
+        // start rewarding
+        vm.prank(userStakingRewardAdmin);
+        notifyRewardAmount(REWARD_INITIAL_AMOUNT);
+
         // Previous reward epoch must have ended before setting a new duration
-        vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
+        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1);
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -179,7 +191,7 @@ contract CheckStakingPermissions2 is StakingSetup {
         verboseLog("Staking contract: Event RewardsDurationUpdated emitted");
     }
 
-    function testStakingSetRewardsDurationBeforeEpochEnd() public {
+    function testStakingSetRewardsDurationBeforeRewardEnd() public {
         // Previous reward epoch must have ended before setting a new duration
         vm.startPrank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -193,7 +205,7 @@ contract CheckStakingPermissions2 is StakingSetup {
         stakingRewards2.setRewardsDuration(1);
 
         // Previous reward epoch must have ended before setting a new duration
-        vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
+        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
         vm.expectRevert(
             abi.encodeWithSelector(
                 RewardPeriodInProgress.selector, block.timestamp, STAKING_TIMESTAMP + REWARD_INITIAL_DURATION

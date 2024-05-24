@@ -580,11 +580,11 @@ abstract contract StakingPreSetup is _StakingPreSetup {
     }
 
     // Goto some staking time within period
-    function gotoStakingPeriod(uint256 _stakingPercentageDurationReached) internal returns (uint256) {
-        debugLog("gotoStakingPeriod: _stakingPercentageDurationReached : ", _stakingPercentageDurationReached);
+    function gotoStakingPercentage(uint256 _stakingPercentageDurationReached) internal returns (uint256) {
+        debugLog("gotoStakingPercentage: _stakingPercentageDurationReached : ", _stakingPercentageDurationReached);
         assertTrue(
             _stakingPercentageDurationReached <= STAKING_PERCENTAGE_DURATION,
-            "gotoStakingPeriod: _stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
+            "gotoStakingPercentage: _stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
         );
         uint256 gotoStakingPeriodResult = STAKING_TIMESTAMP
             + (
@@ -592,8 +592,10 @@ abstract contract StakingPreSetup is _StakingPreSetup {
                     ? REWARD_INITIAL_DURATION
                     : REWARD_INITIAL_DURATION * _stakingPercentageDurationReached / PERCENT_100
             );
-        verboseLog("gotoStakingPeriod: gotoStakingPeriodResult = ", gotoStakingPeriodResult);
-        vm.warp(gotoStakingPeriodResult);
+        verboseLog("gotoStakingPercentage: gotoStakingPeriodResult = ", gotoStakingPeriodResult);
+
+        gotoTimestamp(gotoStakingPeriodResult);
+
         return gotoStakingPeriodResult;
     }
 

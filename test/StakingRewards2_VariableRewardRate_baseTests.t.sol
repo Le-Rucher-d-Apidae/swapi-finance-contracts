@@ -97,6 +97,14 @@ contract CheckStakingPermissions2 is StakingSetup {
         vm.stopPrank();
     }
 
+    function testStakingPauseDuringRewarding() public {
+        // start rewarding
+        vm.prank(userStakingRewardAdmin);
+        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+
+        testStakingPause();
+    }
+
     function testStakingNotifyVariableRewardAmountMin() public {
         verboseLog("Only staking reward contract owner can notifyVariableRewardAmount 1, 1");
 
@@ -168,7 +176,7 @@ contract CheckStakingPermissions2 is StakingSetup {
 
     // Previous reward epoch must have ended before setting a new duration
     function testStakingSetRewardsDurationAfterEpochEnd() public {
-        vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
+        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -215,7 +223,7 @@ contract CheckStakingPermissions2 is StakingSetup {
         );
 
         // Previous reward epoch must have ended before setting a new duration
-        vm.warp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
+        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));

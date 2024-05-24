@@ -224,12 +224,12 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is StakingSetup {
         uint256 userAliceClaimedRewards;
 
         if (CLAIM_PERCENTAGE_DURATION > 0) {
-            gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
+            gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
         }
 
-        gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
@@ -299,14 +299,14 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is StakingSetup {
         uint256 userBobClaimedRewards;
 
         if (CLAIM_PERCENTAGE_DURATION > 0) {
-            gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
+            gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
             userBobClaimedRewards =
                 checkUserClaim(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
         }
 
-        gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
@@ -392,7 +392,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is StakingSetup {
         uint256 userCherryClaimedRewards;
 
         if (CLAIM_PERCENTAGE_DURATION > 0) {
-            gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
+            gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
             userBobClaimedRewards =
@@ -401,7 +401,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is StakingSetup {
                 checkUserClaim(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", DELTA_0_015, rewardErc20);
         }
 
-        gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
@@ -495,13 +495,13 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingSetup {
         uint256 userAliceExpectedRewards;
         uint256 userAliceClaimedRewards;
         if (CLAIM_PERCENTAGE_DURATION > 0) {
-            gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
+            gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
         }
 
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
-        gotoStakingPeriod(stakingPercentageDurationReached);
+        gotoStakingPercentage(stakingPercentageDurationReached);
 
         stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -521,7 +521,7 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingSetup {
         // Alice withdraws all
         withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
 
-        gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%     ) :  1000000000000000000");
 
@@ -596,7 +596,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
         uint256 userBobClaimedRewards;
 
         if (CLAIM_PERCENTAGE_DURATION > 0) {
-            gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
+            gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
             userBobClaimedRewards =
@@ -604,7 +604,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
         }
 
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
-        gotoStakingPeriod(stakingPercentageDurationReached);
+        gotoStakingPercentage(stakingPercentageDurationReached);
 
         stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -627,7 +627,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingSetup {
         // Bob withdraws all
         withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
 
-        gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%     ) :  1000000000000000000");
 
@@ -719,7 +719,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingSetup {
         uint256 userCherryClaimedRewards;
 
         if (CLAIM_PERCENTAGE_DURATION > 0) {
-            gotoStakingPeriod(CLAIM_PERCENTAGE_DURATION);
+            gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
             userAliceClaimedRewards =
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
             userBobClaimedRewards =
@@ -729,7 +729,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingSetup {
         }
 
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
-        gotoStakingPeriod(stakingPercentageDurationReached);
+        gotoStakingPercentage(stakingPercentageDurationReached);
 
         stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -754,7 +754,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingSetup {
         // Cherry withdraws all
         withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
 
-        gotoStakingPeriod(STAKING_PERCENTAGE_DURATION);
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%     ) :  1000000000000000000");
 
