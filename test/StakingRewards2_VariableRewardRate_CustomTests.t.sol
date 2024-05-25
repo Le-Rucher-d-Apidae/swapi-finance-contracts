@@ -2,7 +2,6 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 import { StakingPreSetupErc20 } from "./StakingRewards2_commonbase.t.sol";
 
 import { DELTA_0_015, ONE_TOKEN } from "./TestsConstants.sol";
@@ -14,9 +13,7 @@ import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 
 // ----------------
 
-// contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
 contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
-
     // Reward rate : 10% yearly
     // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
 
@@ -38,8 +35,6 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     function setUp() public virtual override(StakingPreSetupErc20) {
         debugLog("CheckStakingConstantRewardLimits setUp() start");
         verboseLog("StakingSetup1");
-        // StakingPreSetup.setUp();
-        // Erc20Setup.setUp();
         StakingPreSetupErc20.setUp();
         vm.prank(userStakingRewardAdmin);
         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));

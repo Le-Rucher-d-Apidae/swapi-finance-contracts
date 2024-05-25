@@ -214,7 +214,6 @@ contract Erc20Setup is UsersSetup {
     uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
     /* solhint-enable var-name-mixedcase */
 
-    // function setUp() public virtual override(UsersSetup0) {
     function setUp() public virtual override(UsersSetup) {
         debugLog("Erc20Setup0 setUp() start");
         verboseLog("Erc20Setup0 setUp()");
@@ -323,7 +322,10 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     function checkStakingTotalSupplyStaked() internal {
         debugLog("StakingPreSetupUtils:checkStakingTotalSupplyStaked");
         uint256 stakingRewardsTotalSupply = stakingRewards2.totalSupply();
-        debugLog("StakingPreSetupUtils:checkStakingTotalSupplyStaked: stakingRewardsTotalSupply = ", stakingRewardsTotalSupply);
+        debugLog(
+            "StakingPreSetupUtils:checkStakingTotalSupplyStaked: stakingRewardsTotalSupply = ",
+            stakingRewardsTotalSupply
+        );
         assertEq(TOTAL_STAKED_AMOUNT, stakingRewardsTotalSupply);
     }
 
@@ -339,14 +341,13 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     }
 
     function getLastRewardTime() internal view returns (uint256) {
-        // debugLog("getLastRewardTime");
+        debugLog("StakingPreSetupUtils: getLastRewardTime");
         uint256 lastTimeReward = (
             block.timestamp < STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
                 ? block.timestamp
                 : STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
-        ); // last time reward
-
-        verboseLog("StakingPreSetupUtils:getLastRewardTime: lastTimeReward = ", lastTimeReward);
+        );
+        verboseLog("StakingPreSetupUtils:getLastRewardTime: lastTimeReward = %s", lastTimeReward);
         return lastTimeReward;
     }
 
@@ -375,10 +376,13 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
         debugLog("StakingPreSetupUtils:checkRewardPerToken: _expectedRewardPerToken = ", _expectedRewardPerToken);
         uint256 stakingRewardsRewardPerToken = stakingRewards2.rewardPerToken();
         if (stakingRewardsRewardPerToken != _expectedRewardPerToken) {
-            debugLog("StakingPreSetupUtils:checkRewardPerToken: stakingRewardsRewardPerToken = ", stakingRewardsRewardPerToken);
+            debugLog(
+                "StakingPreSetupUtils:checkRewardPerToken: stakingRewardsRewardPerToken = ",
+                stakingRewardsRewardPerToken
+            );
             if (_expectedRewardPerToken == 0) {
                 fail(
-                    "StakingPreSetupUtils: checkRewardPerToken: stakingReward != expected && _expectedRewardPerToken == 0"
+                    "StakingPreSetupUtils:checkRewardPerToken: stakingReward!=expected && _expectedRewardPerToken == 0"
                 );
             }
             uint256 percentDelta = stdMath.percentDelta(stakingRewardsRewardPerToken, _expectedRewardPerToken);
@@ -446,16 +450,23 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
         if (stakerRewards != _expectedRewardAmount) {
             debugLog("stakerRewards != _expectedRewardAmount");
             if (_expectedRewardAmount == 0) {
-                fail("StakingSetup: StakingPreSetupUtils:checkStakingRewards: rewards != _expected && _expectedRewardAmount == 0");
+                fail("StakingPreSetupUtils:checkStakingRewards: rewards != _expected && _expectedRewardAmount == 0");
             }
             uint256 percentDelta = stdMath.percentDelta(stakerRewards, _expectedRewardAmount);
             debugLog("StakingPreSetupUtils:checkStakingRewards: delta = ", percentDelta);
             if (percentDelta > _percentDelta) {
                 if (_unitsDelta > 0) {
                     debugLog("StakingPreSetupUtils:checkStakingRewards: _unitsDelta = ", _unitsDelta);
-                    debugLog("StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs stakerRewards= ", stakerRewards);
-                    debugLog("StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs _expectedRewardAmount= ", _expectedRewardAmount);
-                    debugLog("StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs stakerRewards= ", _unitsDelta);
+                    debugLog(
+                        "StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs stakerRewards= ", stakerRewards
+                    );
+                    debugLog(
+                        "StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs _expectedRewardAmount= ",
+                        _expectedRewardAmount
+                    );
+                    debugLog(
+                        "StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs stakerRewards= ", _unitsDelta
+                    );
                     assertApproxEqAbs(stakerRewards, _expectedRewardAmount, _unitsDelta);
                 } else {
                     if (_percentDelta == 0) {
@@ -486,7 +497,9 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
             uint256 stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
             debugLog("StakingPreSetupUtils:checkUserClaim: stakingElapsedTime = ", stakingElapsedTime);
             uint256 rewardErc20UserBalance = rewardErc20.balanceOf(_user);
-            verboseLog("StakingPreSetupUtils:checkUserClaim: before: user (reward) balance = ", rewardErc20UserBalance);
+            verboseLog(
+                "StakingPreSetupUtils:checkUserClaim: before: user (reward) balance = ", rewardErc20UserBalance
+            );
             uint256 expectedRewards =
                 expectedStakingRewards(_stakeAmount, stakingElapsedTime, REWARD_INITIAL_DURATION);
             verboseLog("StakingPreSetupUtils:checkUserClaim: expectedRewards = ", expectedRewards);
@@ -497,7 +510,9 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
             // Check user rewards balance before/after claim
             uint256 rewardErc20UserBalanceAfterClaim = rewardErc20.balanceOf(_user);
             claimedRewards_ = rewardErc20UserBalanceAfterClaim - rewardErc20UserBalance;
-            verboseLog("StakingPreSetupUtils:checkUserClaim: after: user reward balance = ", rewardErc20UserBalanceAfterClaim);
+            verboseLog(
+                "StakingPreSetupUtils:checkUserClaim: after: user reward balance = ", rewardErc20UserBalanceAfterClaim
+            );
             verboseLog("StakingPreSetupUtils:checkUserClaim: -> user CLAIMEDREWARDS = ", claimedRewards_);
             if (_delta == 0) {
                 assertEq(expectedRewards, claimedRewards_);
@@ -513,7 +528,9 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     function _checkRewardForDuration(uint256 _delta) internal {
         debugLog("StakingPreSetupUtils:_checkRewardForDuration");
         if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
-            warningLog("StakingPreSetupUtils:_checkRewardForDuration: REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION");
+            warningLog(
+                "StakingPreSetupUtils:_checkRewardForDuration: REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION"
+            );
             warningLog("StakingPreSetupUtils:_checkRewardForDuration: => reward is likely to be ZERO !");
         }
         /* solhint-disable var-name-mixedcase */
@@ -546,7 +563,10 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     }
 
     function checkStakingPeriod(uint256 _stakingPercentageDurationReached) internal {
-        debugLog("StakingPreSetupUtils:checkStakingPeriod: _stakingPercentageDurationReached : ", _stakingPercentageDurationReached);
+        debugLog(
+            "StakingPreSetupUtils:checkStakingPeriod: _stakingPercentageDurationReached : ",
+            _stakingPercentageDurationReached
+        );
         assertTrue(
             _stakingPercentageDurationReached <= STAKING_PERCENTAGE_DURATION,
             "StakingPreSetupUtils:checkStakingPeriod: _stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
@@ -568,7 +588,9 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
         debugLog("StakingPreSetupUtils:withdrawStake: _user : ", _user);
         debugLog("StakingPreSetupUtils:withdrawStake: _amount : ", _amount);
         uint256 balanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_user);
-        debugLog("StakingPreSetupUtils:withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal);
+        debugLog(
+            "StakingPreSetupUtils:withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal
+        );
         // Check emitted event
         vm.expectEmit(true, true, false, false, address(stakingRewards2));
         emit StakingRewards2Events.Withdrawn(_user, _amount);
@@ -581,10 +603,13 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
 
     // Goto some staking time within period
     function gotoStakingPercentage(uint256 _stakingPercentageDurationReached) internal returns (uint256) {
-        debugLog("StakingPreSetupUtils:gotoStakingPercentage: _stakingPercentageDurationReached : ", _stakingPercentageDurationReached);
+        debugLog(
+            "StakingPreSetupUtils:gotoStakingPercentage: _stakingPercentageDurationReached : ",
+            _stakingPercentageDurationReached
+        );
         assertTrue(
             _stakingPercentageDurationReached <= STAKING_PERCENTAGE_DURATION,
-            "StakingPreSetupUtils:gotoStakingPercentage: _stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
+            "StakingPreSetupUtils:gotoStakingPercentage:_stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
         );
         uint256 gotoStakingPeriodResult = STAKING_TIMESTAMP
             + (
@@ -618,7 +643,9 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
         uint256 stakingDuration = getStakingDuration() / _divide;
         debugLog("StakingPreSetupUtils:getRewardedStakingDuration: stakingDuration = ", stakingDuration);
         uint256 rewardedStakingDuration = getRewardDurationReached(stakingDuration);
-        verboseLog("StakingPreSetupUtils:getRewardedStakingDuration: rewardedStakingDuration = ", rewardedStakingDuration);
+        verboseLog(
+            "StakingPreSetupUtils:getRewardedStakingDuration: rewardedStakingDuration = ", rewardedStakingDuration
+        );
         return rewardedStakingDuration;
     }
 
@@ -639,9 +666,13 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
         internal
     {
         debugLog(
-            "StakingPreSetupUtils:notifyVariableRewardAmount: _constantRewardRatePerTokenStored : ", _constantRewardRatePerTokenStored
+            "StakingPreSetupUtils:notifyVariableRewardAmount: _constantRewardRatePerTokenStored : ",
+            _constantRewardRatePerTokenStored
         );
-        debugLog("StakingPreSetupUtils:notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ", _variableRewardMaxTotalSupply);
+        debugLog(
+            "StakingPreSetupUtils:notifyVariableRewardAmount: _variableRewardMaxTotalSupply : ",
+            _variableRewardMaxTotalSupply
+        );
 
         if (_userStakingRewardAdmin != address(0)) vm.prank(_userStakingRewardAdmin);
         // Check emitted events
@@ -696,13 +727,11 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
 } // StakingPreSetupUtils
 
 abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
-
-        /* solhint-disable var-name-mixedcase */
+    /* solhint-disable var-name-mixedcase */
     uint256 internal ALICE_STAKINGERC20_STAKEDAMOUNT;
     uint256 internal BOB_STAKINGERC20_STAKEDAMOUNT;
     uint256 internal CHERRY_STAKINGERC20_STAKEDAMOUNT;
     /* solhint-enable var-name-mixedcase */
-
 
     function setUp() public virtual override(StakingPreSetupUtils, Erc20Setup) {
         debugLog("StakingPreSetupErc20 setUp() start");
@@ -789,8 +818,6 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
     function checkCherryStake() internal {
         itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
     }
-
 } // StakingPreSetupErc20
-
 
 /* solhint-enable contract-name-camelcase */

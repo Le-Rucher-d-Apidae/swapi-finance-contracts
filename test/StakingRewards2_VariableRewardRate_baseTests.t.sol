@@ -2,9 +2,7 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-// import { StakingSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
 import { StakingPreSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
-// import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 
 import { ONE_TOKEN } from "./TestsConstants.sol";
 
@@ -27,11 +25,9 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // /*
 
-// contract CheckStakingPermissions2 is StakingSetup {
 contract CheckStakingPermissions2 is StakingPreSetup {
     function setUp() public virtual override {
         debugLog("CheckStakingPermissions2 setUp() start");
-        // StakingSetup.setUp();
         StakingPreSetup.setUp();
         debugLog("CheckStakingPermissions2 setUp() end");
     }
@@ -267,11 +263,9 @@ contract CheckStakingPermissions2 is StakingPreSetup {
 
 // /*
 
-// contract CheckStakingConstantRewardLimits1 is StakingSetup {
 contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     function setUp() public virtual override {
         debugLog("CheckStakingConstantRewardLimits1 setUp() start");
-        // StakingSetup.setUp();
         StakingPreSetup.setUp();
         debugLog("CheckStakingConstantRewardLimits1 setUp() end");
     }
