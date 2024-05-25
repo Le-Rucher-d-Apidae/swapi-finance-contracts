@@ -2,7 +2,8 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingSetup } from "./StakingRewards2_setups.t.sol";
+// import { StakingSetup } from "./StakingRewards2_setups.t.sol";
+import { StakingPreSetup } from "./StakingRewards2_setups.t.sol";
 import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
@@ -13,11 +14,13 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // /*
 
-contract CheckStakingPermissions2 is StakingSetup {
+// contract CheckStakingPermissions2 is StakingSetup {
+contract CheckStakingPermissions2 is StakingPreSetup {
     function setUp() public virtual override {
         debugLog("CheckStakingPermissions2 setUp() start");
         verboseLog("CheckStakingPermissions2 setUp()");
-        StakingSetup.setUp();
+        // StakingSetup.setUp();
+        StakingPreSetup.setUp();
         debugLog("CheckStakingPermissions2 setUp() end");
     }
 

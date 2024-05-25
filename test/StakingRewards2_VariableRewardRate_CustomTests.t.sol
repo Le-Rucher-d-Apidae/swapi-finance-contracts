@@ -2,9 +2,9 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingPreSetup, Erc20Setup } from
-// , Erc20Setup3
-"./StakingRewards2_commonbase.t.sol";
+// import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
+import { StakingPreSetupErc20 } from "./StakingRewards2_commonbase.t.sol";
+
 import { DELTA_0_015, ONE_TOKEN } from "./TestsConstants.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
@@ -14,7 +14,9 @@ import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 
 // ----------------
 
-contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
+// contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
+contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
+
     // Reward rate : 10% yearly
     // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
 
@@ -32,11 +34,13 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetup, Erc20Setup {
     uint256 internal constant BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
     /* solhint-enable var-name-mixedcase */
 
-    function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
+    // function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
+    function setUp() public virtual override(StakingPreSetupErc20) {
         debugLog("CheckStakingConstantRewardLimits setUp() start");
         verboseLog("StakingSetup1");
-        StakingPreSetup.setUp();
-        Erc20Setup.setUp();
+        // StakingPreSetup.setUp();
+        // Erc20Setup.setUp();
+        StakingPreSetupErc20.setUp();
         vm.prank(userStakingRewardAdmin);
         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
         assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");

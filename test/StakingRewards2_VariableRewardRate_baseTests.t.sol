@@ -2,8 +2,9 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
-import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
+// import { StakingSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
+import { StakingPreSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
+// import { StakingPreSetup, Erc20Setup } from "./StakingRewards2_commonbase.t.sol";
 
 import { ONE_TOKEN } from "./TestsConstants.sol";
 
@@ -26,10 +27,12 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // /*
 
-contract CheckStakingPermissions2 is StakingSetup {
+// contract CheckStakingPermissions2 is StakingSetup {
+contract CheckStakingPermissions2 is StakingPreSetup {
     function setUp() public virtual override {
         debugLog("CheckStakingPermissions2 setUp() start");
-        StakingSetup.setUp();
+        // StakingSetup.setUp();
+        StakingPreSetup.setUp();
         debugLog("CheckStakingPermissions2 setUp() end");
     }
 
@@ -264,10 +267,12 @@ contract CheckStakingPermissions2 is StakingSetup {
 
 // /*
 
-contract CheckStakingConstantRewardLimits1 is StakingSetup {
+// contract CheckStakingConstantRewardLimits1 is StakingSetup {
+contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     function setUp() public virtual override {
         debugLog("CheckStakingConstantRewardLimits1 setUp() start");
-        StakingSetup.setUp();
+        // StakingSetup.setUp();
+        StakingPreSetup.setUp();
         debugLog("CheckStakingConstantRewardLimits1 setUp() end");
     }
 
@@ -379,11 +384,12 @@ contract CheckStakingConstantRewardLimits1 is StakingSetup {
 
 // 13 tests
 
-contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup {
-    function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
+// contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup {
+contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
+    // function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
+    function setUp() public virtual override(StakingPreSetup) {
         debugLog("CheckStakingConstantRewardLimits2 setUp() start");
         StakingPreSetup.setUp();
-        Erc20Setup.setUp();
 
         vm.prank(userStakingRewardAdmin);
         stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));

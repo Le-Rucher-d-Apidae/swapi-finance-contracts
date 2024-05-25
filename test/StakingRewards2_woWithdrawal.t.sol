@@ -137,6 +137,7 @@ contract DuringStaking1_WithoutWithdral_220__99 is DuringStaking1WithoutWithdral
 // 42+ tests
 
 // /*
+
 contract DuringStaking2_WithoutWithdral_0__0 is DuringStaking2WithoutWithdral(PERCENT_0, PERCENT_0) { }
 
 contract DuringStaking2_WithoutWithdral_1__0 is DuringStaking2WithoutWithdral(PERCENT_1, PERCENT_0) { }
@@ -224,11 +225,14 @@ contract DuringStaking2_WithoutWithdral_220__0 is DuringStaking2WithoutWithdral(
 contract DuringStaking2_WithoutWithdral_220__99 is DuringStaking2WithoutWithdral(PERCENT_220, PERCENT_99) { }
 
 // */
+
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and keep staked amount until the end of staking period
 // 42+ tests
+
 // /*
+
 contract DuringStaking3_WithoutWithdral_0 is DuringStaking3WithoutWithdral(PERCENT_0, PERCENT_0) { }
 
 contract DuringStaking3_WithoutWithdral_1_0_1 is DuringStaking3WithoutWithdral(PERCENT_1, PERCENT_0_1) { }
