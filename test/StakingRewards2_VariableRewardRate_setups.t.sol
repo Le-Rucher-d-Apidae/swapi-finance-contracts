@@ -436,16 +436,20 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
         );
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
 
+        // Users withdraws all
+
+        userAliceTotalExpectedRewards =
+            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
+        userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
+
         // Alice withdraws all
-        withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%     ) :  1000000000000000000");
 
-        userAliceTotalExpectedRewards =
-            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-        userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
         checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
 
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
@@ -526,6 +530,8 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
 
         stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
+        checkStakingPeriod(stakingPercentageDurationReached);
+
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
         debugLog(
@@ -537,13 +543,22 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
             stakingPercentageDurationReached * REWARD_INITIAL_DURATION / PERCENT_100
         );
 
-        checkStakingPeriod(stakingPercentageDurationReached);
+        // Users withdraws all
+        userAliceTotalExpectedRewards =
+            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
+        userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
+
+        userBobTotalExpectedRewards =
+            expectedStakingRewards(BOB_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
+        userBobExpectedRewards = userBobTotalExpectedRewards - userBobClaimedRewards;
 
         // Alice withdraws all
-        withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
         // Bob withdraws all
-        withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
@@ -552,14 +567,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
         // Longer staking period = better accuracy : less delta
         uint256 delta = STAKING_PERCENTAGE_DURATION < PERCENT_10 ? DELTA_0_4 : DELTA_0_04;
 
-        userAliceTotalExpectedRewards =
-            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-        userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
         checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
-
-        userBobTotalExpectedRewards =
-            expectedStakingRewards(BOB_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-        userBobExpectedRewards = userBobTotalExpectedRewards - userBobClaimedRewards;
         checkStakingRewards(userBob, "Bob", userBobExpectedRewards, delta, 0);
 
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
@@ -663,14 +671,29 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
         );
         checkStakingPeriod(stakingPercentageDurationReached);
 
+        // Users withdraws all
+
+        userAliceTotalExpectedRewards =
+            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
+        userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
+        userBobTotalExpectedRewards =
+            expectedStakingRewards(BOB_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
+        userBobExpectedRewards = userBobTotalExpectedRewards - userBobClaimedRewards;
+        userCherryTotalExpectedRewards =
+            expectedStakingRewards(CHERRY_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
+        userCherryExpectedRewards = userCherryTotalExpectedRewards - userCherryClaimedRewards;
+
         // Alice withdraws all
-        withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
         // Bob withdraws all
-        withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
 
         // Cherry withdraws all
-        withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
+        // withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
+        CherryUnstakes(CHERRY_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         verboseLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
@@ -679,19 +702,8 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
         // Longer staking period = better accuracy : less delta
         uint256 delta = STAKING_PERCENTAGE_DURATION < PERCENT_10 ? DELTA_0_4 : DELTA_0_04;
 
-        userAliceTotalExpectedRewards =
-            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-        userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
         checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
-
-        userBobTotalExpectedRewards =
-            expectedStakingRewards(BOB_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-        userBobExpectedRewards = userBobTotalExpectedRewards - userBobClaimedRewards;
         checkStakingRewards(userBob, "Bob", userBobExpectedRewards, delta, 0);
-
-        userCherryTotalExpectedRewards =
-            expectedStakingRewards(CHERRY_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-        userCherryExpectedRewards = userCherryTotalExpectedRewards - userCherryClaimedRewards;
         checkStakingRewards(userCherry, "Cherry", userCherryExpectedRewards, delta, 0);
 
         checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed

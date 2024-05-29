@@ -44,14 +44,6 @@ import {
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 // 42+ tests
 
-// contract DuringStaking1_WithWithdral__0 is DuringStaking1WithWithdral(PERCENT_0, PERCENT_0) { }
-// contract DuringStaking1_WithWithdral__1_0_1 is DuringStaking1WithWithdral(PERCENT_1, PERCENT_0_1) { }
-// contract DuringStaking1_WithWithdral__10__5 is DuringStaking1WithWithdral(PERCENT_10, PERCENT_5) { }
-// contract DuringStaking1_WithWithdral__99__33 is DuringStaking1WithWithdral(PERCENT_99, PERCENT_33) { }
-// contract DuringStaking1_WithWithdral__100__0 is DuringStaking1WithWithdral(PERCENT_100, PERCENT_0) { }
-// contract DuringStaking1_WithWithdral__100__50 is DuringStaking1WithWithdral(PERCENT_100, PERCENT_50) { }
-// contract DuringStaking1_WithWithdral__101__50 is DuringStaking1WithWithdral(PERCENT_101, PERCENT_50) { }
-
 // /*
 
 contract DuringStaking1_WithWithdral__0 is DuringStaking1WithWithdral(PERCENT_0, PERCENT_0) { }
@@ -145,9 +137,6 @@ contract DuringStaking1_WithWithdral__220__99 is DuringStaking1WithWithdral(PERC
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 // 42+ tests
-
-// contract DuringStaking2_WithWithdral__0 is DuringStaking2WithWithdral(PERCENT_0, PERCENT_0) { }
-// contract DuringStaking2_WithWithdral__1_0_1 is DuringStaking2WithWithdral(PERCENT_1, PERCENT_0_1) { }
 
 // /*
 

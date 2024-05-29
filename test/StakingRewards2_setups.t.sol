@@ -403,6 +403,7 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
         checkStakingTotalSupplyStaked();
 
         uint256 stakingElapsedTime;
+        uint256 stakingPercentageDurationReached;
         uint256 userAliceExpectedRewards;
         uint256 userAliceClaimedRewards;
 
@@ -412,16 +413,17 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
                 checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
         }
 
+        stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         verboseLog(
-            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
+            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached
         );
-        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        gotoStakingPercentage(stakingPercentageDurationReached);
         stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
 
-        checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        checkStakingPeriod(stakingPercentageDurationReached);
 
-        verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", STAKING_PERCENTAGE_DURATION / DIVIDE);
+        verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", stakingPercentageDurationReached);
 
         // Users withdraws all
 
@@ -515,6 +517,7 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
         uint256 rewardsDelta = getRewardPercentDelta();
 
         uint256 stakingElapsedTime;
+        uint256 stakingPercentageDurationReached;
         uint256 userAliceExpectedRewards;
         uint256 userBobExpectedRewards;
         uint256 userAliceClaimedRewards;
@@ -528,15 +531,16 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
                 checkUserClaim(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
         }
 
+        stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         verboseLog(
-            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
+            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached
         );
-        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        gotoStakingPercentage(stakingPercentageDurationReached);
         stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
-        checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        checkStakingPeriod(stakingPercentageDurationReached);
 
-        verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", STAKING_PERCENTAGE_DURATION / DIVIDE);
+        verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", stakingPercentageDurationReached);
 
         // Users withdraws all
         userAliceExpectedRewards =
@@ -639,6 +643,7 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
         uint8 rewardsUnitsDelta = getRewardUnitsDelta();
 
         uint256 stakingElapsedTime;
+        uint256 stakingPercentageDurationReached;
         uint256 userAliceExpectedRewards;
         uint256 userBobExpectedRewards;
         uint256 userCherryExpectedRewards;
@@ -659,15 +664,16 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
             debugLog("testUsersStakingRewards: userCherryClaimedRewards = ", userCherryClaimedRewards);
         }
 
+        stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         verboseLog(
-            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
+            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached
         );
-        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        gotoStakingPercentage(stakingPercentageDurationReached);
         stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
-        checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        checkStakingPeriod(stakingPercentageDurationReached);
 
-        verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", STAKING_PERCENTAGE_DURATION / DIVIDE);
+        verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", stakingPercentageDurationReached);
 
         // Users withdraws all
 
@@ -711,7 +717,6 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
             "Staking duration (%%) total staking reward duration = ",
             STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
         );
-
 
         checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 4);
         checkStakingRewards(userBob, "Bob", userBobExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 2);

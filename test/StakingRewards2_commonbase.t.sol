@@ -562,6 +562,8 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
             "StakingPreSetupUtils:checkStakingPeriod: _stakingPercentageDurationReached : ",
             _stakingPercentageDurationReached
         );
+        debugLog("StakingPreSetupUtils:checkStakingPeriod: _stakingPercentageDurationReached = %s %%", _stakingPercentageDurationReached * 100 / PERCENT_100);
+
         assertTrue(
             _stakingPercentageDurationReached <= STAKING_PERCENTAGE_DURATION,
             "StakingPreSetupUtils:checkStakingPeriod: _stakingPercentageDurationReached > STAKING_PERCENTAGE_DURATION"
