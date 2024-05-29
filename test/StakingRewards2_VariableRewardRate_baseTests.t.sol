@@ -175,7 +175,11 @@ contract CheckStakingPermissions2 is StakingPreSetup {
 
     // Previous reward epoch must have ended before setting a new duration
     function testStakingSetRewardsDurationAfterEpochEnd() public {
-        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
+
+        vm.prank(userStakingRewardAdmin);
+        notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
+
+        gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -198,7 +202,7 @@ contract CheckStakingPermissions2 is StakingPreSetup {
 
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -213,7 +217,7 @@ contract CheckStakingPermissions2 is StakingPreSetup {
         vm.prank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                RewardPeriodInProgress.selector, block.timestamp, STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
+                RewardPeriodInProgress.selector, block.timestamp, STAKING_START_TIMESTAMP + REWARD_INITIAL_DURATION
             )
         );
         stakingRewards2.setRewardsDuration(1);
@@ -222,7 +226,7 @@ contract CheckStakingPermissions2 is StakingPreSetup {
         );
 
         // Previous reward epoch must have ended before setting a new duration
-        gotoTimestamp(STAKING_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
+        gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_INITIAL_DURATION); // epoch last time reward
 
         vm.prank(userAlice);
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
@@ -243,7 +247,7 @@ contract CheckStakingPermissions2 is StakingPreSetup {
         vm.prank(userStakingRewardAdmin);
         vm.expectRevert(
             abi.encodeWithSelector(
-                RewardPeriodInProgress.selector, block.timestamp, STAKING_TIMESTAMP + REWARD_INITIAL_DURATION
+                RewardPeriodInProgress.selector, block.timestamp, STAKING_START_TIMESTAMP + REWARD_INITIAL_DURATION
             )
         );
         stakingRewards2.setRewardsDuration(1);

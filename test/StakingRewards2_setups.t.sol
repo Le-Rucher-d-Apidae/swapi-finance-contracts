@@ -111,11 +111,11 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-        debugLog("Staking start time", STAKING_TIMESTAMP);
+        debugLog("Staking start time", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
 
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -133,8 +133,9 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         checkUsersStake();
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
         debugLog(
@@ -154,6 +155,7 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
                     / REWARD_INITIAL_DURATION
         );
         checkRewardPerToken(expectedRewardPerToken, 0, 0); // no delta needed
+        checkRewardForDuration(DELTA_0_00000000022);
     }
 }
 // ------------------------------------
@@ -179,7 +181,7 @@ contract DuringStaking2WithoutWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -205,8 +207,9 @@ contract DuringStaking2WithoutWithdral is StakingPreSetup {
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         checkUsersStake();
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
         debugLog(
@@ -231,6 +234,7 @@ contract DuringStaking2WithoutWithdral is StakingPreSetup {
                     / REWARD_INITIAL_DURATION
         );
         checkRewardPerToken(expectedRewardPerToken, DELTA_0_015, 0);
+        checkRewardForDuration(DELTA_0_00000000022);
     }
 }
 
@@ -258,7 +262,7 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -299,8 +303,9 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         checkUsersStake();
+        checkRewardForDuration(DELTA_0_00000000022);
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
         debugLog(
@@ -338,6 +343,7 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
         debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 
         checkRewardPerToken(expectedRewardPerToken, DELTA_0_015, 0);
+        checkRewardForDuration(DELTA_0_00000000022);
     }
 }
 
@@ -382,7 +388,7 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
 
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
         checkUsersStake();
         checkRewardPerToken(0, 0, 0);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -408,9 +414,10 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
         // Alice withdraws all
         withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
 
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+        checkRewardForDuration(DELTA_0_00000000022);
 
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
@@ -431,6 +438,7 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
         debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 
         checkRewardPerToken(expectedRewardPerToken, 0, 0); // no delta needed
+        checkRewardForDuration(DELTA_0_00000000022);
     }
 }
 
@@ -478,7 +486,7 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
 
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -517,11 +525,12 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
         // Bob withdraws all
         withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
 
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
             / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+        checkRewardForDuration(DELTA_0_00000000022);
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
         debugLog(
@@ -545,6 +554,7 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
         debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 
         checkRewardPerToken(expectedRewardPerToken, 0, 1);
+        checkRewardForDuration(DELTA_0_00000000022);
     }
 }
 
@@ -592,7 +602,7 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
 
         vm.prank(userStakingRewardAdmin);
         notifyRewardAmount(REWARD_INITIAL_AMOUNT);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -642,12 +652,13 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
         withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
         // Cherry withdraws all
         withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
 
         uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
             / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+        checkRewardForDuration(DELTA_0_00000000022);
 
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
@@ -681,6 +692,7 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
 
         debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
         checkRewardPerToken(expectedRewardPerToken, 0, 1);
+        checkRewardForDuration(DELTA_0_00000000022);
     }
 }
 

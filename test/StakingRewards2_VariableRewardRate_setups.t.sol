@@ -127,7 +127,7 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is StakingPreSetup {
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
 
-        debugLog("Staking start time", STAKING_TIMESTAMP);
+        debugLog("Staking start time", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
 
@@ -148,7 +148,7 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is StakingPreSetup {
         }
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
@@ -198,7 +198,7 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -225,7 +225,7 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is StakingPreSetup {
         }
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -284,7 +284,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -320,7 +320,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is StakingPreSetup {
         }
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", STAKING_PERCENTAGE_DURATION);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -397,7 +397,7 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
 
@@ -421,7 +421,7 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         gotoStakingPercentage(stakingPercentageDurationReached);
 
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -494,7 +494,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -524,7 +524,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         gotoStakingPercentage(stakingPercentageDurationReached);
 
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
@@ -612,7 +612,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
     function testUsersStakingRewards() public {
         vm.prank(userStakingRewardAdmin);
         notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-        verboseLog("STAKING_TIMESTAMP = ", STAKING_TIMESTAMP);
+        verboseLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
         AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
         BobStakes(BOB_STAKINGERC20_MINTEDAMOUNT);
@@ -649,7 +649,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
         stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
         gotoStakingPercentage(stakingPercentageDurationReached);
 
-        stakingElapsedTime = block.timestamp - STAKING_TIMESTAMP;
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("Staking duration reached (100%%=1e18) : ", stakingPercentageDurationReached);
         debugLog("Staking duration reached (100%%     ) :  1000000000000000000");
