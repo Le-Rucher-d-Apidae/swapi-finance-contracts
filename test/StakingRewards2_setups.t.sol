@@ -77,11 +77,19 @@ contract StakingPreSetup is StakingPreSetupErc20 {
         debugLog("StakingPreSetup:expectedStakingRewards: _rewardTotalDuration = ", _rewardTotalDuration);
         uint256 rewardsDuration = Math.min(_rewardDurationReached, _rewardTotalDuration);
         debugLog("StakingPreSetup:expectedStakingRewards: rewardsDuration = ", rewardsDuration);
-        uint256 expectedStakingRewards_ = (
-            rewardsDuration == _rewardTotalDuration
-                ? REWARD_INITIAL_AMOUNT * _stakedAmount / TOTAL_STAKED_AMOUNT
-                : REWARD_INITIAL_AMOUNT * _stakedAmount * rewardsDuration / _rewardTotalDuration / TOTAL_STAKED_AMOUNT
-        );
+
+        uint256 expectedStakingRewards_;
+
+        if (TOTAL_STAKED_AMOUNT == 0) {
+            expectedStakingRewards_ = REWARD_INITIAL_AMOUNT * _stakedAmount * rewardsDuration / _rewardTotalDuration;
+        } else {
+            expectedStakingRewards_ = (
+                rewardsDuration == _rewardTotalDuration
+                    ? REWARD_INITIAL_AMOUNT * _stakedAmount / TOTAL_STAKED_AMOUNT
+                    : REWARD_INITIAL_AMOUNT * _stakedAmount * rewardsDuration / _rewardTotalDuration / TOTAL_STAKED_AMOUNT
+            );
+        }
+
         debugLog("StakingPreSetup:expectedStakingRewards: expectedStakingRewards_ = ", expectedStakingRewards_);
         return expectedStakingRewards_;
     }
@@ -408,37 +416,46 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
             "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / 2  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
         );
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
+        debugLog("stakingElapsedTime = ", stakingElapsedTime);
+
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
 
         verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", STAKING_PERCENTAGE_DURATION / DIVIDE);
-        // Alice withdraws all
-        withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
 
-        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
+        // Alice withdraws all
+        userAliceExpectedRewards =
+            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
+
+        debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
+        debugLog("userAliceClaimedRewards = ", userAliceClaimedRewards);
+        userAliceExpectedRewards -= userAliceClaimedRewards;
+        debugLog("userAliceExpectedRewards - userAliceClaimedRewards = ", userAliceExpectedRewards);
+
+        uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
+            / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
+        debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
+
+        AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
+
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         checkRewardForDuration(DELTA_0_00000000022);
 
-        debugLog("stakingElapsedTime = ", stakingElapsedTime);
         debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
         debugLog(
             "Staking duration (%%) total staking reward duration = ",
             STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
         );
 
-        userAliceExpectedRewards =
-            expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-        debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
-        userAliceExpectedRewards -= userAliceClaimedRewards;
+
         debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
         debugLog("stakingElapsedTime = ", stakingElapsedTime);
         checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
-        uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
-            / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
-        debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
-
         checkRewardPerToken(expectedRewardPerToken, 0, 0); // no delta needed
+
         checkRewardForDuration(DELTA_0_00000000022);
+
     }
 }
 

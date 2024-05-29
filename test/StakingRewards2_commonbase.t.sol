@@ -808,14 +808,55 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
         debugLog("StakingPreSetupErc20 CherryStakes() end");
     }
 
-// TODO : add unstakes methods ...
-// TODO : add unstakes methods ...
-// TODO : add unstakes methods ...
-// TODO : add unstakes methods ...
-// TODO : add unstakes methods ...
-// TODO : add unstakes methods ...
-// TODO : add unstakes methods ...
-// TODO : add unstakes methods ...
+    function _userUnstakes(address _userAddress, string memory _userName, uint256 _amount) internal {
+        debugLog("StakingPreSetupErc20 _userUnstakes() start");
+        displayTime();
+        debugLog("StakingPreSetupErc20 _userUnstakes userAddress", _userAddress);
+        debugLog("StakingPreSetupErc20 _userUnstakes userName", _userName);
+        debugLog("StakingPreSetupErc20 _userUnstakes amount", _amount);
+
+        uint256 balanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_userAddress);
+        debugLog(
+            "StakingPreSetupUtils:withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal
+        );
+
+        // Check emitted event
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.Withdrawn(_userAddress, _amount);
+        vm.prank(_userAddress);
+        stakingRewards2.withdraw(_amount);
+
+        // debugLog("StakingPreSetupErc20 _userUnstakes stakingERC20 address: %s", address(stakingERC20));
+        // debugLog("StakingPreSetupErc20 _userUnstakes stakingRewards2 address: %s", address(stakingRewards2));
+
+        uint256 balanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_userAddress);
+        debugLog("StakingPreSetupUtils:withdrawStake: balanceOfUserAfterWithdrawal = ", balanceOfUserAfterWithdrawal);
+        assertEq(balanceOfUserBeforeWithdrawal - _amount, balanceOfUserAfterWithdrawal);
+
+        TOTAL_STAKED_AMOUNT -= _amount;
+        debugLog("StakingPreSetupErc20 _userUnstakes() end");
+    }
+
+    function AliceUnstakes(uint256 _amount) internal {
+        debugLog("StakingPreSetupErc20 AliceUnstakes() start");
+        _userUnstakes(userAlice, "Alice", _amount);
+        ALICE_STAKINGERC20_STAKEDAMOUNT -= _amount;
+        debugLog("StakingPreSetupErc20 AliceUnstakes() end");
+    }
+
+    function BobUnstakes(uint256 _amount) internal {
+        debugLog("StakingPreSetupErc20 BobUnstakes() start");
+        _userUnstakes(userBob, "Bob", _amount);
+        BOB_STAKINGERC20_STAKEDAMOUNT -= _amount;
+        debugLog("StakingPreSetupErc20 BobUnstakes() end");
+    }
+
+    function CherryUnstakes(uint256 _amount) internal {
+        debugLog("StakingPreSetupErc20 CherryUnstakes() start");
+        _userUnstakes(userCherry, "Cherry", _amount);
+        CHERRY_STAKINGERC20_STAKEDAMOUNT -= _amount;
+        debugLog("StakingPreSetupErc20 CherryUnstakes() end");
+    }
 
     function checkAliceStake() internal {
         itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
