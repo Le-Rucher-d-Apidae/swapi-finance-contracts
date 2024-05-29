@@ -413,7 +413,7 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
         }
 
         verboseLog(
-            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / 2  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
+            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
         );
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION / DIVIDE);
         stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
@@ -422,6 +422,8 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
 
         verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", STAKING_PERCENTAGE_DURATION / DIVIDE);
+
+        // Users withdraws all
 
         // Alice withdraws all
         userAliceExpectedRewards =
@@ -438,7 +440,6 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
 
         AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
-
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
         checkRewardForDuration(DELTA_0_00000000022);
 
@@ -448,14 +449,11 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
             STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
         );
 
-
         debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
-        debugLog("stakingElapsedTime = ", stakingElapsedTime);
         checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
         checkRewardPerToken(expectedRewardPerToken, 0, 0); // no delta needed
 
         checkRewardForDuration(DELTA_0_00000000022);
-
     }
 }
 
@@ -531,44 +529,50 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
         }
 
         verboseLog(
-            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / 2  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
+            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
         );
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
+        debugLog("stakingElapsedTime = ", stakingElapsedTime);
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
 
         verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", STAKING_PERCENTAGE_DURATION / DIVIDE);
-        // Alice withdraws all
-        withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        // Bob withdraws all
-        withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
 
-        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
-        uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
-            / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
-
-        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
-        checkRewardForDuration(DELTA_0_00000000022);
-        debugLog("stakingElapsedTime = ", stakingElapsedTime);
-        debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
-        debugLog(
-            "Staking duration (%%) total staking reward duration = ",
-            STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
-        );
-
+        // Users withdraws all
         userAliceExpectedRewards =
             expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
         debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
         userAliceExpectedRewards -= userAliceClaimedRewards;
         debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
-        checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsDelta, 2);
 
         userBobExpectedRewards =
             expectedStakingRewards(BOB_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
         debugLog("userBobExpectedRewards = ", userBobExpectedRewards);
         userBobExpectedRewards -= userBobClaimedRewards;
         debugLog("userBobExpectedRewards = ", userBobExpectedRewards);
-        checkStakingRewards(userBob, "Bob", userBobExpectedRewards, rewardsDelta, 1);
+
+        uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
+            / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
         debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
+
+        // Alice withdraws all
+        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // Bob withdraws all
+        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
+
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+        checkRewardForDuration(DELTA_0_00000000022);
+
+        debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
+        debugLog(
+            "Staking duration (%%) total staking reward duration = ",
+            STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+        );
+
+        checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsDelta, 2);
+        checkStakingRewards(userBob, "Bob", userBobExpectedRewards, rewardsDelta, 1);
 
         checkRewardPerToken(expectedRewardPerToken, 0, 1);
         checkRewardForDuration(DELTA_0_00000000022);
@@ -656,58 +660,65 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
         }
 
         verboseLog(
-            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / 2  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
+            "Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", STAKING_PERCENTAGE_DURATION / DIVIDE
         );
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION / DIVIDE);
+        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
+        debugLog("stakingElapsedTime = ", stakingElapsedTime);
         checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);
 
         verboseLog("Staking duration reached (%%) before withdrawal(s) = : ", STAKING_PERCENTAGE_DURATION / DIVIDE);
 
-        // Alice withdraws all
-        withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
-        // Bob withdraws all
-        withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
-        // Cherry withdraws all
-        withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
-        stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
-
-        uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
-            / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
-
-        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
-        checkRewardForDuration(DELTA_0_00000000022);
-
-        debugLog("stakingElapsedTime = ", stakingElapsedTime);
-        debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
-        debugLog(
-            "Staking duration (%%) total staking reward duration = ",
-            STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
-        );
+        // Users withdraws all
 
         userAliceExpectedRewards =
             expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
         debugLog("testUsersStakingRewards: userAliceExpectedRewards = ", userAliceExpectedRewards);
         userAliceExpectedRewards -= userAliceClaimedRewards;
         debugLog("testUsersStakingRewards: userAliceExpectedRewards = ", userAliceExpectedRewards);
-        checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 4);
 
         userBobExpectedRewards =
             expectedStakingRewards(BOB_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
         debugLog("testUsersStakingRewards: userBobExpectedRewards = ", userBobExpectedRewards);
         userBobExpectedRewards -= userBobClaimedRewards;
         debugLog("testUsersStakingRewards: userBobExpectedRewards = ", userBobExpectedRewards);
-        checkStakingRewards(userBob, "Bob", userBobExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 2);
 
         userCherryExpectedRewards =
             expectedStakingRewards(CHERRY_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
         debugLog("testUsersStakingRewards: userCherryExpectedRewards = ", userCherryExpectedRewards);
         userCherryExpectedRewards -= userCherryClaimedRewards;
         debugLog("testUsersStakingRewards: userCherryExpectedRewards = ", userCherryExpectedRewards);
+
+        uint256 expectedRewardPerToken = REWARD_INITIAL_AMOUNT * getRewardedStakingDuration(DIVIDE) * ONE_TOKEN
+            / REWARD_INITIAL_DURATION / TOTAL_STAKED_AMOUNT;
+        debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
+
+        // Alice withdraws all
+        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
+        AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
+        // Bob withdraws all
+        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
+        BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
+        // Cherry withdraws all
+        // withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
+        CherryUnstakes(CHERRY_STAKINGERC20_STAKEDAMOUNT);
+
+        gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+        checkRewardForDuration(DELTA_0_00000000022);
+
+        debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
+        debugLog(
+            "Staking duration (%%) total staking reward duration = ",
+            STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+        );
+
+
+        checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 4);
+        checkStakingRewards(userBob, "Bob", userBobExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 2);
         checkStakingRewards(
             userCherry, "Cherry", userCherryExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 1
         );
 
-        debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
         checkRewardPerToken(expectedRewardPerToken, 0, 1);
         checkRewardForDuration(DELTA_0_00000000022);
     }
