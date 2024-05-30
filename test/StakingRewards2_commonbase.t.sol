@@ -10,7 +10,7 @@ import { Utils } from "./utils/Utils.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
-import { WithdrawZero } from "../src/contracts/StakingRewards2Errors.sol";
+import { StakeZero, WithdrawZero } from "../src/contracts/StakingRewards2Errors.sol";
 
 import { RewardERC20 } from "./contracts/RewardERC20.sol";
 import { StakingERC20 } from "./contracts/StakingERC20.sol";
@@ -274,9 +274,17 @@ abstract contract StakingPreSetupDuration is TestLog {
         uint256 _rewardTotalDuration
     )
         internal
-        view
         virtual
-        returns (uint256 expectedRewardsAmount);
+        returns (uint256 expectedRewardsAmount)
+    {
+        debugLog("expectedStakingRewards()");
+        debugLog("expectedStakingRewards: _stakedAmount = ", _stakedAmount);
+        debugLog("expectedStakingRewards: _rewardDurationReached = ", _rewardDurationReached);
+        debugLog("expectedStakingRewards: _rewardTotalDuration = ", _rewardTotalDuration);
+        assertFalse(true, "IMPLEMENT expectedStakingRewards() in derived contract");
+        fail("expectedStakingRewards: not implemented");
+        expectedRewardsAmount = 0;
+    }
 
     function displayTime() internal view {
         debugLog(" displayTime: block.timestamp = ", block.timestamp);
@@ -766,21 +774,6 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
         debugLog("StakingPreSetupErc20 _userStakes userName", _userName);
         debugLog("StakingPreSetupErc20 _userStakes amount", _amount);
 
-        vm.startPrank(_userAddress);
-        stakingERC20.approve(address(stakingRewards2), _amount);
-
-        debugLog("StakingPreSetupErc20 _userStakes stakingERC20 address: %s", address(stakingERC20));
-        debugLog("StakingPreSetupErc20 _userStakes stakingRewards2 address: %s", address(stakingRewards2));
-        debugLog(
-            "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
-            stakingERC20.allowance(_userAddress, address(stakingRewards2))
-        );
-        debugLog("StakingPreSetupErc20 _userStakes stakingERC20 balanceOf", stakingERC20.balanceOf(_userAddress));
-        debugLog(
-            "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
-            stakingERC20.allowance(_userAddress, address(stakingRewards2))
-        );
-
         uint256 stakingRewardsBalanceOfUserBeforeDeposit = stakingRewards2.balanceOf(_userAddress);
         debugLog(
             "StakingPreSetupErc20:_userStakes: stakingRewardsBalanceOfUserBeforeDeposit = ", stakingRewardsBalanceOfUserBeforeDeposit
@@ -790,18 +783,49 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
             "StakingPreSetupErc20:_userStakes: stakingERC20BalanceOfUserBeforeDeposit = ", stakingERC20BalanceOfUserBeforeDeposit
         );
 
-        // Check expected events
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(_userAddress, _amount);
+        vm.startPrank(_userAddress);
+        if (_amount == 0) {
+            // Check expected events
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    StakeZero.selector
+                )
+            );
+        } else {
+            stakingERC20.approve(address(stakingRewards2), _amount);
+
+            debugLog("StakingPreSetupErc20 _userStakes stakingERC20 address: %s", address(stakingERC20));
+            debugLog("StakingPreSetupErc20 _userStakes stakingRewards2 address: %s", address(stakingRewards2));
+            debugLog(
+                "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
+                stakingERC20.allowance(_userAddress, address(stakingRewards2))
+            );
+            debugLog("StakingPreSetupErc20 _userStakes stakingERC20 balanceOf", stakingERC20.balanceOf(_userAddress));
+            debugLog(
+                "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
+                stakingERC20.allowance(_userAddress, address(stakingRewards2))
+            );
+
+            // Check expected events
+            vm.expectEmit(true, true, false, false, address(stakingRewards2));
+            emit StakingRewards2Events.Staked(_userAddress, _amount);
+
+        }
         stakingRewards2.stake(_amount);
         vm.stopPrank();
+
+        // // Check expected events
+        // vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        // emit StakingRewards2Events.Staked(_userAddress, _amount);
+        // stakingRewards2.stake(_amount);
+        // vm.stopPrank();
 
         uint256 stakingRewardsBalanceOfUserAfterDeposit = stakingRewards2.balanceOf(_userAddress);
         debugLog("StakingPreSetupErc20:_userStakes: stakingRewardsBalanceOfUserAfterDeposit = ", stakingRewardsBalanceOfUserAfterDeposit);
         assertEq(stakingRewardsBalanceOfUserBeforeDeposit + _amount, stakingRewardsBalanceOfUserAfterDeposit);
 
         uint256 stakingERC20BalanceOfUseAfterDeposit = stakingERC20.balanceOf(_userAddress);
-        debugLog("StakingPreSetupErc20:_userSakes: stakingERC20BalanceOfUseAfterDeposit = ", stakingERC20BalanceOfUseAfterDeposit);
+        debugLog("StakingPreSetupErc20:_userStakes: stakingERC20BalanceOfUseAfterDeposit = ", stakingERC20BalanceOfUseAfterDeposit);
         assertEq(stakingERC20BalanceOfUserBeforeDeposit - _amount, stakingERC20BalanceOfUseAfterDeposit);
 
         TOTAL_STAKED_AMOUNT += _amount;

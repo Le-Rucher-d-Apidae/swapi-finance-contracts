@@ -13,12 +13,12 @@ import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
 
 // /*
 
-contract CheckStakingPermissions2 is StakingPreSetup {
+contract CheckStakingPermissions is StakingPreSetup {
     function setUp() public virtual override {
-        debugLog("CheckStakingPermissions2 setUp() start");
-        verboseLog("CheckStakingPermissions2 setUp()");
+        debugLog("CheckStakingPermissions setUp() start");
+        verboseLog("CheckStakingPermissions setUp()");
         StakingPreSetup.setUp();
-        debugLog("CheckStakingPermissions2 setUp() end");
+        debugLog("CheckStakingPermissions setUp() end");
     }
 
     function testStakingPause() public {
