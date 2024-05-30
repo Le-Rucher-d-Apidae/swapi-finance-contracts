@@ -560,10 +560,8 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
         debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 
         // Alice withdraws all
-        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
         // Bob withdraws all
-        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
         BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
@@ -700,13 +698,10 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
         debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 
         // Alice withdraws all
-        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
         // Bob withdraws all
-        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
         BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
         // Cherry withdraws all
-        // withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
         CherryUnstakes(CHERRY_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);

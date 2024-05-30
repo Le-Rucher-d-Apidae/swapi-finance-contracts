@@ -10,6 +10,7 @@ import { Utils } from "./utils/Utils.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
+import { WithdrawZero } from "../src/contracts/StakingRewards2Errors.sol";
 
 import { RewardERC20 } from "./contracts/RewardERC20.sol";
 import { StakingERC20 } from "./contracts/StakingERC20.sol";
@@ -581,22 +582,22 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
         assertEq(lastTimeReward, stakingTimeReached, "Wrong lastTimeReward");
     }
 
-    function withdrawStake(address _user, uint256 _amount) public {
-        debugLog("StakingPreSetupUtils:withdrawStake: _user : ", _user);
-        debugLog("StakingPreSetupUtils:withdrawStake: _amount : ", _amount);
-        uint256 balanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_user);
-        debugLog(
-            "StakingPreSetupUtils:withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal
-        );
-        // Check emitted event
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Withdrawn(_user, _amount);
-        vm.prank(_user);
-        stakingRewards2.withdraw(_amount);
-        uint256 balanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_user);
-        debugLog("StakingPreSetupUtils:withdrawStake: balanceOfUserAfterWithdrawal = ", balanceOfUserAfterWithdrawal);
-        assertEq(balanceOfUserBeforeWithdrawal - _amount, balanceOfUserAfterWithdrawal);
-    }
+    // function withdrawStake(address _user, uint256 _amount) public {
+    //     debugLog("StakingPreSetupUtils:withdrawStake: _user : ", _user);
+    //     debugLog("StakingPreSetupUtils:withdrawStake: _amount : ", _amount);
+    //     uint256 balanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_user);
+    //     debugLog(
+    //         "StakingPreSetupUtils:withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal
+    //     );
+    //     // Check emitted event
+    //     vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    //     emit StakingRewards2Events.Withdrawn(_user, _amount);
+    //     vm.prank(_user);
+    //     stakingRewards2.withdraw(_amount);
+    //     uint256 balanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_user);
+    //     debugLog("StakingPreSetupUtils:withdrawStake: balanceOfUserAfterWithdrawal = ", balanceOfUserAfterWithdrawal);
+    //     assertEq(balanceOfUserBeforeWithdrawal - _amount, balanceOfUserAfterWithdrawal);
+    // }
 
     // Goto some staking time within period
     function gotoStakingPercentage(uint256 _stakingPercentageDurationReached) internal returns (uint256) {
@@ -774,10 +775,19 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
             "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
             stakingERC20.allowance(_userAddress, address(stakingRewards2))
         );
-        debugLog("StakingPreSetupErc20 _userStakes _userStakes() balanceOf", stakingERC20.balanceOf(_userAddress));
+        debugLog("StakingPreSetupErc20 _userStakes stakingERC20 balanceOf", stakingERC20.balanceOf(_userAddress));
         debugLog(
             "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
             stakingERC20.allowance(_userAddress, address(stakingRewards2))
+        );
+
+        uint256 stakingRewardsBalanceOfUserBeforeDeposit = stakingRewards2.balanceOf(_userAddress);
+        debugLog(
+            "StakingPreSetupErc20:_userStakes: stakingRewardsBalanceOfUserBeforeDeposit = ", stakingRewardsBalanceOfUserBeforeDeposit
+        );
+        uint256 stakingERC20BalanceOfUserBeforeDeposit = stakingERC20.balanceOf(_userAddress);
+        debugLog(
+            "StakingPreSetupErc20:_userStakes: stakingERC20BalanceOfUserBeforeDeposit = ", stakingERC20BalanceOfUserBeforeDeposit
         );
 
         // Check expected events
@@ -785,8 +795,69 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
         emit StakingRewards2Events.Staked(_userAddress, _amount);
         stakingRewards2.stake(_amount);
         vm.stopPrank();
+
+        uint256 stakingRewardsBalanceOfUserAfterDeposit = stakingRewards2.balanceOf(_userAddress);
+        debugLog("StakingPreSetupErc20:_userStakes: stakingRewardsBalanceOfUserAfterDeposit = ", stakingRewardsBalanceOfUserAfterDeposit);
+        assertEq(stakingRewardsBalanceOfUserBeforeDeposit + _amount, stakingRewardsBalanceOfUserAfterDeposit);
+
+        uint256 stakingERC20BalanceOfUseAfterDeposit = stakingERC20.balanceOf(_userAddress);
+        debugLog("StakingPreSetupErc20:_userSakes: stakingERC20BalanceOfUseAfterDeposit = ", stakingERC20BalanceOfUseAfterDeposit);
+        assertEq(stakingERC20BalanceOfUserBeforeDeposit - _amount, stakingERC20BalanceOfUseAfterDeposit);
+
         TOTAL_STAKED_AMOUNT += _amount;
         debugLog("StakingPreSetupErc20 _userStakes() end");
+    }
+
+    function _userUnstakes(address _userAddress, string memory _userName, uint256 _amount) internal {
+        debugLog("StakingPreSetupErc20 _userUnstakes() start");
+        displayTime();
+        debugLog("StakingPreSetupErc20 _userUnstakes userAddress", _userAddress);
+        debugLog("StakingPreSetupErc20 _userUnstakes userName", _userName);
+        debugLog("StakingPreSetupErc20 _userUnstakes amount", _amount);
+
+        uint256 stakingRewardsBalanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_userAddress);
+        debugLog(
+            "StakingPreSetupErc20:_userUnstakes: stakingRewardsBalanceOfUserBeforeWithdrawal = ", stakingRewardsBalanceOfUserBeforeWithdrawal
+        );
+        uint256 stakingERC20BalanceOfUserBeforeWithdrawal = stakingERC20.balanceOf(_userAddress);
+        debugLog(
+            "StakingPreSetupErc20:_userUnstakes: stakingERC20BalanceOfUserBeforeWithdrawal = ", stakingERC20BalanceOfUserBeforeWithdrawal
+        );
+
+        if (_amount > stakingRewardsBalanceOfUserBeforeWithdrawal) {
+            debugLog("StakingPreSetupErc20 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
+            fail("StakingPreSetupErc20 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
+        }
+
+        if (_amount == 0) {
+            debugLog("StakingPreSetupErc20 _userUnstakes: _amount == ZERO");
+            warningLog("StakingPreSetupErc20 _userUnstakes: _amount == ZERO");
+        }
+
+        // Check emitted event
+        vm.prank(_userAddress);
+        if (_amount == 0) {
+            vm.expectRevert(
+            abi.encodeWithSelector(
+                WithdrawZero.selector
+            )
+        );
+        } else {
+            vm.expectEmit(true, true, false, false, address(stakingRewards2));
+            emit StakingRewards2Events.Withdrawn(_userAddress, _amount);
+        }
+        stakingRewards2.withdraw(_amount);
+
+        uint256 stakingRewardsBalanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_userAddress);
+        debugLog("StakingPreSetupErc20:withdrawStake: stakingRewardsBalanceOfUserAfterWithdrawal = ", stakingRewardsBalanceOfUserAfterWithdrawal);
+        assertEq(stakingRewardsBalanceOfUserBeforeWithdrawal - _amount, stakingRewardsBalanceOfUserAfterWithdrawal);
+
+        uint256 stakingERC20BalanceOfUseAfterWithdrawal = stakingERC20.balanceOf(_userAddress);
+        debugLog("StakingPreSetupErc20:_userUnstakes: stakingERC20BalanceOfUseAfterWithdrawal = ", stakingERC20BalanceOfUseAfterWithdrawal);
+        assertEq(stakingERC20BalanceOfUserBeforeWithdrawal + _amount, stakingERC20BalanceOfUseAfterWithdrawal);
+
+        TOTAL_STAKED_AMOUNT -= _amount;
+        debugLog("StakingPreSetupErc20 _userUnstakes() end");
     }
 
     function AliceStakes(uint256 _amount) internal {
@@ -808,35 +879,6 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
         _userStakes(userCherry, "Cherry", _amount);
         CHERRY_STAKINGERC20_STAKEDAMOUNT += _amount;
         debugLog("StakingPreSetupErc20 CherryStakes() end");
-    }
-
-    function _userUnstakes(address _userAddress, string memory _userName, uint256 _amount) internal {
-        debugLog("StakingPreSetupErc20 _userUnstakes() start");
-        displayTime();
-        debugLog("StakingPreSetupErc20 _userUnstakes userAddress", _userAddress);
-        debugLog("StakingPreSetupErc20 _userUnstakes userName", _userName);
-        debugLog("StakingPreSetupErc20 _userUnstakes amount", _amount);
-
-        uint256 balanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_userAddress);
-        debugLog(
-            "StakingPreSetupUtils:withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal
-        );
-
-        // Check emitted event
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Withdrawn(_userAddress, _amount);
-        vm.prank(_userAddress);
-        stakingRewards2.withdraw(_amount);
-
-        // debugLog("StakingPreSetupErc20 _userUnstakes stakingERC20 address: %s", address(stakingERC20));
-        // debugLog("StakingPreSetupErc20 _userUnstakes stakingRewards2 address: %s", address(stakingRewards2));
-
-        uint256 balanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_userAddress);
-        debugLog("StakingPreSetupUtils:withdrawStake: balanceOfUserAfterWithdrawal = ", balanceOfUserAfterWithdrawal);
-        assertEq(balanceOfUserBeforeWithdrawal - _amount, balanceOfUserAfterWithdrawal);
-
-        TOTAL_STAKED_AMOUNT -= _amount;
-        debugLog("StakingPreSetupErc20 _userUnstakes() end");
     }
 
     function AliceUnstakes(uint256 _amount) internal {

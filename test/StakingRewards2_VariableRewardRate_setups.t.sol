@@ -443,7 +443,6 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
         userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
 
         // Alice withdraws all
-        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
@@ -553,11 +552,9 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
         userBobExpectedRewards = userBobTotalExpectedRewards - userBobClaimedRewards;
 
         // Alice withdraws all
-        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
         // Bob withdraws all
-        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
         BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
@@ -684,15 +681,12 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
         userCherryExpectedRewards = userCherryTotalExpectedRewards - userCherryClaimedRewards;
 
         // Alice withdraws all
-        // withdrawStake(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT);
         AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
         // Bob withdraws all
-        // withdrawStake(userBob, BOB_STAKINGERC20_STAKEDAMOUNT);
         BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
 
         // Cherry withdraws all
-        // withdrawStake(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT);
         CherryUnstakes(CHERRY_STAKINGERC20_STAKEDAMOUNT);
 
         gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
