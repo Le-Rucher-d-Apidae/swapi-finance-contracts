@@ -51,7 +51,7 @@
   multiline_func_header = "all"
   number_underscore = "thousands"
   quote_style = "double"
-  tab_width = 4
+  tab_width = 2
   wrap_comments = true
   single_line_statement_blocks = "preserve"
   ignore = [ "test/ds-test/test.sol", "test/utils/*.sol", "src/contracts/Uniswap/v2-core/interfaces/*.sol", "src/contracts/Uniswap/v2-core/libraries/*.sol", "src/contracts/Uniswap/v2-core/*.sol", "src/contracts/Uniswap/solidity-lib/libraries/*.sol", "src/contracts/Uniswap/v2-periphery/interfaces/*.sol", "src/contracts/Uniswap/v2-periphery/*.sol", "src/contracts/Uniswap/v2-periphery/libraries/*.sol" ]

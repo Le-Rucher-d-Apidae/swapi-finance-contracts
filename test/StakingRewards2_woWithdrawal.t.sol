@@ -3,36 +3,36 @@
 pragma solidity >= 0.8.0 < 0.9.0;
 
 import {
-    DuringStaking1WithoutWithdral,
-    DuringStaking2WithoutWithdral,
-    DuringStaking3WithoutWithdral
+  DuringStaking1WithoutWithdral,
+  DuringStaking2WithoutWithdral,
+  DuringStaking3WithoutWithdral
 } from "./StakingRewards2_setups.t.sol";
 
 import {
-    PERCENT_0,
-    PERCENT_0_1,
-    PERCENT_1,
-    PERCENT_5,
-    PERCENT_10,
-    PERCENT_20,
-    PERCENT_30,
-    PERCENT_33,
-    PERCENT_40,
-    PERCENT_50,
-    PERCENT_60,
-    PERCENT_66,
-    PERCENT_70,
-    PERCENT_80,
-    PERCENT_90,
-    PERCENT_99,
-    PERCENT_100,
-    PERCENT_101,
-    PERCENT_110,
-    PERCENT_150,
-    PERCENT_190,
-    PERCENT_200,
-    PERCENT_201,
-    PERCENT_220
+  PERCENT_0,
+  PERCENT_0_1,
+  PERCENT_1,
+  PERCENT_5,
+  PERCENT_10,
+  PERCENT_20,
+  PERCENT_30,
+  PERCENT_33,
+  PERCENT_40,
+  PERCENT_50,
+  PERCENT_60,
+  PERCENT_66,
+  PERCENT_70,
+  PERCENT_80,
+  PERCENT_90,
+  PERCENT_99,
+  PERCENT_100,
+  PERCENT_101,
+  PERCENT_110,
+  PERCENT_150,
+  PERCENT_190,
+  PERCENT_200,
+  PERCENT_201,
+  PERCENT_220
 } from "./TestsConstants.sol";
 
 /* solhint-disable no-empty-blocks */

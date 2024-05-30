@@ -74,14 +74,14 @@ error NothingToWithdraw();
  * @param currentRewardBalance.
  */
 error ProvidedVariableRewardTooHigh(
-    uint256 constantRewardPerTokenStored,
-    uint256 variableRewardMaxTotalSupply,
-    // minRewardBalance: returns 1e18 too much, should be :
-    // minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration /
-    // ONE_TOKEN,
-    // keeping it as is for accurracy : dividing by ONE_TOKEN will return 0 if the result is < 1e18
-    uint256 minRewardBalance, // = constantRewardPerTokenStored * variableRewardMaxTotalSupply * rewardsDuration
-    uint256 currentRewardBalance // = rewardsToken.balanceOf(address(this)) - deposits
+  uint256 constantRewardPerTokenStored,
+  uint256 variableRewardMaxTotalSupply,
+  // minRewardBalance: returns 1e18 too much, should be :
+  // minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration /
+  // ONE_TOKEN,
+  // keeping it as is for accurracy : dividing by ONE_TOKEN will return 0 if the result is < 1e18
+  uint256 minRewardBalance, // = constantRewardPerTokenStored * variableRewardMaxTotalSupply * rewardsDuration
+  uint256 currentRewardBalance // = rewardsToken.balanceOf(address(this)) - deposits
 );
 
 /**
@@ -92,7 +92,7 @@ error ProvidedVariableRewardTooHigh(
  * @param currentTotalSupply current total supply.
  */
 error StakeTotalSupplyExceedsAllowedMax(
-    uint256 newTotalSupply, uint256 variableRewardMaxTotalSupply, uint256 depositAmount, uint256 currentTotalSupply
+  uint256 newTotalSupply, uint256 variableRewardMaxTotalSupply, uint256 depositAmount, uint256 currentTotalSupply
 );
 
 /**

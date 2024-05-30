@@ -21,7 +21,7 @@ import { Test } from "forge-std/src/Test.sol";
 // import { IERC20Errors } from "@openzeppelin/contracts@5.0.2/interfaces/draft-IERC6093.sol";
 
 contract UsersSetup is Test {
-    function setUp() public virtual {
-        console.log("TODO");
-    }
+  function setUp() public virtual {
+    console.log("TODO");
+  }
 }
