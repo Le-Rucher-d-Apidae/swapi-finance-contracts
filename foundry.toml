@@ -18,7 +18,7 @@
   block_timestamp = 1716076800 # Sun May 19 2024 00:00:00 GMT+0000
   bytecode_hash = "none"
   evm_version = "paris"           # See https://www.evmdiff.com/features?name=PUSH0&kind=opcode
-  fuzz = { runs = 1_000 }
+  fuzz = { runs = 10_000 }
   gas_reports = ["*"]
   optimizer = false
   #optimizer_runs = 10_000
