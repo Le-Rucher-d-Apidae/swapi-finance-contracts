@@ -4,7 +4,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 
 import { StakingPreSetupErc20 } from "./StakingRewards2_commonbase.t.sol";
 
-import { DELTA_0_015, ONE_TOKEN } from "./TestsConstants.sol";
+import { DELTA_0, DELTA_0_015, ONE_TOKEN } from "./TestsConstants.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
@@ -64,8 +64,9 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     return expectedStakingRewardsAmount;
   }
 
-  // Check already deposited amount is lower or equal than max amount
-  function testStakingVRR2Deposit1BeforeReward1After() public {
+  // Alice deposit tokens a bit  BEFORE rewards start
+  // Bob deposit tokens a bit AFTER rewards start
+  function testStakingVRR2Deposit1BeforeRewardStart1AfterRewardStart() public {
     gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
 
     // Mint 10 * 10^18 token as reward
@@ -83,12 +84,9 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     itStakesCorrectly(userBob, 0, "Bob");
 
     vm.stopPrank();
-    // /*
     // Alice deposit tokens BEFORE rewards start
     debugLog("Alice deposit tokens BEFORE rewards start at :");
     displayTime();
-    //   debugLog("block.timestamp = ", block.timestamp);
-    //   debugLog("block.number = ", block.number);
 
     vm.startPrank(userAlice);
     stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
@@ -101,14 +99,12 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     // Only Alice should have staked
     itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
     itStakesCorrectly(userBob, 0, "Bob");
-    // */
 
     gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 100);
 
     debugLog("Set rewards duration at :");
     displayTime();
 
-    // Start rewarding
     vm.startPrank(userStakingRewardAdmin);
     vm.expectEmit(true, true, false, false, address(stakingRewards2));
     emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
@@ -128,6 +124,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
 
     getLastRewardTime();
 
+    // Start rewarding
     notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, MAX_DEPOSIT_AMOUNT);
     debugLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
@@ -154,18 +151,6 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     vm.stopPrank();
 
     gotoTimestamp(STAKING_START_TIMESTAMP + 200);
-    /*
-        // Alice deposit tokens AFTER rewards start
-        debugLog("Alice deposit tokens AFTER rewards start at :");
-        displayTime();
-
-        vm.startPrank(userAlice);
-        stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
-        vm.expectEmit(true, true, false, false, address(stakingRewards2));
-        emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
-        stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
-        vm.stopPrank();
-        */
 
     // Check Alice and Bob staking balances
     // Alice and Bob should have staked
@@ -186,4 +171,371 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0_015, 0);
     checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
   }
-} // CheckStakingConstantRewardLimits2
+
+  // Alice deposit tokens a bit AFTER rewards start
+  // Bob deposit tokens a bit AFTER rewards start
+  function testStakingVRR2Deposit2AfterRewardStart() public {
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
+
+    // Mint 10 * 10^18 token as reward
+    vm.startPrank(erc20Minter);
+    rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+
+    // Mint Alice tokens
+    stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+    // Mint Bob tokens
+    stakingERC20.mint(userBob, BOB_DEPOSIT_AMOUNT);
+
+    // Check Alice and Bob staking balances
+    // Nobody should have staked yet
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, 0, "Bob");
+
+    vm.stopPrank();
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 100);
+
+    debugLog("Set rewards duration at :");
+    displayTime();
+
+    vm.startPrank(userStakingRewardAdmin);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
+    stakingRewards2.setRewardsDuration(REWARD_DURATION);
+
+    debugLog("------------------");
+    debugLog("displayEarned");
+    displayTime();
+    displayEarned(userAlice, "Alice");
+    displayEarned(userBob, "Bob");
+    debugLog("------------------");
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 200);
+
+    debugLog("notifyVariableRewardAmount at :");
+    displayTime();
+
+    getLastRewardTime();
+
+    // Start rewarding
+    notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, MAX_DEPOSIT_AMOUNT);
+    debugLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    vm.stopPrank();
+
+    debugLog("------------------");
+    debugLog("displayEarned");
+    displayTime();
+    displayEarned(userAlice, "Alice");
+    displayEarned(userBob, "Bob");
+    debugLog("------------------");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + 100);
+
+    debugLog("Alice & Bob deposit tokens AFTER rewards at :");
+    displayTime();
+
+    // Alice & Bob deposit tokens AFTER rewards start
+
+    vm.startPrank(userAlice);
+    stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+
+    vm.startPrank(userBob);
+    stakingERC20.approve(address(stakingRewards2), BOB_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userBob, BOB_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(BOB_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Check Alice and Bob staking balances
+    // Both should have staked
+    itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
+    itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + 200);
+
+    // Check Alice and Bob staking balances
+    // Alice and Bob should have staked
+    itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
+    itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
+
+    // Go to the end of the reward period
+    debugLog("Go to the end of the reward period at :");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1);
+
+    debugLog("block.timestamp = ", block.timestamp);
+    debugLog("block.number = ", block.number);
+
+    uint256 aliceTotalExpectedRewards = expectedStakingRewards(ALICE_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
+    uint256 bobTotalExpectedRewards = expectedStakingRewards(BOB_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
+
+    checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0_015, 0);
+    checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
+  }
+
+
+  // Alice deposit tokens AFTER rewards end
+  // Bob deposit tokens a bit AFTER rewards start
+  function testStakingVRR2Deposit1AfterRewardStart1AfterRewardEnd() public {
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
+
+    // Mint 10 * 10^18 token as reward
+    vm.startPrank(erc20Minter);
+    rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+
+    // Mint Alice tokens
+    stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+    // Mint Bob tokens
+    stakingERC20.mint(userBob, BOB_DEPOSIT_AMOUNT);
+
+    // Check Alice and Bob staking balances
+    // Nobody should have staked yet
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, 0, "Bob");
+
+    vm.stopPrank();
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 100);
+
+    debugLog("Set rewards duration at :");
+    displayTime();
+
+    vm.startPrank(userStakingRewardAdmin);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
+    stakingRewards2.setRewardsDuration(REWARD_DURATION);
+
+    debugLog("------------------");
+    debugLog("displayEarned");
+    displayTime();
+    displayEarned(userAlice, "Alice");
+    displayEarned(userBob, "Bob");
+    debugLog("------------------");
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 200);
+
+    debugLog("notifyVariableRewardAmount at :");
+    displayTime();
+
+    getLastRewardTime();
+
+    // Start rewarding
+    notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, MAX_DEPOSIT_AMOUNT);
+    debugLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    vm.stopPrank();
+
+    debugLog("------------------");
+    debugLog("displayEarned");
+    displayTime();
+    displayEarned(userAlice, "Alice");
+    displayEarned(userBob, "Bob");
+    debugLog("------------------");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + 100);
+
+    debugLog("Alice & Bob deposit tokens AFTER rewards at :");
+    displayTime();
+
+    // Bob deposit tokens AFTER rewards start
+
+    vm.startPrank(userBob);
+    stakingERC20.approve(address(stakingRewards2), BOB_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userBob, BOB_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(BOB_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Check Alice and Bob staking balances
+    // Only Bob should have staked
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + 200);
+
+    // Check Alice and Bob staking balances
+    // Only Bob should have staked
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
+
+    // Go to the end of the reward period
+    debugLog("Go to the end of the reward period at :");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1);
+
+    // Alice deposit tokens AFTER rewards end
+    debugLog("Alice deposit tokens AFTER rewards end at :");
+    displayTime();
+
+    vm.startPrank(userAlice);
+    stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    debugLog("block.timestamp = ", block.timestamp);
+    debugLog("block.number = ", block.number);
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1_000);
+
+    uint256 aliceTotalExpectedRewards = expectedStakingRewards(ALICE_DEPOSIT_AMOUNT, 0, REWARD_DURATION);
+    uint256 bobTotalExpectedRewards = expectedStakingRewards(BOB_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
+
+    checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0, 0);
+    checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
+  }
+
+  // Alice deposit tokens a bit before rewards start and withdraw a bit before rewards start
+  // Bob deposit tokens a bit after rewards end and withdraw a bit after rewards end
+
+  function testStakingVRR1DepositAndWithdrawBeforeRewardStart1AfterRewardEnd() public {
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
+
+    // Mint 10 * 10^18 token as reward
+    vm.startPrank(erc20Minter);
+    rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+
+    // Mint Alice tokens
+    stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+    // Mint Bob tokens
+    stakingERC20.mint(userBob, BOB_DEPOSIT_AMOUNT);
+
+    // Check Alice and Bob staking balances
+    // Nobody should have staked yet
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, 0, "Bob");
+
+    vm.stopPrank();
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 100);
+
+    debugLog("Set rewards duration at :");
+    displayTime();
+
+    vm.prank(userStakingRewardAdmin);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.RewardsDurationUpdated(REWARD_DURATION);
+    stakingRewards2.setRewardsDuration(REWARD_DURATION);
+
+    debugLog("------------------");
+    debugLog("displayEarned");
+    displayTime();
+    displayEarned(userAlice, "Alice");
+    displayEarned(userBob, "Bob");
+    debugLog("------------------");
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 200);
+
+    vm.startPrank(userAlice);
+    stakingERC20.approve(address(stakingRewards2), ALICE_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userAlice, ALICE_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Check Alice and Bob staking balances
+    // Nobody should have staked yet
+    itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
+    itStakesCorrectly(userBob, 0, "Bob");
+
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 2_000);
+
+    vm.prank(userAlice);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Withdrawn(address(userAlice), ALICE_DEPOSIT_AMOUNT);
+    stakingRewards2.withdraw(ALICE_DEPOSIT_AMOUNT);
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 3_000);
+
+    // Check Alice and Bob staking balances
+    // Nobody should have stake
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, 0, "Bob");
+
+
+    debugLog("notifyVariableRewardAmount at :");
+    displayTime();
+
+    getLastRewardTime();
+
+    // Start rewarding
+    vm.prank(userStakingRewardAdmin);
+    notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, MAX_DEPOSIT_AMOUNT);
+    debugLog("STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+
+    debugLog("------------------");
+    debugLog("displayEarned");
+    displayTime();
+    displayEarned(userAlice, "Alice");
+    displayEarned(userBob, "Bob");
+    debugLog("------------------");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + 100);
+
+    displayTime();
+
+
+    // Check Alice and Bob staking balances
+    // None should have staked
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, 0, "Bob");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + 200);
+
+    // Go to the end of the reward period
+    debugLog("Go to the end of the reward period at :");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1);
+
+    debugLog("Bob deposit tokens AFTER rewards end at :");
+    displayTime();
+
+    // Bob deposit tokens AFTER rewards end
+
+    vm.startPrank(userBob);
+    stakingERC20.approve(address(stakingRewards2), BOB_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userBob, BOB_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(BOB_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Check Alice and Bob staking balances
+    // None should have staked
+    itStakesCorrectly(userAlice, 0, "Alice");
+    itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1_000);
+
+    debugLog("block.timestamp = ", block.timestamp);
+    debugLog("block.number = ", block.number);
+
+    uint256 aliceTotalExpectedRewards = expectedStakingRewards(ALICE_DEPOSIT_AMOUNT, 0, REWARD_DURATION);
+    uint256 bobTotalExpectedRewards = expectedStakingRewards(BOB_DEPOSIT_AMOUNT, 0, REWARD_DURATION);
+
+    checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0, 0);
+    checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0, 0);
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 2_000);
+
+    vm.prank(userBob);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Withdrawn(address(userBob), BOB_DEPOSIT_AMOUNT);
+    stakingRewards2.withdraw(BOB_DEPOSIT_AMOUNT);
+
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 3_000);
+
+    checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0, 0);
+    checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0, 0);
+
+  }
+
+} // CheckStakingConstantRewardCustom1
