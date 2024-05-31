@@ -498,9 +498,14 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
       uint256 expectedRewards = expectedStakingRewards(_stakeAmount, stakingElapsedTime, REWARD_INITIAL_DURATION);
       verboseLog("StakingPreSetupUtils:checkUserClaim: expectedRewards = ", expectedRewards);
       vm.prank(_user);
-      vm.expectEmit(true, true, false, false, address(stakingRewards2));
-      emit StakingRewards2Events.RewardPaid(_user, expectedRewards);
+
+      if (expectedRewards > 0) {
+        // Check emitted event
+        vm.expectEmit(true, true, false, false, address(stakingRewards2));
+        emit StakingRewards2Events.RewardPaid(_user, expectedRewards);
+      }
       stakingRewards2.getReward();
+
       // Check user rewards balance before/after claim
       uint256 rewardErc20UserBalanceAfterClaim = rewardErc20.balanceOf(_user);
       claimedRewards_ = rewardErc20UserBalanceAfterClaim - rewardErc20UserBalance;
