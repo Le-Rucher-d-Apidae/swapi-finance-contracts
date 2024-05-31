@@ -31,7 +31,6 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
   uint256 internal constant BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN; // 10 tokens
   /* solhint-enable var-name-mixedcase */
 
-  // function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
   function setUp() public virtual override(StakingPreSetupErc20) {
     debugLog("CheckStakingConstantRewardLimits setUp() start");
     verboseLog("StakingSetup1");

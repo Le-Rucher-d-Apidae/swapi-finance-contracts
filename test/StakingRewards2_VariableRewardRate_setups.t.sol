@@ -426,7 +426,6 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
     );
     debugLog(
       "Staking duration (%%) total staking reward duration = ",
-      // STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
       stakingPercentageDurationReached * REWARD_INITIAL_DURATION / PERCENT_100
     );
     checkStakingPeriod(STAKING_PERCENTAGE_DURATION / DIVIDE);

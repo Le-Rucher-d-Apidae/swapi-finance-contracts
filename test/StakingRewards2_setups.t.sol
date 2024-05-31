@@ -589,8 +589,6 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
     if (CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE) {
       fail("DuringStaking3WithWithdral: CLAIM_PERCENTAGE_DURATION > STAKING_PERCENTAGE_DURATION / DIVIDE");
     }
-    // require(_claimPercentageDuration <= _stakingPercentageDuration, "DuringStaking3WithoutWithdral:
-    // _claimPercentageDuration > _stakingPercentageDuration");
   }
 
   function setUp() public override {

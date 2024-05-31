@@ -572,24 +572,6 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     assertEq(lastTimeReward, stakingTimeReached, "Wrong lastTimeReward");
   }
 
-  // function withdrawStake(address _user, uint256 _amount) public {
-  //     debugLog("StakingPreSetupUtils:withdrawStake: _user : ", _user);
-  //     debugLog("StakingPreSetupUtils:withdrawStake: _amount : ", _amount);
-  //     uint256 balanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_user);
-  //     debugLog(
-  //         "StakingPreSetupUtils:withdrawStake: balanceOfUserBeforeWithdrawal = ", balanceOfUserBeforeWithdrawal
-  //     );
-  //     // Check emitted event
-  //     vm.expectEmit(true, true, false, false, address(stakingRewards2));
-  //     emit StakingRewards2Events.Withdrawn(_user, _amount);
-  //     vm.prank(_user);
-  //     stakingRewards2.withdraw(_amount);
-  //     uint256 balanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_user);
-  //     debugLog("StakingPreSetupUtils:withdrawStake: balanceOfUserAfterWithdrawal = ",
-  // balanceOfUserAfterWithdrawal);
-  //     assertEq(balanceOfUserBeforeWithdrawal - _amount, balanceOfUserAfterWithdrawal);
-  // }
-
   // Goto some staking time within period
   function gotoStakingPercentage(uint256 _stakingPercentageDurationReached) internal returns (uint256) {
     debugLog(
@@ -791,12 +773,6 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
     }
     stakingRewards2.stake(_amount);
     vm.stopPrank();
-
-    // // Check expected events
-    // vm.expectEmit(true, true, false, false, address(stakingRewards2));
-    // emit StakingRewards2Events.Staked(_userAddress, _amount);
-    // stakingRewards2.stake(_amount);
-    // vm.stopPrank();
 
     uint256 stakingRewardsBalanceOfUserAfterDeposit = stakingRewards2.balanceOf(_userAddress);
     debugLog(
