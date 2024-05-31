@@ -575,7 +575,6 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-// contract DuringStaking3WithWithdral is DepositSetup3 {
 contract DuringStaking3WithWithdral is StakingPreSetup {
   // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
   /* solhint-disable var-name-mixedcase */
