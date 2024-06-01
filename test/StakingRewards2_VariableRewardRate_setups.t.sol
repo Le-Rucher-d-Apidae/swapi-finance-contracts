@@ -129,7 +129,7 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is StakingPreSetup {
     AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
 
     checkUsersStake();
-    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
+    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed: reward rate is constant
     checkRewardForDuration(DELTA_0_00000000022);
     checkStakingTotalSupplyStaked();
 
@@ -162,7 +162,7 @@ contract DuringStakingVariableRewardRate1WithoutWithdral is StakingPreSetup {
     userAliceExpectedRewards = userAliceTotalExpectedRewards - userAliceClaimedRewards;
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
 
-    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
+    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed: reward rate is constant
 
     verboseLog("-----------------------------------------");
     verboseLog("Alice Total Expected Rewards  : ", userAliceTotalExpectedRewards);
@@ -243,7 +243,7 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is StakingPreSetup {
     userBobExpectedRewards = userBobTotalExpectedRewards - userBobClaimedRewards;
     checkStakingRewards(userBob, "Bob", userBobExpectedRewards, DELTA_0_31, 0);
 
-    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
+    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed: reward rate is constant
 
     verboseLog("-----------------------------------------");
     verboseLog("Alice Total Expected Rewards  : ", userAliceTotalExpectedRewards);
@@ -342,7 +342,7 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is StakingPreSetup {
     userCherryExpectedRewards = userCherryTotalExpectedRewards - userCherryClaimedRewards;
     checkStakingRewards(userCherry, "Cherry", userCherryExpectedRewards, DELTA_0_31, 0);
 
-    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
+    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed: reward rate is constant
 
     verboseLog("-----------------------------------------");
     verboseLog("Alice Total Expected Rewards  : ", userAliceTotalExpectedRewards);
@@ -445,7 +445,7 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
 
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
 
-    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
+    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed: reward rate is constant
 
     verboseLog("-----------------------------------------");
     verboseLog("Alice Total Expected Rewards  : ", userAliceTotalExpectedRewards);
@@ -560,7 +560,7 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
     checkStakingRewards(userBob, "Bob", userBobExpectedRewards, delta, 0);
 
-    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
+    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed: reward rate is constant
 
     verboseLog("-----------------------------------------");
     verboseLog("Alice Total Expected Rewards  : ", userAliceTotalExpectedRewards);
@@ -692,7 +692,7 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
     checkStakingRewards(userBob, "Bob", userBobExpectedRewards, delta, 0);
     checkStakingRewards(userCherry, "Cherry", userCherryExpectedRewards, delta, 0);
 
-    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed
+    checkRewardPerToken(CONSTANT_REWARDRATE_PERTOKENSTORED, 0, 0); // no delta needed: reward rate is constant
 
     verboseLog("-----------------------------------------");
     verboseLog("Alice Total Expected Rewards  : ", userAliceTotalExpectedRewards);
