@@ -370,7 +370,7 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
 
 // // ------------------------------------
 
-// // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
+// 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
 contract DuringStaking1WithWithdral is StakingPreSetup {
   // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
@@ -460,8 +460,8 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
 
 // // ------------------------------------
 
-// // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
-// // duration
+// 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
+// duration
 
 contract DuringStaking2WithWithdral is StakingPreSetup {
   // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
@@ -569,8 +569,8 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
 
 // // ------------------------------------
 
-// // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
-// // duration
+// 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
+// duration
 
 contract DuringStaking3WithWithdral is StakingPreSetup {
   // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)

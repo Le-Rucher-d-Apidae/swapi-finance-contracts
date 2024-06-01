@@ -270,7 +270,7 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
   }
 }
 
-// // ------------------------------------
+// ------------------------------------
 
 contract DuringStakingVariableRewardRate3WithoutWithdral is StakingPreSetup {
 
@@ -379,7 +379,7 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
 
 // // ------------------------------------
 
-// // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
+// 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
 contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
   // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
@@ -470,7 +470,7 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
   }
 }
 
-// // ------------------------------------
+// ------------------------------------
 
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
@@ -584,10 +584,10 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
   }
 }
 
-// // ------------------------------------
+// ------------------------------------
 
-// // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
-// // duration
+// 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
+// duration
 
 contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
   // TODO: change to a constructor parameter and improve accuracy (e.g. 1e18)
