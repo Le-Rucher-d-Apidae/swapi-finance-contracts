@@ -121,8 +121,8 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
     vm.assume(STAKING_PERCENTAGE_DURATION >= CLAIM_PERCENTAGE_DURATION);
 
-debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -197,8 +197,8 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
     CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
     vm.assume(STAKING_PERCENTAGE_DURATION >= CLAIM_PERCENTAGE_DURATION);
 
-debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -279,6 +279,9 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
     STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
     CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
     vm.assume(STAKING_PERCENTAGE_DURATION >= CLAIM_PERCENTAGE_DURATION);
+
+    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -392,6 +395,9 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
     CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
     vm.assume(CLAIM_PERCENTAGE_DURATION < STAKING_PERCENTAGE_DURATION / DIVIDE);
 
+    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
@@ -480,6 +486,9 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
     STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
     CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
     vm.assume(CLAIM_PERCENTAGE_DURATION < STAKING_PERCENTAGE_DURATION / DIVIDE);
+
+    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -588,6 +597,8 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
     CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
     vm.assume(CLAIM_PERCENTAGE_DURATION < STAKING_PERCENTAGE_DURATION / DIVIDE);
 
+    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
