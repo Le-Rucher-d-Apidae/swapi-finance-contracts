@@ -162,8 +162,7 @@ debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
       expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
     userAliceExpectedRewards -= userAliceClaimedRewards;
 
-// LOWER DELTA !!!!!!!!! // LOWER DELTA !!!!!!!!!
-    checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0_00000000000002, 4); // DELTA_0_015 LOWER DELTA !!!!!!!!! // LOWER DELTA !!!!!!!!!
+    checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0_00000000000002, 4);
 
     uint256 expectedRewardPerToken = (
       getRewardDurationReached() == REWARD_INITIAL_DURATION
@@ -171,8 +170,7 @@ debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
         : REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
     );
 
-// LOWER DELTA !!!!!!!!! // LOWER DELTA !!!!!!!!!
-    checkRewardPerToken(expectedRewardPerToken, DELTA_0_00000000000002, 4); // DELTA_0_015 LOWER DELTA !!!!!!!!! // LOWER DELTA !!!!!!!!! // LOWER DELTA !!!!!!!!! // LOWER DELTA !!!!!!!!!
+    checkRewardPerToken(expectedRewardPerToken, DELTA_0_00000000000002, 4);
     checkRewardForDuration(DELTA_0_00000000022);
   }
 }
