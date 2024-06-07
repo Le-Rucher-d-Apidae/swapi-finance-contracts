@@ -120,7 +120,7 @@ contract CheckStakingPermissions is StakingPreSetup {
 
     vm.prank(userStakingRewardAdmin);
     notifyVariableRewardAmount(1, 1);
-    verboseLog("Staking contract: Only owner can notifyVariableRewardAmount of ", 1);
+    verboseLog("Staking contract: Only owner can notifyVariableRewardAmount of 1,1");
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
   }
 
@@ -140,7 +140,7 @@ contract CheckStakingPermissions is StakingPreSetup {
 
     vm.prank(userStakingRewardAdmin);
     notifyVariableRewardAmount(0, 0);
-    verboseLog("Staking contract: Only owner can notifyVariableRewardAmount of ", 0);
+    verboseLog("Staking contract: Only owner can notifyVariableRewardAmount of 0, 0");
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
   }
 

@@ -62,6 +62,7 @@
     "forge:test:StakingRewards2": "forge test -vvv --match-path test/StakingRewards2_baseTests.t.sol",
     "forge:test:StakingRewards2Base": "forge test -vvv --match-path test/StakingRewards2_commonbaseTests.t.sol",
     "forge:test:StakingRewards2random": "forge test -vvv --match-path test/StakingRewards2_random.t.sol",
+    "forge:test:StakingRewards2random2": "forge test -vvv --match-path test/StakingRewards2_random2.t.sol",
     "forge:test:StakingRewards2ww": "forge test -vvv --match-path test/StakingRewards2_withWithdrawal.t.sol",
     "forge:test:StakingRewards2wow": "forge test -vvv --match-path test/StakingRewards2_woWithdrawal.t.sol",
     "forge:test:StakingRewards2v": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_baseTests.t.sol",

@@ -244,7 +244,6 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     stakingRewards2.stake(ALICE_DEPOSIT_AMOUNT);
     vm.stopPrank();
 
-
     vm.startPrank(userBob);
     stakingERC20.approve(address(stakingRewards2), BOB_DEPOSIT_AMOUNT);
     vm.expectEmit(true, true, false, false, address(stakingRewards2));
@@ -278,7 +277,6 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0_015, 0);
     checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
   }
-
 
   // Alice deposit tokens AFTER rewards end
   // Bob deposit tokens a bit AFTER rewards start
@@ -383,7 +381,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     debugLog("block.timestamp = ", block.timestamp);
     debugLog("block.number = ", block.number);
 
-    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1_000);
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1000);
 
     uint256 aliceTotalExpectedRewards = expectedStakingRewards(ALICE_DEPOSIT_AMOUNT, 0, REWARD_DURATION);
     uint256 bobTotalExpectedRewards = expectedStakingRewards(BOB_DEPOSIT_AMOUNT, REWARD_DURATION, REWARD_DURATION);
@@ -445,21 +443,19 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     itStakesCorrectly(userAlice, ALICE_DEPOSIT_AMOUNT, "Alice");
     itStakesCorrectly(userBob, 0, "Bob");
 
-
-    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 2_000);
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 2000);
 
     vm.prank(userAlice);
     vm.expectEmit(true, true, false, false, address(stakingRewards2));
     emit StakingRewards2Events.Withdrawn(address(userAlice), ALICE_DEPOSIT_AMOUNT);
     stakingRewards2.withdraw(ALICE_DEPOSIT_AMOUNT);
 
-    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 3_000);
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 3000);
 
     // Check Alice and Bob staking balances
     // Nobody should have stake
     itStakesCorrectly(userAlice, 0, "Alice");
     itStakesCorrectly(userBob, 0, "Bob");
-
 
     debugLog("notifyVariableRewardAmount at :");
     displayTime();
@@ -482,7 +478,6 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     gotoTimestamp(STAKING_START_TIMESTAMP + 100);
 
     displayTime();
-
 
     // Check Alice and Bob staking balances
     // None should have staked
@@ -513,7 +508,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     itStakesCorrectly(userAlice, 0, "Alice");
     itStakesCorrectly(userBob, BOB_DEPOSIT_AMOUNT, "Bob");
 
-    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1_000);
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 1000);
 
     debugLog("block.timestamp = ", block.timestamp);
     debugLog("block.number = ", block.number);
@@ -524,18 +519,16 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20 {
     checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0, 0);
     checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0, 0);
 
-    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 2_000);
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 2000);
 
     vm.prank(userBob);
     vm.expectEmit(true, true, false, false, address(stakingRewards2));
     emit StakingRewards2Events.Withdrawn(address(userBob), BOB_DEPOSIT_AMOUNT);
     stakingRewards2.withdraw(BOB_DEPOSIT_AMOUNT);
 
-    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 3_000);
+    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_DURATION + 3000);
 
     checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0, 0);
     checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0, 0);
-
   }
-
 } // CheckStakingConstantRewardCustom1

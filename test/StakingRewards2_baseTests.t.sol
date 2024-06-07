@@ -108,14 +108,14 @@ contract CheckStakingPermissions is StakingPreSetup {
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(1);
-    verboseLog("Staking contract: Only owner can notifyRewardAmount of ", 1);
+    verboseLog("Staking contract: Only owner can notifyRewardAmount of 1");
     verboseLog("Staking contract: Event RewardAdded emitted");
   }
 
   function testStakingNotifyRewardAmount0() public {
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(0);
-    verboseLog("Staking contract: Only owner can notifyRewardAmount of ", 0);
+    verboseLog("Staking contract: Only owner can notifyRewardAmount of 0" );
     verboseLog("Staking contract: Event RewardAdded emitted");
   }
 

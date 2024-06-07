@@ -117,12 +117,12 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
   }
 
   function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) public {
-    STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
-    CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
-    vm.assume(STAKING_PERCENTAGE_DURATION >= CLAIM_PERCENTAGE_DURATION);
+    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
+    CLAIM_REWARDS_AT__PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
+    vm.assume(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION >= CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
-    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION = ", CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -140,22 +140,22 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     uint256 userAliceExpectedRewards;
     uint256 userAliceClaimedRewards;
 
-    if (CLAIM_PERCENTAGE_DURATION > 0) {
-      gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
+    if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > 0) {
+      gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
-        checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
+        checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
     }
 
-    gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+    gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     checkUsersStake();
     checkRewardForDuration(DELTA_0_00000000022);
-    checkStakingPeriod(STAKING_PERCENTAGE_DURATION);
+    checkStakingPeriod(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
       "Staking duration (%%) total staking reward duration = ",
-      STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
     );
 
     userAliceExpectedRewards =
@@ -193,12 +193,12 @@ contract DuringStaking2WithoutWithdral is StakingPreSetup {
 
 function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) public {
 
-    STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
-    CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
-    vm.assume(STAKING_PERCENTAGE_DURATION >= CLAIM_PERCENTAGE_DURATION);
+    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
+    CLAIM_REWARDS_AT__PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
+    vm.assume(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION >= CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
-    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION = ", CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -218,23 +218,23 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
     uint256 userAliceClaimedRewards;
     uint256 userBobClaimedRewards;
 
-    if (CLAIM_PERCENTAGE_DURATION > 0) {
-      gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
+    if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > 0) {
+      gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
-        checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
-      userBobClaimedRewards = checkUserClaim(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
+        checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
+      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
     }
 
-    gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+    gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     checkUsersStake();
     checkRewardForDuration(DELTA_0_00000000022);
-    checkStakingPeriod(STAKING_PERCENTAGE_DURATION);
+    checkStakingPeriod(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
       "Staking duration (%%) total staking reward duration = ",
-      STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
     );
 
     userAliceExpectedRewards =
@@ -276,12 +276,12 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
 
 function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) public {
 
-    STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
-    CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
-    vm.assume(STAKING_PERCENTAGE_DURATION >= CLAIM_PERCENTAGE_DURATION);
+    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
+    CLAIM_REWARDS_AT__PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
+    vm.assume(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION >= CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
-    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION = ", CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -307,32 +307,32 @@ function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _cl
     uint256 claimDelta = getClaimPercentDelta();
     uint256 rewardsDelta = getRewardPercentDelta();
 
-    debugLog("STAKING_PERCENTAGE_DURATION : ", STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_PERCENTAGE_DURATION > PERCENT_90 : ", (CLAIM_PERCENTAGE_DURATION > PERCENT_90 ? 1 : 0));
-    debugLog("STAKING_PERCENTAGE_DURATION <= PERCENT_1 : ", (STAKING_PERCENTAGE_DURATION <= PERCENT_1 ? 1 : 0));
-    debugLog("STAKING_PERCENTAGE_DURATION <= PERCENT_5 : ", (STAKING_PERCENTAGE_DURATION <= PERCENT_5 ? 1 : 0));
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION : ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION > PERCENT_90 : ", (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > PERCENT_90 ? 1 : 0));
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_1 : ", (CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_1 ? 1 : 0));
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_5 : ", (CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_5 ? 1 : 0));
     debugLog("rewardsDelta : ", rewardsDelta);
 
-    if (CLAIM_PERCENTAGE_DURATION > 0) {
-      gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
+    if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > 0) {
+      gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       debugLog("claimDelta : ", claimDelta);
       userAliceClaimedRewards =
-        checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
-      userBobClaimedRewards = checkUserClaim(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
+        checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
+      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
       userCherryClaimedRewards =
-        checkUserClaim(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20);
+        checkUserClaimFromRewardsStart(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20);
     }
 
-    gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+    gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     checkUsersStake();
     checkRewardForDuration(DELTA_0_00000000022);
-    checkStakingPeriod(STAKING_PERCENTAGE_DURATION);
+    checkStakingPeriod(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
       "Staking duration (%%) total staking reward duration = ",
-      STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
     );
 
     userAliceExpectedRewards =
@@ -391,12 +391,12 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
 
   function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) public {
 
-    STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
-    CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
-    vm.assume(CLAIM_PERCENTAGE_DURATION < STAKING_PERCENTAGE_DURATION / DIVIDE);
+    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
+    CLAIM_REWARDS_AT__PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
+    vm.assume(CLAIM_REWARDS_AT__PERCENTAGE_DURATION < CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE);
 
-    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION = ", CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -414,8 +414,8 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
     uint256 userAliceExpectedRewards;
     uint256 userAliceClaimedRewards;
 
-    stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
-    verboseLog("Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
+    stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;
+    verboseLog("Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
     gotoStakingPercentage(stakingPercentageDurationReached);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -441,13 +441,13 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
 
     AliceUnstakes(ALICE_STAKINGERC20_STAKEDAMOUNT);
 
-    gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+    gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     checkRewardForDuration(DELTA_0_00000000022);
 
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
       "Staking duration (%%) total staking reward duration = ",
-      STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
     );
 
     debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
@@ -483,12 +483,12 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
 
   function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) public {
 
-    STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
-    CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
-    vm.assume(CLAIM_PERCENTAGE_DURATION < STAKING_PERCENTAGE_DURATION / DIVIDE);
+    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
+    CLAIM_REWARDS_AT__PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
+    vm.assume(CLAIM_REWARDS_AT__PERCENTAGE_DURATION < CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE);
 
-    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION = ", CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -512,15 +512,15 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
     uint256 userAliceClaimedRewards;
     uint256 userBobClaimedRewards;
 
-    if (CLAIM_PERCENTAGE_DURATION > 0) {
-      gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
+    if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > 0) {
+      gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
-        checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
-      userBobClaimedRewards = checkUserClaim(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
+        checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
+      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
     }
 
-    stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
-    verboseLog("Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
+    stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;
+    verboseLog("Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
     gotoStakingPercentage(stakingPercentageDurationReached);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -550,13 +550,13 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
     // Bob withdraws all
     BobUnstakes(BOB_STAKINGERC20_STAKEDAMOUNT);
 
-    gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+    gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     checkRewardForDuration(DELTA_0_00000000022);
 
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
       "Staking duration (%%) total staking reward duration = ",
-      STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
     );
 
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsDelta, 2);
@@ -593,12 +593,12 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
 
   function testUsersStakingRewards(uint256 _stakingPercentageDuration, uint256 _claimPercentageDuration) public {
 
-    STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
-    CLAIM_PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
-    vm.assume(CLAIM_PERCENTAGE_DURATION < STAKING_PERCENTAGE_DURATION / DIVIDE);
+    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = bound(_stakingPercentageDuration, PERCENT_0, PERCENT_220);
+    CLAIM_REWARDS_AT__PERCENTAGE_DURATION = bound(_claimPercentageDuration, PERCENT_0, PERCENT_99);
+    vm.assume(CLAIM_REWARDS_AT__PERCENTAGE_DURATION < CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE);
 
-    debugLog("STAKING_PERCENTAGE_DURATION = ", STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_PERCENTAGE_DURATION = ", CLAIM_PERCENTAGE_DURATION);
+    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION = ", CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
     vm.prank(userStakingRewardAdmin);
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
@@ -626,20 +626,20 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
     uint256 userBobClaimedRewards;
     uint256 userCherryClaimedRewards;
 
-    if (CLAIM_PERCENTAGE_DURATION > 0) {
-      gotoStakingPercentage(CLAIM_PERCENTAGE_DURATION);
+    if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > 0) {
+      gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
-        checkUserClaim(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
+        checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
       debugLog("testUsersStakingRewards: userAliceClaimedRewards = ", userAliceClaimedRewards);
-      userBobClaimedRewards = checkUserClaim(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
+      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
       debugLog("testUsersStakingRewards: userBobClaimedRewards = ", userBobClaimedRewards);
       userCherryClaimedRewards =
-        checkUserClaim(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20);
+        checkUserClaimFromRewardsStart(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20);
       debugLog("testUsersStakingRewards: userCherryClaimedRewards = ", userCherryClaimedRewards);
     }
 
-    stakingPercentageDurationReached = STAKING_PERCENTAGE_DURATION / DIVIDE;
-    verboseLog("Staking duration (%%) = STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
+    stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;
+    verboseLog("Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
     gotoStakingPercentage(stakingPercentageDurationReached);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -678,13 +678,13 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
     // Cherry withdraws all
     CherryUnstakes(CHERRY_STAKINGERC20_STAKEDAMOUNT);
 
-    gotoStakingPercentage(STAKING_PERCENTAGE_DURATION);
+    gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     checkRewardForDuration(DELTA_0_00000000022);
 
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
       "Staking duration (%%) total staking reward duration = ",
-      STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
     );
 
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 4);
