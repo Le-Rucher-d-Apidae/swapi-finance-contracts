@@ -441,7 +441,9 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
 
   function checkRewardPerToken(uint256 _expectedRewardPerToken, uint256 _maxPercentDelta, uint8 _unitsDelta) internal {
     debugLog("StakingPreSetupUtils:checkRewardPerToken: _expectedRewardPerToken = ", _expectedRewardPerToken);
-    debugLog("StakingPreSetupUtils:checkRewardPerToken: _maxPercentDelta = ", _maxPercentDelta);
+    debugLog("StakingPreSetupUtils:checkRewardPerToken: _maxPercentDelta = %s", _maxPercentDelta);
+    debugLog("StakingPreSetupUtils:checkRewardPerToken: _maxPercentDelta = %s %%", _maxPercentDelta * 100 / PERCENT_100);
+    debugLog("StakingPreSetupUtils:checkRewardPerToken: _unitsDelta = %s", _unitsDelta);
     uint256 stakingRewardsRewardPerToken = stakingRewards2.rewardPerToken();
     debugLog(
     "StakingPreSetupUtils:checkRewardPerToken: stakingRewardsRewardPerToken = ", stakingRewardsRewardPerToken
@@ -454,6 +456,7 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
       uint256 percentDelta = stdMath.percentDelta(stakingRewardsRewardPerToken, _expectedRewardPerToken);
 
       debugLog("StakingPreSetupUtils;checkRewardPerToken: delta %% = ", percentDelta);
+      debugLog("StakingPreSetupUtils:checkRewardPerToken: percentDelta = %s %%", percentDelta * 100 / PERCENT_100);
       if (percentDelta > _maxPercentDelta) {
         if (_unitsDelta > 0) {
           debugLog("StakingPreSetupUtils:checkRewardPerToken: _unitsDelta = ", _unitsDelta);
@@ -474,7 +477,8 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     uint256 claimDelta = CLAIM_REWARDS_AT__PERCENTAGE_DURATION <= PERCENT_10
       ? (CLAIM_REWARDS_AT__PERCENTAGE_DURATION <= PERCENT_1 ? DELTA_5 : DELTA_0_4)
       : DELTA_0_015;
-    verboseLog("StakingPreSetupUtils:claimDelta : ", claimDelta);
+    verboseLog("StakingPreSetupUtils:getClaimPercentDelta() : ", claimDelta);
+    debugLog("StakingPreSetupUtils:getClaimPercentDelta = %s %%", claimDelta * 100 / PERCENT_100);
     return claimDelta;
   }
 
@@ -489,7 +493,8 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
           : DELTA_0_08
         : DELTA_0_015;
 
-    verboseLog("StakingPreSetupUtils:getRewardDelta = ", rewardsPercentDelta);
+    verboseLog("StakingPreSetupUtils:getRewardPercentDelta() = ", rewardsPercentDelta);
+    debugLog("StakingPreSetupUtils:getRewardPercentDelta(): rewardsPercentDelta = %s %%", rewardsPercentDelta * 100 / PERCENT_100);
     return rewardsPercentDelta;
   }
 
@@ -510,7 +515,9 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     debugLog("StakingPreSetupUtils:checkStakingRewards: (start)");
     debugLog("StakingPreSetupUtils:checkStakingRewards: _stakerName : ", _stakerName);
     debugLog("StakingPreSetupUtils:checkStakingRewards: _expectedRewardAmount : ", _expectedRewardAmount);
-    debugLog("StakingPreSetupUtils:checkStakingRewards: _percentDelta : ", _percentDelta);
+    debugLog("StakingPreSetupUtils:checkStakingRewards: _percentDelta : %s ", _percentDelta);
+    debugLog("StakingPreSetupUtils:checkStakingRewards: _percentDelta : %s %%", _percentDelta * 100 / PERCENT_100);
+    debugLog("StakingPreSetupUtils:checkStakingRewards: _unitsDelta = ", _unitsDelta);
     uint256 stakerRewards = stakingRewards2.earned(_staker);
     debugLog("StakingPreSetupUtils:checkStakingRewards: stakerRewards = ", stakerRewards);
 
@@ -520,21 +527,19 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
         fail("StakingPreSetupUtils:checkStakingRewards: rewards != _expected && _expectedRewardAmount == 0");
       }
       uint256 percentDelta = stdMath.percentDelta(stakerRewards, _expectedRewardAmount);
-      debugLog("StakingPreSetupUtils:checkStakingRewards: delta = ", percentDelta);
+      debugLog("StakingPreSetupUtils:checkStakingRewards: delta = %s", percentDelta);
+      debugLog("StakingPreSetupUtils:checkStakingRewards: delta = %s %%", percentDelta * 100 / PERCENT_100);
       if (percentDelta > _percentDelta) {
         if (_unitsDelta > 0) {
-          debugLog("StakingPreSetupUtils:checkStakingRewards: _unitsDelta = ", _unitsDelta);
-          debugLog("StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs stakerRewards= ", stakerRewards);
-          debugLog(
-            "StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs _expectedRewardAmount= ",
-            _expectedRewardAmount
-          );
-          debugLog("StakingPreSetupUtils:checkStakingRewards: assertApproxEqAbs stakerRewards= ", _unitsDelta);
+          debugLog("StakingPreSetupUtils:checkStakingRewards: _unitsDelta > 0");
           assertApproxEqAbs(stakerRewards, _expectedRewardAmount, _unitsDelta);
         } else {
+            debugLog("StakingPreSetupUtils:checkStakingRewards: _unitsDelta <= 0");
           if (_percentDelta == 0) {
+            debugLog("StakingPreSetupUtils:checkStakingRewards: _percentDelta == 0");
             assertEq(stakerRewards, _expectedRewardAmount);
           } else {
+            debugLog("StakingPreSetupUtils:checkStakingRewards: _percentDelta != 0");
             assertApproxEqRel(stakerRewards, _expectedRewardAmount, _percentDelta);
           }
         }

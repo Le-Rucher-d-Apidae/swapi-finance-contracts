@@ -118,7 +118,9 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
   function testUsersStakingRewards(
     uint256 _checkRewardsAtStakingPercentageDuration,
     uint256 _claimRewardsAtPercentageDuration,
-    int8 _stakingStartAliceDelta
+    // int8 _stakingStartAliceDelta
+    // int16 _stakingStartAliceDelta
+    int64 _stakingStartAliceDelta
   )
     public
   {
@@ -137,20 +139,13 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
 
     int256 ALICE_STAKING_TIMESTAMP = INITIAL_BLOCK_TIMESTAMP + _stakingStartAliceDelta;
 
-    // Claim can be done only after start of staking
-    // assume(USER_CLAIM_TIMESTAMP >= ALICE_STAKING_TIMESTAMP);
-
-
     initTimestamp(int256(Math.min(uint256(INITIAL_BLOCK_TIMESTAMP), uint256(ALICE_STAKING_TIMESTAMP))));
-
 
     debugLog("> INITIAL_BLOCK_TIMESTAMP = ", INITIAL_BLOCK_TIMESTAMP);
     debugLog("> ALICE_STAKING_TIMESTAMP = ", ALICE_STAKING_TIMESTAMP);
-
     uint256 stakingElapsedTime;
     uint256 userAliceExpectedRewards;
     uint256 userAliceClaimedRewards;
-
     uint256 stakingEffectiveStartTime_Alice;
 
     // Alice stakes before staking starts
@@ -159,14 +154,6 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
       gotoTimestamp(ALICE_STAKING_TIMESTAMP);
       AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
     }
-
-    // impossible case: gotoStakingPercentage only works once staking is ongoing
-    // if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > 0 && USER_CLAIM_TIMESTAMP >= uint256(INITIAL_BLOCK_TIMESTAMP)) {
-    //   debugLog("> Alice claims rewards before staking starts");
-    //   gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
-    //   userAliceClaimedRewards =
-    //     checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
-    // }
 
     gotoTimestamp(INITIAL_BLOCK_TIMESTAMP);
 
@@ -193,8 +180,11 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
 
     // Claim Before staking : user rewards should be 0
     if (USERS_CLAIM_REWARDS_TIMESTAMP <= uint256(ALICE_STAKING_TIMESTAMP)) {
-      debugLog("> Alice claims rewards before having staked (or exactly at staking)");
-    //   gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
+      if ( USERS_CLAIM_REWARDS_TIMESTAMP < uint256(ALICE_STAKING_TIMESTAMP) ) {
+        debugLog("> Alice claims rewards before having staked");
+      } else {
+        debugLog("> Alice claims rewards exactly at staking start");
+      }
       gotoTimestamp(USERS_CLAIM_REWARDS_TIMESTAMP);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
@@ -205,21 +195,26 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
       }
     }
 
-
-
     // Alice stakes after staking starts (and before staking ends)
     if (ALICE_STAKING_TIMESTAMP >= int256(STAKING_START_TIMESTAMP) && ALICE_STAKING_TIMESTAMP <= int256(STAKING_END_TIMESTAMP)) {
-      debugLog("> Alice stakes AFTER staking starts");
+      if ( ALICE_STAKING_TIMESTAMP >= int256(STAKING_START_TIMESTAMP) ) {
+        debugLog("> Alice stakes AFTER staking starts");
+      } else {
+        debugLog("> Alice stakes exactly at staking rewards start");
+      }
       gotoTimestamp(ALICE_STAKING_TIMESTAMP);
       AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
       stakingEffectiveStartTime_Alice = uint256(ALICE_STAKING_TIMESTAMP) < STAKING_START_TIMESTAMP ? STAKING_START_TIMESTAMP : uint256(ALICE_STAKING_TIMESTAMP);
     }
-    debugLog("214 stakingEffectiveStartTime_Alice = ", stakingEffectiveStartTime_Alice);
+    debugLog("stakingEffectiveStartTime_Alice = ", stakingEffectiveStartTime_Alice);
 
     // Claim After staking : user rewards should be > 0
     if (USERS_CLAIM_REWARDS_TIMESTAMP >= uint256(ALICE_STAKING_TIMESTAMP)) {
-      debugLog("> Alice claims rewards after (or exactly at) staking start");
-      // gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
+      if ( USERS_CLAIM_REWARDS_TIMESTAMP > uint256(ALICE_STAKING_TIMESTAMP) ) {
+        debugLog("> Alice claims rewards after having staked");
+      } else {
+        debugLog("> Alice claims rewards exactly at staking start");
+      }
       gotoTimestamp(USERS_CLAIM_REWARDS_TIMESTAMP);
       stakingElapsedTime = block.timestamp - stakingEffectiveStartTime_Alice;
       userAliceClaimedRewards =
@@ -240,19 +235,15 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     }
 
     if (USER_CHECKSTAKINGREWARDS_TIMESTAMP >= block.timestamp) {
-        debugLog("--- Check staking rewards ---");
-        // gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
-        gotoTimestamp(USER_CHECKSTAKINGREWARDS_TIMESTAMP);
-        checkUsersStake();
-        checkRewardForDuration(DELTA_0_00000000022);
-        checkStakingPeriod(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+      debugLog("--- Check staking rewards ---");
+      gotoTimestamp(USER_CHECKSTAKINGREWARDS_TIMESTAMP);
+      checkUsersStake();
+      checkRewardForDuration(DELTA_0_00000000022);
+      checkStakingPeriod(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     }
-    debugLog("245 block.timestamp = ", block.timestamp);
-    // int256 stakingElapsedTime_Alice = stakingEffectiveStartTime_Alice -block.timestamp;
-    /* int256 */ stakingElapsedTime = block.timestamp - stakingEffectiveStartTime_Alice ;
-    // stakingElapsedTime = block.timestamp - uint256(ALICE_STAKING_TIMESTAMP);
-
-    debugLog("250 stakingElapsedTime = ", stakingElapsedTime);
+    if (block.timestamp >= stakingEffectiveStartTime_Alice) {
+      stakingElapsedTime = block.timestamp - stakingEffectiveStartTime_Alice;
+    }
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
     "Staking duration (%%) total staking reward duration = ",
@@ -260,23 +251,57 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     );
     userAliceExpectedRewards =
       expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
-    debugLog("258 userAliceExpectedRewards = ", userAliceExpectedRewards);
-    debugLog("259 userAliceClaimedRewards = ", userAliceClaimedRewards);
+    debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
+    debugLog("userAliceClaimedRewards = ", userAliceClaimedRewards);
     userAliceExpectedRewards -= userAliceClaimedRewards;
-    debugLog("261 userAliceExpectedRewards = ", userAliceExpectedRewards);
+    debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
 
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0_00000000000002, 4);
 
-    uint256 expectedRewardPerToken = (
-    //   getRewardDurationReached() == REWARD_INITIAL_DURATION
-      stakingElapsedTime == REWARD_INITIAL_DURATION
-        ? REWARD_INITIAL_AMOUNT * ONE_TOKEN / TOTAL_STAKED_AMOUNT
-        //: REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
-        : REWARD_INITIAL_AMOUNT * stakingElapsedTime * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
-    );
+    if (TOTAL_STAKED_AMOUNT > 0) {
+        uint256 expectedRewardPerToken = (
+        //   getRewardDurationReached() == REWARD_INITIAL_DURATION
+        stakingElapsedTime == REWARD_INITIAL_DURATION
+            ? REWARD_INITIAL_AMOUNT * ONE_TOKEN / TOTAL_STAKED_AMOUNT
+            //: REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
+            : REWARD_INITIAL_AMOUNT * stakingElapsedTime * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
+        );
+        debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 
-    checkRewardPerToken(expectedRewardPerToken, DELTA_0_00000000000002, 4);
-    checkRewardForDuration(DELTA_0_00000000022);
+        checkRewardPerToken(expectedRewardPerToken, DELTA_0_00000000000002, 4);
+        checkRewardForDuration(DELTA_0_00000000022);
+    }
+
+    // Alice stakes after staking ends
+    if ( ALICE_STAKING_TIMESTAMP > int256(STAKING_END_TIMESTAMP) ) {
+      // Got to end of staking rewards
+      gotoTimestamp(STAKING_END_TIMESTAMP);
+
+      userAliceExpectedRewards =
+        expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, 0, REWARD_INITIAL_DURATION);
+      checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
+
+      if (userAliceExpectedRewards > 0) {
+          errorLog("userAliceExpectedRewards greater than 0: ", userAliceExpectedRewards);
+          fail("userAliceExpectedRewards > 0");
+      }
+
+      debugLog("Alice stakes AFTER staking ends");
+      gotoTimestamp(ALICE_STAKING_TIMESTAMP);
+      AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
+
+      gotoTimestamp(ALICE_STAKING_TIMESTAMP + 100);
+
+      userAliceExpectedRewards =
+        expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, 0, REWARD_INITIAL_DURATION);
+      checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
+
+      if (userAliceExpectedRewards > 0) {
+          errorLog("userAliceExpectedRewards greater than 0: ", userAliceExpectedRewards);
+          fail("userAliceExpectedRewards > 0");
+      }
+    }
+
   }
 }
 
