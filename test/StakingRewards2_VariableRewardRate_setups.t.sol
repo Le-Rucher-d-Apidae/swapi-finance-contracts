@@ -217,7 +217,8 @@ contract DuringStakingVariableRewardRate2WithoutWithdral is StakingPreSetup {
       gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
     }
 
     gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
@@ -309,9 +310,11 @@ contract DuringStakingVariableRewardRate3WithoutWithdral is StakingPreSetup {
       gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
-      userCherryClaimedRewards =
-        checkUserClaimFromRewardsStart(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", DELTA_0_015, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
+      userCherryClaimedRewards = checkUserClaimFromRewardsStart(
+        userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", DELTA_0_015, rewardErc20
+      );
     }
 
     gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
@@ -371,10 +374,12 @@ contract DuringStakingVariableRewardRate1WithWithdral is StakingPreSetup {
     CLAIM_REWARDS_AT__PERCENTAGE_DURATION = _claimPercentageDuration;
     // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
+      /* solhint-disable max-line-length */
       fail(
         "DuringStakingVariableRewardRate1WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION"
         " / DIVIDE"
       );
+      /* solhint-enable max-line-length */
     }
   }
 
@@ -469,10 +474,12 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
     CLAIM_REWARDS_AT__PERCENTAGE_DURATION = _claimPercentageDuration;
     // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
+      /* solhint-disable max-line-length */
       fail(
         "DuringStakingVariableRewardRate2WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION"
         " / DIVIDE"
       );
+      /* solhint-enable max-line-length */
     }
   }
 
@@ -514,7 +521,8 @@ contract DuringStakingVariableRewardRate2WithWithdral is StakingPreSetup {
       gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
     }
 
     stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;
@@ -587,10 +595,12 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
     CLAIM_REWARDS_AT__PERCENTAGE_DURATION = _claimPercentageDuration;
     // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
+      /* solhint-disable max-line-length */
       fail(
         "DuringStakingVariableRewardRate3WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION"
         " / DIVIDE"
       );
+      /* solhint-enable max-line-length */
     }
   }
 
@@ -638,9 +648,11 @@ contract DuringStakingVariableRewardRate3WithWithdral is StakingPreSetup {
       gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
-      userCherryClaimedRewards =
-        checkUserClaimFromRewardsStart(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", DELTA_0_015, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
+      userCherryClaimedRewards = checkUserClaimFromRewardsStart(
+        userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", DELTA_0_015, rewardErc20
+      );
     }
 
     stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;

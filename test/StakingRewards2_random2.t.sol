@@ -7,13 +7,7 @@ import {
   DELTA_0_00000000022,
   DELTA_0_00000000000002,
   DELTA_0_015,
-  DELTA_0_31,
-  DELTA_0_04,
-  DELTA_5,
   PERCENT_0,
-  PERCENT_1,
-  PERCENT_5,
-  PERCENT_90,
   PERCENT_99,
   PERCENT_100,
   PERCENT_220,
@@ -42,8 +36,10 @@ contract StakingPreSetup is StakingPreSetupErc20 {
     // Constant reward amount allocated to the staking program during the reward duration
     // Same reward amount is distributed at each block
     // Stakers will share the reward budget based on their staked amount
+    /* solhint-disable var-name-mixedcase */
     uint256 REWARD_RATE = 1e5;
     REWARD_INITIAL_AMOUNT = REWARD_INITIAL_DURATION * REWARD_RATE;
+    /* solhint-enable var-name-mixedcase */
 
     if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
       errorLog("REWARD_INITIAL_AMOUNT", REWARD_INITIAL_AMOUNT);
@@ -115,6 +111,8 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     checkAliceStake();
   }
 
+  /* solhint-disable code-complexity */
+
   function testUsersStakingRewards(
     uint256 _checkRewardsAtStakingPercentageDuration,
     uint256 _claimRewardsAtPercentageDuration,
@@ -122,21 +120,29 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
   )
     public
   {
-    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = bound(_checkRewardsAtStakingPercentageDuration, PERCENT_0, PERCENT_220);
+    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION =
+      bound(_checkRewardsAtStakingPercentageDuration, PERCENT_0, PERCENT_220);
     CLAIM_REWARDS_AT__PERCENTAGE_DURATION = bound(_claimRewardsAtPercentageDuration, PERCENT_0, PERCENT_99);
     vm.assume(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION >= CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
 
-    vm.assume( INITIAL_BLOCK_TIMESTAMP + _stakingStartAliceDelta > 0);
+    vm.assume(INITIAL_BLOCK_TIMESTAMP + _stakingStartAliceDelta > 0);
 
     debugLog("> CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     debugLog("> CLAIM_REWARDS_AT__PERCENTAGE_DURATION         = ", CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
-    debugLog("> CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = %s %%", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * 100 / PERCENT_100);
-    debugLog("> CLAIM_REWARDS_AT__PERCENTAGE_DURATION         = %s %%", CLAIM_REWARDS_AT__PERCENTAGE_DURATION * 100 / PERCENT_100);
+    debugLog(
+      "> CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION = %s %%",
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * 100 / PERCENT_100
+    );
+    debugLog(
+      "> CLAIM_REWARDS_AT__PERCENTAGE_DURATION         = %s %%",
+      CLAIM_REWARDS_AT__PERCENTAGE_DURATION * 100 / PERCENT_100
+    );
 
     debugLog("_stakingStartAliceDelta = ", _stakingStartAliceDelta);
 
+    /* solhint-disable var-name-mixedcase */
     int256 ALICE_STAKING_TIMESTAMP = INITIAL_BLOCK_TIMESTAMP + _stakingStartAliceDelta;
-
+    /* solhint-enable var-name-mixedcase */
     initTimestamp(int256(Math.min(uint256(INITIAL_BLOCK_TIMESTAMP), uint256(ALICE_STAKING_TIMESTAMP))));
 
     debugLog("> INITIAL_BLOCK_TIMESTAMP = ", INITIAL_BLOCK_TIMESTAMP);
@@ -144,7 +150,7 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     uint256 stakingElapsedTime;
     uint256 userAliceExpectedRewards;
     uint256 userAliceClaimedRewards;
-    uint256 stakingEffectiveStartTime_Alice;
+    uint256 stakingEffectiveStartTimeAlice;
 
     // Alice stakes before staking starts
     if (ALICE_STAKING_TIMESTAMP < INITIAL_BLOCK_TIMESTAMP) {
@@ -160,12 +166,17 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     verboseLog("--- START REWARDING ---");
     notifyRewardAmount(REWARD_INITIAL_AMOUNT);
 
-    stakingEffectiveStartTime_Alice = uint256(ALICE_STAKING_TIMESTAMP) < STAKING_START_TIMESTAMP ? STAKING_START_TIMESTAMP : uint256(ALICE_STAKING_TIMESTAMP);
+    stakingEffectiveStartTimeAlice = uint256(ALICE_STAKING_TIMESTAMP) < STAKING_START_TIMESTAMP
+      ? STAKING_START_TIMESTAMP
+      : uint256(ALICE_STAKING_TIMESTAMP);
 
     verboseLog("> STAKING_START_TIMESTAMP = ", STAKING_START_TIMESTAMP);
 
+    /* solhint-disable var-name-mixedcase */
     uint256 USERS_CLAIM_REWARDS_TIMESTAMP = getTimeStampFromStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
-    uint256 USER_CHECKSTAKINGREWARDS_TIMESTAMP = getTimeStampFromStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    uint256 USER_CHECKSTAKINGREWARDS_TIMESTAMP =
+      getTimeStampFromStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
+    /* solhint-enable var-name-mixedcase */
     debugLog("> USERS_CLAIM_REWARDS_TIMESTAMP    = ", USERS_CLAIM_REWARDS_TIMESTAMP);
     debugLog("> USER_CHECKSTAKINGREWARDS_TIMESTAMP    = ", USER_CHECKSTAKINGREWARDS_TIMESTAMP);
 
@@ -178,7 +189,7 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
 
     // Claim Before staking : user rewards should be 0
     if (USERS_CLAIM_REWARDS_TIMESTAMP <= uint256(ALICE_STAKING_TIMESTAMP)) {
-      if ( USERS_CLAIM_REWARDS_TIMESTAMP < uint256(ALICE_STAKING_TIMESTAMP) ) {
+      if (USERS_CLAIM_REWARDS_TIMESTAMP < uint256(ALICE_STAKING_TIMESTAMP)) {
         debugLog("> Alice claims rewards before having staked");
       } else {
         debugLog("> Alice claims rewards exactly at staking start");
@@ -194,30 +205,36 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     }
 
     // Alice stakes after staking starts (and before staking ends)
-    if (ALICE_STAKING_TIMESTAMP >= int256(STAKING_START_TIMESTAMP) && ALICE_STAKING_TIMESTAMP <= int256(STAKING_END_TIMESTAMP)) {
-      if ( ALICE_STAKING_TIMESTAMP >= int256(STAKING_START_TIMESTAMP) ) {
+    if (
+      ALICE_STAKING_TIMESTAMP >= int256(STAKING_START_TIMESTAMP)
+        && ALICE_STAKING_TIMESTAMP <= int256(STAKING_END_TIMESTAMP)
+    ) {
+      if (ALICE_STAKING_TIMESTAMP >= int256(STAKING_START_TIMESTAMP)) {
         debugLog("> Alice stakes AFTER staking starts");
       } else {
         debugLog("> Alice stakes exactly at staking rewards start");
       }
       gotoTimestamp(ALICE_STAKING_TIMESTAMP);
       AliceStakes(ALICE_STAKINGERC20_MINTEDAMOUNT);
-      stakingEffectiveStartTime_Alice = uint256(ALICE_STAKING_TIMESTAMP) < STAKING_START_TIMESTAMP ? STAKING_START_TIMESTAMP : uint256(ALICE_STAKING_TIMESTAMP);
+      stakingEffectiveStartTimeAlice = uint256(ALICE_STAKING_TIMESTAMP) < STAKING_START_TIMESTAMP
+        ? STAKING_START_TIMESTAMP
+        : uint256(ALICE_STAKING_TIMESTAMP);
     }
-    debugLog("stakingEffectiveStartTime_Alice = ", stakingEffectiveStartTime_Alice);
+    debugLog("stakingEffectiveStartTimeAlice = ", stakingEffectiveStartTimeAlice);
 
     // Claim After staking : user rewards should be > 0
     if (USERS_CLAIM_REWARDS_TIMESTAMP >= uint256(ALICE_STAKING_TIMESTAMP)) {
-      if ( USERS_CLAIM_REWARDS_TIMESTAMP > uint256(ALICE_STAKING_TIMESTAMP) ) {
+      if (USERS_CLAIM_REWARDS_TIMESTAMP > uint256(ALICE_STAKING_TIMESTAMP)) {
         debugLog("> Alice claims rewards after having staked");
       } else {
         debugLog("> Alice claims rewards exactly at staking start");
       }
       gotoTimestamp(USERS_CLAIM_REWARDS_TIMESTAMP);
-      stakingElapsedTime = block.timestamp - stakingEffectiveStartTime_Alice;
-      userAliceClaimedRewards =
-        checkUserClaimFromUserStakingStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, "Alice", DELTA_0_015, rewardErc20);
-      if ( USERS_CLAIM_REWARDS_TIMESTAMP == stakingEffectiveStartTime_Alice ) {
+      stakingElapsedTime = block.timestamp - stakingEffectiveStartTimeAlice;
+      userAliceClaimedRewards = checkUserClaimFromUserStakingStart(
+        userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, "Alice", DELTA_0_015, rewardErc20
+      );
+      if (USERS_CLAIM_REWARDS_TIMESTAMP == stakingEffectiveStartTimeAlice) {
         debugLog("Alice claims rewards EXACTLY at staking start");
         if (userAliceClaimedRewards != 0) {
           errorLog("userAliceClaimedRewards not equal to 0: ", userAliceClaimedRewards);
@@ -238,13 +255,13 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
       checkRewardForDuration(DELTA_0_00000000022);
       checkStakingPeriod(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
     }
-    if (block.timestamp >= stakingEffectiveStartTime_Alice) {
-      stakingElapsedTime = block.timestamp - stakingEffectiveStartTime_Alice;
+    if (block.timestamp >= stakingEffectiveStartTimeAlice) {
+      stakingElapsedTime = block.timestamp - stakingEffectiveStartTimeAlice;
     }
     debugLog("reward duration (%%) of total staking reward duration = ", getRewardDurationReached());
     debugLog(
-    "Staking duration (%%) total staking reward duration = ",
-    CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
+      "Staking duration (%%) total staking reward duration = ",
+      CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION * REWARD_INITIAL_DURATION / PERCENT_100
     );
     userAliceExpectedRewards =
       expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
@@ -256,29 +273,28 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0_00000000000002, 4);
 
     if (TOTAL_STAKED_AMOUNT > 0) {
-        uint256 expectedRewardPerToken = (
+      uint256 expectedRewardPerToken = (
         stakingElapsedTime == REWARD_INITIAL_DURATION
-            ? REWARD_INITIAL_AMOUNT * ONE_TOKEN / TOTAL_STAKED_AMOUNT
-            : REWARD_INITIAL_AMOUNT * stakingElapsedTime * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
-        );
-        debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
+          ? REWARD_INITIAL_AMOUNT * ONE_TOKEN / TOTAL_STAKED_AMOUNT
+          : REWARD_INITIAL_AMOUNT * stakingElapsedTime * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
+      );
+      debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 
-        checkRewardPerToken(expectedRewardPerToken, DELTA_0_00000000000002, 4);
-        checkRewardForDuration(DELTA_0_00000000022);
+      checkRewardPerToken(expectedRewardPerToken, DELTA_0_00000000000002, 4);
+      checkRewardForDuration(DELTA_0_00000000022);
     }
 
     // Alice stakes after staking ends
-    if ( ALICE_STAKING_TIMESTAMP > int256(STAKING_END_TIMESTAMP) ) {
+    if (ALICE_STAKING_TIMESTAMP > int256(STAKING_END_TIMESTAMP)) {
       // Got to end of staking rewards
       gotoTimestamp(STAKING_END_TIMESTAMP);
 
-      userAliceExpectedRewards =
-        expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, 0, REWARD_INITIAL_DURATION);
+      userAliceExpectedRewards = expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, 0, REWARD_INITIAL_DURATION);
       checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
 
       if (userAliceExpectedRewards > 0) {
-          errorLog("userAliceExpectedRewards greater than 0: ", userAliceExpectedRewards);
-          fail("userAliceExpectedRewards > 0");
+        errorLog("userAliceExpectedRewards greater than 0: ", userAliceExpectedRewards);
+        fail("userAliceExpectedRewards > 0");
       }
 
       debugLog("Alice stakes AFTER staking ends");
@@ -287,45 +303,49 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
 
       gotoTimestamp(ALICE_STAKING_TIMESTAMP + 100);
 
-      userAliceExpectedRewards =
-        expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, 0, REWARD_INITIAL_DURATION);
+      userAliceExpectedRewards = expectedStakingRewards(ALICE_STAKINGERC20_STAKEDAMOUNT, 0, REWARD_INITIAL_DURATION);
       checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, DELTA_0, 0);
 
       if (userAliceExpectedRewards > 0) {
-          errorLog("userAliceExpectedRewards greater than 0: ", userAliceExpectedRewards);
-          fail("userAliceExpectedRewards > 0");
+        errorLog("userAliceExpectedRewards greater than 0: ", userAliceExpectedRewards);
+        fail("userAliceExpectedRewards > 0");
       }
     }
-
   }
+  /* solhint-enable code-complexity */
 }
 
 // ------------------------------------
 
-contract DuringStaking2WithoutWithdral is StakingPreSetup {}
+/* solhint-disable-next-line no-empty-blocks */
+contract DuringStaking2WithoutWithdral is StakingPreSetup { }
 
 // ------------------------------------
 
-contract DuringStaking3WithoutWithdral is StakingPreSetup {}
+/* solhint-disable-next-line no-empty-blocks */
+contract DuringStaking3WithoutWithdral is StakingPreSetup { }
 
 // ------------------------------------
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
-contract DuringStaking1WithWithdral is StakingPreSetup {}
+/* solhint-disable-next-line no-empty-blocks */
+contract DuringStaking1WithWithdral is StakingPreSetup { }
 
 // ------------------------------------
 
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking2WithWithdral is StakingPreSetup {}
+/* solhint-disable-next-line no-empty-blocks */
+contract DuringStaking2WithWithdral is StakingPreSetup { }
 
 // ------------------------------------
 
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
 
-contract DuringStaking3WithWithdral is StakingPreSetup {}
+/* solhint-disable-next-line no-empty-blocks */
+contract DuringStaking3WithWithdral is StakingPreSetup { }
 
 // --------------------------------------------------------

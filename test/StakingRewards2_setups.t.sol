@@ -36,8 +36,10 @@ contract StakingPreSetup is StakingPreSetupErc20 {
     // Constant reward amount allocated to the staking program during the reward duration
     // Same reward amount is distributed at each block
     // Stakers will share the reward budget based on their staked amount
+    /* solhint-disable var-name-mixedcase */
     uint256 REWARD_RATE = 1e5;
     REWARD_INITIAL_AMOUNT = REWARD_INITIAL_DURATION * REWARD_RATE;
+    /* solhint-enable var-name-mixedcase */
 
     if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
       errorLog("REWARD_INITIAL_AMOUNT", REWARD_INITIAL_AMOUNT);
@@ -208,7 +210,8 @@ contract DuringStaking2WithoutWithdral is StakingPreSetup {
       gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", DELTA_0_015, rewardErc20);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", DELTA_0_015, rewardErc20);
     }
 
     gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
@@ -290,9 +293,18 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
     uint256 rewardsDelta = getRewardPercentDelta();
 
     debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION : ", CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
-    debugLog("CLAIM_REWARDS_AT__PERCENTAGE_DURATION > PERCENT_90 : ", (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > PERCENT_90 ? 1 : 0));
-    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_1 : ", (CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_1 ? 1 : 0));
-    debugLog("CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_5 : ", (CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_5 ? 1 : 0));
+    debugLog(
+      "CLAIM_REWARDS_AT__PERCENTAGE_DURATION > PERCENT_90 : ",
+      (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > PERCENT_90 ? 1 : 0)
+    );
+    debugLog(
+      "CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_1 : ",
+      (CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_1 ? 1 : 0)
+    );
+    debugLog(
+      "CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_5 : ",
+      (CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION <= PERCENT_5 ? 1 : 0)
+    );
     debugLog("rewardsDelta : ", rewardsDelta);
 
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > 0) {
@@ -300,9 +312,11 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
       debugLog("claimDelta : ", claimDelta);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
-      userCherryClaimedRewards =
-        checkUserClaimFromRewardsStart(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
+      userCherryClaimedRewards = checkUserClaimFromRewardsStart(
+        userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20
+      );
     }
 
     gotoStakingPercentage(CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION);
@@ -365,7 +379,11 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
     CLAIM_REWARDS_AT__PERCENTAGE_DURATION = _claimPercentageDuration;
     // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
-      fail("DuringStaking1WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE");
+      /* solhint-disable max-line-length */
+      fail(
+        "DuringStaking1WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE"
+      );
+      /* solhint-enable max-line-length */
     }
   }
 
@@ -382,7 +400,11 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
 
   function testUsersStakingRewards() public {
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
-      fail("DuringStaking1WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE");
+      /* solhint-disable max-line-length */
+      fail(
+        "DuringStaking1WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE"
+      );
+      /* solhint-enable max-line-length */
       return;
     }
 
@@ -409,7 +431,10 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
     }
 
     stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;
-    verboseLog("Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
+    verboseLog(
+      "Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ",
+      stakingPercentageDurationReached
+    );
     gotoStakingPercentage(stakingPercentageDurationReached);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -470,7 +495,12 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
     CLAIM_REWARDS_AT__PERCENTAGE_DURATION = _claimPercentageDuration;
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
       // solhint-disable-next-line custom-errors
-      fail("DuringStaking2WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE");
+      /* solhint-disable max-line-length */
+      // solhint-disable-next-line custom-errors
+      fail(
+        "DuringStaking2WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE"
+      );
+      /* solhint-enable max-line-length */
     }
     /* solhint-enable reason-string */
   }
@@ -489,7 +519,11 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
 
   function testUsersStakingRewards() public {
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
-      fail("DuringStaking2WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE");
+      /* solhint-disable max-line-length */
+      fail(
+        "DuringStaking2WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE"
+      );
+      /* solhint-enable max-line-length */
       return;
     }
 
@@ -519,11 +553,15 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
       gotoStakingPercentage(CLAIM_REWARDS_AT__PERCENTAGE_DURATION);
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
     }
 
     stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;
-    verboseLog("Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
+    verboseLog(
+      "Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ",
+      stakingPercentageDurationReached
+    );
     gotoStakingPercentage(stakingPercentageDurationReached);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
@@ -586,7 +624,11 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
     CLAIM_REWARDS_AT__PERCENTAGE_DURATION = _claimPercentageDuration;
     // Claim must be BEFORE (or equal to) half of the staking duration, else reward computation will underflow
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
-      fail("DuringStaking3WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE");
+      /* solhint-disable max-line-length */
+      fail(
+        "DuringStaking3WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE"
+      );
+      /* solhint-enable max-line-length */
     }
   }
 
@@ -605,7 +647,11 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
 
   function testUsersStakingRewards() public {
     if (CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE) {
-      fail("DuringStaking3WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE");
+      /* solhint-disable max-line-length */
+      fail(
+        "DuringStaking3WithWithdral: CLAIM_REWARDS_AT__PERCENTAGE_DURATION > CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE"
+      );
+      /* solhint-enable max-line-length */
       return;
     }
 
@@ -640,15 +686,20 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
       userAliceClaimedRewards =
         checkUserClaimFromRewardsStart(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice", claimDelta, rewardErc20);
       debugLog("testUsersStakingRewards: userAliceClaimedRewards = ", userAliceClaimedRewards);
-      userBobClaimedRewards = checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
+      userBobClaimedRewards =
+        checkUserClaimFromRewardsStart(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob", claimDelta, rewardErc20);
       debugLog("testUsersStakingRewards: userBobClaimedRewards = ", userBobClaimedRewards);
-      userCherryClaimedRewards =
-        checkUserClaimFromRewardsStart(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20);
+      userCherryClaimedRewards = checkUserClaimFromRewardsStart(
+        userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry", claimDelta, rewardErc20
+      );
       debugLog("testUsersStakingRewards: userCherryClaimedRewards = ", userCherryClaimedRewards);
     }
 
     stakingPercentageDurationReached = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE;
-    verboseLog("Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ", stakingPercentageDurationReached);
+    verboseLog(
+      "Staking duration (%%) = CHECK_REWARDS_AT__STAKING_PERCENTAGE_DURATION / DIVIDE  : ",
+      stakingPercentageDurationReached
+    );
     gotoStakingPercentage(stakingPercentageDurationReached);
     stakingElapsedTime = block.timestamp - STAKING_START_TIMESTAMP;
     debugLog("stakingElapsedTime = ", stakingElapsedTime);
