@@ -36,8 +36,8 @@ contract StakingPreSetup is StakingPreSetupErc20 {
     // Constant reward amount allocated to the staking program during the reward duration
     // Same reward amount is distributed at each block
     // Stakers will share the reward budget based on their staked amount
-    // REWARD_INITIAL_AMOUNT = 100_000; // 1e5
-    REWARD_INITIAL_AMOUNT = REWARD_INITIAL_DURATION * 1e5; // x 1e5
+    uint256 REWARD_RATE = 1e5;
+    REWARD_INITIAL_AMOUNT = REWARD_INITIAL_DURATION * REWARD_RATE;
 
     if (REWARD_INITIAL_AMOUNT < REWARD_INITIAL_DURATION) {
       errorLog("REWARD_INITIAL_AMOUNT", REWARD_INITIAL_AMOUNT);
