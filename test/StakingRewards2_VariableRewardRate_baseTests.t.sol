@@ -125,7 +125,6 @@ contract CheckStakingPermissions is StakingPreSetup {
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
   }
 
-
   function testStakingNotifyUpdateVariableRewardAmountMinMax() public {
     verboseLog("Only staking reward contract owner can updateVariableRewardMaxTotalSupply");
 
@@ -163,8 +162,6 @@ contract CheckStakingPermissions is StakingPreSetup {
     verboseLog("Staking contract: Only owner can updateVariableRewardMaxTotalSupply");
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
   }
-
-
 
   function testStakingNotifyVariableRewardAmount0() public {
     verboseLog("Only staking reward contract owner can notifyVariableRewardAmount 0, 0");
@@ -347,9 +344,7 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     /* solhint-enable var-name-mixedcase */
     vm.prank(userStakingRewardAdmin);
 
-    notifyVariableRewardAmount(
-      CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK
-    );
+    notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK);
 
     verboseLog(
       "Staking contract: Only owner can notifyVariableRewardAmount of ",
@@ -429,13 +424,12 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     }
     uint256 MAXTOTALSUPPLY_EXTRA_OK = MAXTOTALSUPPLY_EXTRA_OVERFLOW - REWARD_INITIAL_DURATION;
     uint256 CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK = CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK;
-    uint256 CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK + REWARD_INITIAL_DURATION;
+    uint256 CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OVERFLOW =
+      CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK + REWARD_INITIAL_DURATION;
     /* solhint-enable var-name-mixedcase */
     vm.prank(userStakingRewardAdmin);
 
-    notifyVariableRewardAmount(
-      CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK
-    );
+    notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK);
 
     verboseLog(
       "Staking contract: Only owner can notifyVariableRewardAmount of ",
@@ -454,9 +448,9 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     vm.prank(userStakingRewardAdmin);
     stakingRewards2.updateVariableRewardMaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OVERFLOW);
     verboseLog("Staking contract: Error UpdateVariableRewardMaxTotalSupply thrown");
-
   }
   // Test that the owner can't notifyVariableRewardAmount with a reward RATE amount that is too high
+
   function testStakingNotifyVariableRewardAmountFail2() public {
     vm.prank(userStakingRewardAdmin);
     vm.expectRevert(
