@@ -15,7 +15,7 @@
   #solc = "0.8.0"
 
   #block_timestamp = 1_680_220_800 # March 31, 2023 at 00:00 GMT
-  block_timestamp = 1716076800 # Sun May 19 2024 00:00:00 GMT+0000
+  block_timestamp = 1_716_076_800 # Sun May 19 2024 00:00:00 GMT+0000
   bytecode_hash = "none"
   evm_version = "paris"           # See https://www.evmdiff.com/features?name=PUSH0&kind=opcode
   fuzz = { runs = 10_000 }
