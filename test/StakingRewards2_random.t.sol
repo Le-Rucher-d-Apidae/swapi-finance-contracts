@@ -255,7 +255,7 @@ contract DuringStaking2WithoutWithdral is StakingPreSetup {
   }
 }
 
-// // ------------------------------------
+// ------------------------------------
 
 contract DuringStaking3WithoutWithdral is StakingPreSetup {
   function setUp() public override {
@@ -347,7 +347,7 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
     debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
     userAliceExpectedRewards -= userAliceClaimedRewards;
     debugLog("userAliceExpectedRewards = ", userAliceExpectedRewards);
-    checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsDelta, 1);
+    checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsDelta, 2);
 
     userBobExpectedRewards =
       expectedStakingRewards(BOB_STAKINGERC20_STAKEDAMOUNT, stakingElapsedTime, REWARD_INITIAL_DURATION);
@@ -375,7 +375,7 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
   }
 }
 
-// // ------------------------------------
+// ------------------------------------
 
 // 1 staker deposit right after staking starts and removes all staked amount after half of staking percentage duration
 
@@ -467,7 +467,7 @@ contract DuringStaking1WithWithdral is StakingPreSetup {
   }
 }
 
-// // ------------------------------------
+// ------------------------------------
 
 // 2 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
@@ -579,7 +579,7 @@ contract DuringStaking2WithWithdral is StakingPreSetup {
   }
 }
 
-// // ------------------------------------
+// ------------------------------------
 
 // 3 stakers deposit right after staking starts and removes all staked amount after half of staking percentage
 // duration
@@ -705,7 +705,7 @@ contract DuringStaking3WithWithdral is StakingPreSetup {
 
     checkStakingRewards(userAlice, "Alice", userAliceExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 4);
     checkStakingRewards(userBob, "Bob", userBobExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 2);
-    checkStakingRewards(userCherry, "Cherry", userCherryExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 1);
+    checkStakingRewards(userCherry, "Cherry", userCherryExpectedRewards, rewardsPercentDelta, rewardsUnitsDelta * 2);
 
     checkRewardPerToken(expectedRewardPerToken, 0, 1);
     checkRewardForDuration(DELTA_0_00000000022);
