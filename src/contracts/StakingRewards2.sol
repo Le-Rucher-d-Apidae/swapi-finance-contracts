@@ -280,7 +280,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     if (stakingToken == rewardsToken) {
       balance = balance - _totalSupply;
     }
-    if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored > balance / rewardsDuration) {
+
+    if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN) {
       revert UpdateVariableRewardMaxTotalSupply({
         variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
         rewardsBalance: balance
