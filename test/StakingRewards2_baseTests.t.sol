@@ -77,7 +77,7 @@ contract CheckStakingPermissions is StakingPreSetup {
     verboseLog("Staking contract: Only owner can unpause");
     verboseLog("Staking contract: Event Unpaused emitted");
 
-    // Unausing again should not throw nor emit event and leave pause unchanged
+    // Unpausing again should not throw nor emit event and leave pause unchanged
     stakingRewards2.setPaused(false);
     // Check no event emitted ?
     assertEq(stakingRewards2.paused(), false);
