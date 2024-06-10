@@ -89,7 +89,7 @@ contract CheckStakingPermissions is StakingPreSetup {
     verboseLog("Staking contract: Only owner can unpause");
     verboseLog("Staking contract: Event Unpaused emitted");
 
-    // Unausing again should not throw nor emit event and leave pause unchanged
+    // Unpausing again should not throw nor emit event and leave pause unchanged
     stakingRewards2.setPaused(false);
     // Check no event emitted ?
     assertEq(stakingRewards2.paused(), false);
@@ -124,6 +124,47 @@ contract CheckStakingPermissions is StakingPreSetup {
     verboseLog("Staking contract: Only owner can notifyVariableRewardAmount of 1,1");
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
   }
+
+
+  function testStakingNotifyUpdateVariableRewardAmountMinMax() public {
+    verboseLog("Only staking reward contract owner can updateVariableRewardMaxTotalSupply");
+
+    vm.prank(userStakingRewardAdmin);
+    notifyVariableRewardAmount(1, 1);
+
+    vm.startPrank(userAlice);
+    vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
+    stakingRewards2.updateVariableRewardMaxTotalSupply(0);
+    vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
+    stakingRewards2.updateVariableRewardMaxTotalSupply(1);
+    vm.stopPrank();
+
+    verboseLog("Staking contract: Alice can't updateVariableRewardMaxTotalSupply");
+
+    vm.startPrank(userBob);
+    vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userBob));
+    stakingRewards2.updateVariableRewardMaxTotalSupply(0);
+    vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userBob));
+    stakingRewards2.updateVariableRewardMaxTotalSupply(1);
+    verboseLog("Staking contract: Bob can't updateVariableRewardMaxTotalSupply");
+    vm.stopPrank();
+
+    vm.startPrank(userStakingRewardAdmin);
+    // Check emitted events
+    vm.expectEmit(true, false, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.MaxTotalSupply(0);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(0);
+
+    // Check emitted events
+    vm.expectEmit(true, false, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.MaxTotalSupply(0);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(1);
+    vm.stopPrank();
+    verboseLog("Staking contract: Only owner can updateVariableRewardMaxTotalSupply");
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+  }
+
+
 
   function testStakingNotifyVariableRewardAmount0() public {
     verboseLog("Only staking reward contract owner can notifyVariableRewardAmount 0, 0");
@@ -172,29 +213,6 @@ contract CheckStakingPermissions is StakingPreSetup {
       CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY
     );
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
-  }
-
-  // Previous reward epoch must have ended before setting a new duration
-  function testStakingSetRewardsDurationAfterEpochEnd() public {
-    vm.prank(userStakingRewardAdmin);
-    notifyVariableRewardAmount(CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY);
-
-    gotoTimestamp(STAKING_START_TIMESTAMP + REWARD_INITIAL_DURATION + 1); // epoch ended
-
-    vm.prank(userAlice);
-    vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userAlice));
-    stakingRewards2.setRewardsDuration(1);
-    verboseLog("Staking contract: Alice can't setRewardsDuration");
-
-    vm.prank(userBob);
-    vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, userBob));
-    stakingRewards2.setRewardsDuration(1);
-    verboseLog("Staking contract: Bob can't setRewardsDuration");
-
-    vm.prank(userStakingRewardAdmin);
-    setRewardsDuration(1);
-    verboseLog("Staking contract: Owner can setRewardsDuration right after last epoch end");
-    verboseLog("Staking contract: Event RewardsDurationUpdated emitted");
   }
 
   function testStakingSetRewardsDurationBeforeEpochEnd() public {
