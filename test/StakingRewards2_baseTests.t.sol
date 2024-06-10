@@ -3,7 +3,7 @@
 pragma solidity >= 0.8.0 < 0.9.0;
 
 import { StakingPreSetup } from "./StakingRewards2_setups.t.sol";
-import { RewardPeriodInProgress, ProvidedRewardTooHigh } from "../src/contracts/StakingRewards2Errors.sol";
+import { RewardPeriodInProgress, ProvidedRewardTooHigh, NotVariableRewardRate } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
 import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
@@ -127,6 +127,23 @@ contract CheckStakingPermissions is StakingPreSetup {
     notifyRewardAmount(REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError);
     verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError - 1);
     verboseLog("Staking contract: Event RewardAdded emitted");
+  }
+
+  function testUpdateVariableRewardMaxTotalSupplyFail() public {
+    // computed reward rate must exceed by at least one unit for raising an error
+    // one unit equals to REWARD_INITIAL_DURATION
+    uint256 rewardAmountToAddForRaisingError = REWARD_INITIAL_DURATION - 1;
+    vm.prank(userStakingRewardAdmin);
+    notifyRewardAmount(REWARD_INITIAL_AMOUNT + rewardAmountToAddForRaisingError);
+    verboseLog("Staking contract: Only owner can notifyRewardAmount of ", rewardAmountToAddForRaisingError - 1);
+    verboseLog("Staking contract: Event RewardAdded emitted");
+
+    // Check emitted events
+    vm.expectRevert( abi.encodeWithSelector( NotVariableRewardRate.selector ) );
+    vm.prank(userStakingRewardAdmin);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(1);
+    verboseLog("Staking contract: Error NotVariableRewardRate thrown");
+
   }
 
   function testStakingRewardAmountTooHigh1() public {
