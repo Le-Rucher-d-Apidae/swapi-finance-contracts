@@ -10,7 +10,8 @@ import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import {
   RewardPeriodInProgress,
   ProvidedVariableRewardTooHigh,
-  StakeTotalSupplyExceedsAllowedMax
+  StakeTotalSupplyExceedsAllowedMax,
+  UpdateVariableRewardMaxTotalSupply
 } from "../src/contracts/StakingRewards2Errors.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 
@@ -304,6 +305,47 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
   }
 
+  // Test that the owner can notifyVariableRewardAmount and updateVariableRewardMaxTotalSupply
+  // with a reward max total supply amount that is just low enough
+  function testStakingNotifyAndUpdateVariableRewardAmountSuccess1() public {
+    /* solhint-disable var-name-mixedcase */
+    uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2));
+    // Should be REWARD_INITIAL_AMOUNT
+    assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
+
+    // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
+    uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
+    uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
+    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
+    for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
+      if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
+        debugLog("testStakingNotifyVariableRewardAmountSuccess1: i   = ", i);
+        MAXTOTALSUPPLY_EXTRA_OVERFLOW = i - CONSTANT_REWARD_MAXTOTALSUPPLY;
+        break;
+      }
+    }
+    uint256 MAXTOTALSUPPLY_EXTRA_OK = MAXTOTALSUPPLY_EXTRA_OVERFLOW - REWARD_INITIAL_DURATION;
+    uint256 CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK = CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK;
+    /* solhint-enable var-name-mixedcase */
+    vm.prank(userStakingRewardAdmin);
+
+    notifyVariableRewardAmount(
+      CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK
+    );
+
+    verboseLog(
+      "Staking contract: Only owner can notifyVariableRewardAmount of ",
+      CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY
+    );
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+
+    // Check emitted events
+    vm.expectEmit(true, false, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.MaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK);
+    vm.prank(userStakingRewardAdmin);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK);
+  }
+
   // Test that the owner can't notifyVariableRewardAmount with a reward max total supply amount that is too high
   function testStakingNotifyVariableRewardAmountFail1() public {
     /* solhint-disable var-name-mixedcase */
@@ -349,6 +391,53 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
   }
 
+  // Test that the owner can't notifyVariableRewardAmount with a reward max total supply amount that is too high
+  function testStakingNotifyVariableRewardAmountSuccessUpdateFail1() public {
+    /* solhint-disable var-name-mixedcase */
+    uint256 REWARD_AVAILABLE_AMOUNT = rewardErc20.balanceOf(address(stakingRewards2));
+    // Should be REWARD_INITIAL_AMOUNT
+    assert(REWARD_AVAILABLE_AMOUNT == REWARD_INITIAL_AMOUNT);
+
+    // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
+    uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
+    uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
+    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
+    for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
+      if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
+        debugLog("testStakingNotifyVariableRewardAmountSuccess1: i   = ", i);
+        MAXTOTALSUPPLY_EXTRA_OVERFLOW = i - CONSTANT_REWARD_MAXTOTALSUPPLY;
+        break;
+      }
+    }
+    uint256 MAXTOTALSUPPLY_EXTRA_OK = MAXTOTALSUPPLY_EXTRA_OVERFLOW - REWARD_INITIAL_DURATION;
+    uint256 CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK = CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK;
+    uint256 CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY + MAXTOTALSUPPLY_EXTRA_OK + REWARD_INITIAL_DURATION;
+    /* solhint-enable var-name-mixedcase */
+    vm.prank(userStakingRewardAdmin);
+
+    notifyVariableRewardAmount(
+      CONSTANT_REWARDRATE_PERTOKENSTORED, CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OK
+    );
+
+    verboseLog(
+      "Staking contract: Only owner can notifyVariableRewardAmount of ",
+      CONSTANT_REWARDRATE_PERTOKENSTORED * CONSTANT_REWARD_MAXTOTALSUPPLY
+    );
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+
+    // Check emitted events
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        UpdateVariableRewardMaxTotalSupply.selector,
+        CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OVERFLOW, // Max. total supply
+        REWARD_INITIAL_AMOUNT // Current balance
+      )
+    );
+    vm.prank(userStakingRewardAdmin);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(CONSTANT_REWARD_MAXTOTALSUPPLY_PLUS_EXTRA_OVERFLOW);
+    verboseLog("Staking contract: Error UpdateVariableRewardMaxTotalSupply thrown");
+
+  }
   // Test that the owner can't notifyVariableRewardAmount with a reward RATE amount that is too high
   function testStakingNotifyVariableRewardAmountFail2() public {
     vm.prank(userStakingRewardAdmin);
