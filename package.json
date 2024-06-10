@@ -19,7 +19,7 @@
     "@openzeppelin/contracts-3.4.1": "npm:@openzeppelin/contracts@3.4.1",
     "@openzeppelin/contracts-5.0.2": "npm:@openzeppelin/contracts@5.0.2"
   },
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Contracts for Swapi Finance 🐝",
   "main": "index.js",
   "repository": {
@@ -65,7 +65,7 @@
     "forge:test:StakingRewards2random2": "forge test -vvv --match-path test/StakingRewards2_random2.t.sol",
     "forge:test:StakingRewards2ww": "forge test -vvv --match-path test/StakingRewards2_withWithdrawal.t.sol",
     "forge:test:StakingRewards2wow": "forge test -vvv --match-path test/StakingRewards2_woWithdrawal.t.sol",
-    "forge:test:StakingRewards2v": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_baseTests.t.sol",
+    "forge:test:StakingRewards2vBase": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_baseTests.t.sol",
     "forge:test:StakingRewards2vRandom": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_random.sol",
     "forge:test:StakingRewards2vww": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_withWithdrawal.t.sol",
     "forge:test:StakingRewards2vwow": "forge test -vvv --match-path test/StakingRewards2_VariableRewardRate_woWithdrawal.t.sol",
