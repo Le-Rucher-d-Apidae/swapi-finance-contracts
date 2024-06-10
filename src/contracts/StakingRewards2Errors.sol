@@ -60,7 +60,7 @@ error CompoundDifferentTokens();
  */
 error NotEnoughToWithdraw(uint256 amountToWithdraw, uint256 currentBalance);
 /**
- * @dev Nothing deposited: Cannot withdraw. = NotEnoughToWithdraw ( , 0 )
+ * @dev Nothing deposited: Cannot withdraw. = NotEnoughToWithdraw ( 0, 0 )
  */
 error NothingToWithdraw();
 
@@ -70,18 +70,30 @@ error NothingToWithdraw();
  * @dev Provided reward too high (insufficient balance in staking contract).
  * @param constantRewardPerTokenStored.
  * @param variableRewardMaxTotalSupply.
- * @param rewardBalance.
+ * @param minRewardBalance.
+ * @param currentRewardBalance.
  */
 error ProvidedVariableRewardTooHigh(
-    uint256 constantRewardPerTokenStored, uint256 variableRewardMaxTotalSupply, uint256 rewardBalance
+  uint256 constantRewardPerTokenStored,
+  uint256 variableRewardMaxTotalSupply,
+  // minRewardBalance: returns 1e18 too much, should be :
+  // minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration /
+  // ONE_TOKEN,
+  // keeping it as is for accurracy : dividing by ONE_TOKEN will return 0 if the result is < 1e18
+  uint256 minRewardBalance, // = constantRewardPerTokenStored * variableRewardMaxTotalSupply * rewardsDuration
+  uint256 currentRewardBalance // = rewardsToken.balanceOf(address(this)) - deposits
 );
 
 /**
  * @dev Total supply exceeds allowed max
- * @param newTotalSupply amount after deposit.
+ * @param newTotalSupply totalSupply amount after deposit.
  * @param variableRewardMaxTotalSupply current cap amount.
+ * @param depositAmount amount to deposit.
+ * @param currentTotalSupply current total supply.
  */
-error StakeTotalSupplyExceedsAllowedMax(uint256 newTotalSupply, uint256 variableRewardMaxTotalSupply);
+error StakeTotalSupplyExceedsAllowedMax(
+  uint256 newTotalSupply, uint256 variableRewardMaxTotalSupply, uint256 depositAmount, uint256 currentTotalSupply
+);
 
 /**
  * @dev After compounding total supply would exceeds allowed max
@@ -93,7 +105,7 @@ error CompounedTotalSupplyExceedsAllowedMax(uint256 newTotalSupply, uint256 vari
 /**
  * @dev Variable reward rate must be enabled
  */
-error NotVariableRewardRater();
+error NotVariableRewardRate();
 
 /**
  * @dev Insufficient reward balance after Max total supply increase.
