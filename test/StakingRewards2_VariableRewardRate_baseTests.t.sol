@@ -932,7 +932,8 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token //
+      // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
@@ -993,7 +994,9 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     vm.expectEmit(true, false, false, false, address(stakingRewards2));
     emit StakingRewards2Events.MaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
     vm.prank(userStakingRewardAdmin);
-    stakingRewards2.updateVariableRewardMaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(
+      ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT
+    );
 
     // Deposit more tokens
     vm.prank(userAlice);
@@ -1001,7 +1004,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     emit StakingRewards2Events.Staked(userAlice, ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
     stakingRewards2.stake(ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
 
-    assertEq(stakingRewards2.totalSupply(), ALICE_INITIAL_DEPOSIT_AMOUNT+ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    assertEq(stakingRewards2.totalSupply(), ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
   }
 
   // Check already deposited amount is lower or equal than max amount, allow more deposit and deposit more tokens
@@ -1013,7 +1016,8 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token //
+      // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
@@ -1076,7 +1080,9 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     vm.expectEmit(true, false, false, false, address(stakingRewards2));
     emit StakingRewards2Events.MaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
     vm.prank(userStakingRewardAdmin);
-    stakingRewards2.updateVariableRewardMaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(
+      ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT
+    );
 
     // Deposit too much tokens
     vm.prank(userAlice);
@@ -1085,11 +1091,11 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
         StakeTotalSupplyExceedsAllowedMax.selector,
         ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT + 1, // newTotalSupply
         ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
-        ALICE_ADDITIONNAL_DEPOSIT_AMOUNT+1, // depositAmount
+        ALICE_ADDITIONNAL_DEPOSIT_AMOUNT + 1, // depositAmount
         ALICE_INITIAL_DEPOSIT_AMOUNT // currentTotalSupply
       )
     );
-    stakingRewards2.stake(ALICE_ADDITIONNAL_DEPOSIT_AMOUNT+1);
+    stakingRewards2.stake(ALICE_ADDITIONNAL_DEPOSIT_AMOUNT + 1);
 
     assertEq(stakingRewards2.totalSupply(), ALICE_INITIAL_DEPOSIT_AMOUNT);
   }
