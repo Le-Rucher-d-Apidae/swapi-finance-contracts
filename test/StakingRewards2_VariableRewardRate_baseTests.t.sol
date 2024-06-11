@@ -924,6 +924,178 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
   }
 
   // Check already deposited amount is lower or equal than max amount
+  function testStakingNotifyAndUpdateVariableRewardAmountSuccess1() public {
+    // Reward rate : 10% yearly
+    // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+    /* solhint-disable var-name-mixedcase */
+
+    uint256 APR = 10; // 10%
+    uint256 APR_BASE = 100; // 100%
+    uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+      // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+    uint256 REWARD_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT * APR / APR_BASE; // 10 token
+    uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+
+    uint256 ALICE_INITIAL_DEPOSIT_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT;
+    uint256 ALICE_ADDITIONNAL_DEPOSIT_AMOUNT = 1;
+    // uint256 INITIAL_BLOCK_TIMESTAMP = 1;
+    /* solhint-enable var-name-mixedcase */
+
+    // Mint 10 * 10^18 token as reward
+    vm.startPrank(erc20Minter);
+    rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+    // Mint Alice's initial deposit(s)
+    stakingERC20.mint(userAlice, ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Deposit 1 token BEFORE starting rewards
+    vm.startPrank(userAlice);
+    stakingERC20.approve(address(stakingRewards2), ALICE_INITIAL_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userAlice, ALICE_INITIAL_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(ALICE_INITIAL_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 1);
+
+    vm.startPrank(userStakingRewardAdmin);
+    setRewardsDuration(REWARD_DURATION);
+    notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_INITIAL_AMOUNT);
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    vm.stopPrank();
+
+    verboseLog(
+      "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
+      MAX_DEPOSIT_INITIAL_AMOUNT
+    );
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 2);
+
+    // Deposit more tokens without updating the max deposit amount
+    vm.startPrank(userAlice);
+    stakingERC20.approve(address(stakingRewards2), ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        StakeTotalSupplyExceedsAllowedMax.selector,
+        ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT, // newTotalSupply
+        MAX_DEPOSIT_INITIAL_AMOUNT, // variableRewardMaxTotalSupply
+        1, // depositAmount
+        ALICE_INITIAL_DEPOSIT_AMOUNT // currentTotalSupply
+      )
+    );
+    stakingRewards2.stake(ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Deposit more tokens after updating the max deposit amount
+    // Update max deposit amount
+    vm.expectEmit(true, false, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.MaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.prank(userStakingRewardAdmin);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+
+    // Deposit more tokens
+    vm.prank(userAlice);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userAlice, ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+
+    assertEq(stakingRewards2.totalSupply(), ALICE_INITIAL_DEPOSIT_AMOUNT+ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+  }
+
+  // Check already deposited amount is lower or equal than max amount, allow more deposit and deposit more tokens
+  function testStakingNotifyAndUpdateVariableRewardAmountFail0() public {
+    // Reward rate : 10% yearly
+    // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year
+    /* solhint-disable var-name-mixedcase */
+
+    uint256 APR = 10; // 10%
+    uint256 APR_BASE = 100; // 100%
+    uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+      // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+    uint256 REWARD_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT * APR / APR_BASE; // 10 token
+    uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+
+    uint256 ALICE_INITIAL_DEPOSIT_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT;
+    uint256 ALICE_ADDITIONNAL_DEPOSIT_AMOUNT = 1;
+    // uint256 INITIAL_BLOCK_TIMESTAMP = 1;
+    /* solhint-enable var-name-mixedcase */
+
+    // Mint 10 * 10^18 token as reward
+    vm.startPrank(erc20Minter);
+    rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
+    // Mint Alice's initial deposit(s)
+    stakingERC20.mint(userAlice, ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Deposit 1 token BEFORE starting rewards
+    vm.startPrank(userAlice);
+    stakingERC20.approve(address(stakingRewards2), ALICE_INITIAL_DEPOSIT_AMOUNT);
+    vm.expectEmit(true, true, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.Staked(userAlice, ALICE_INITIAL_DEPOSIT_AMOUNT);
+    stakingRewards2.stake(ALICE_INITIAL_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 1);
+
+    assertEq(stakingRewards2.totalSupply(), ALICE_INITIAL_DEPOSIT_AMOUNT);
+
+    vm.startPrank(userStakingRewardAdmin);
+    setRewardsDuration(REWARD_DURATION);
+    notifyVariableRewardAmount(REWARD_PER_TOKEN_STORED, MAX_DEPOSIT_INITIAL_AMOUNT);
+    verboseLog("Staking contract: Events MaxTotalSupply, RewardAddedPerTokenStored emitted");
+    vm.stopPrank();
+
+    verboseLog(
+      "Staking contract: Amount deposited before starting rewarding is lower or equal to max amount. ",
+      MAX_DEPOSIT_INITIAL_AMOUNT
+    );
+
+    gotoTimestamp(INITIAL_BLOCK_TIMESTAMP + 2);
+
+    // Deposit more tokens without updating the max deposit amount
+    vm.startPrank(userAlice);
+    stakingERC20.approve(address(stakingRewards2), ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        StakeTotalSupplyExceedsAllowedMax.selector,
+        ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT, // newTotalSupply
+        MAX_DEPOSIT_INITIAL_AMOUNT, // variableRewardMaxTotalSupply
+        1, // depositAmount
+        ALICE_INITIAL_DEPOSIT_AMOUNT // currentTotalSupply
+      )
+    );
+    stakingRewards2.stake(ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.stopPrank();
+
+    // Deposit more tokens after updating the max deposit amount
+    // Update max deposit amount
+    vm.expectEmit(true, false, false, false, address(stakingRewards2));
+    emit StakingRewards2Events.MaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+    vm.prank(userStakingRewardAdmin);
+    stakingRewards2.updateVariableRewardMaxTotalSupply(ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT);
+
+    // Deposit too much tokens
+    vm.prank(userAlice);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        StakeTotalSupplyExceedsAllowedMax.selector,
+        ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT + 1, // newTotalSupply
+        ALICE_INITIAL_DEPOSIT_AMOUNT + ALICE_ADDITIONNAL_DEPOSIT_AMOUNT, // variableRewardMaxTotalSupply
+        ALICE_ADDITIONNAL_DEPOSIT_AMOUNT+1, // depositAmount
+        ALICE_INITIAL_DEPOSIT_AMOUNT // currentTotalSupply
+      )
+    );
+    stakingRewards2.stake(ALICE_ADDITIONNAL_DEPOSIT_AMOUNT+1);
+
+    assertEq(stakingRewards2.totalSupply(), ALICE_INITIAL_DEPOSIT_AMOUNT);
+  }
+
+  // Check already deposited amount is lower or equal than max amount,
+  // allow more deposit and deposit exessive token amount
   function testStakingNotifyVariableRewardAmountFail4_1() public {
     // Reward rate : 10% yearly
     // Depositing 1 Token should give 0.1 ( = 10^17) token reward per year

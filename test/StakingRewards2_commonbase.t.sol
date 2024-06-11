@@ -32,8 +32,8 @@ import {
 
 // TODO : move to utils
 contract TestLog is Test {
-  bool internal debug = true; // TODO : set to false
-  bool internal verbose = true; // TODO : set to false
+  bool internal debug = false; // TODO : set to false
+  bool internal verbose = false; // TODO : set to false
   Utils internal utils;
 
   function debugLog(string memory _msg) public view {
