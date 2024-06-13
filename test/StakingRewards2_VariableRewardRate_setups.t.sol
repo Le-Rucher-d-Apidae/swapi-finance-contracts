@@ -2,7 +2,7 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingPreSetupErc20 } from "./StakingRewards2_commonbase.t.sol";
+import { StakingPreSetupErc20_18_18 } from "./StakingRewards2_commonbase.t.sol";
 import {
   DELTA_0_00000000022,
   DELTA_0_015,
@@ -12,14 +12,14 @@ import {
   PERCENT_10,
   PERCENT_100,
   DELTA_0,
-  ONE_TOKEN
+  ONE_TOKEN_18
 } from "./TestsConstants.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 
 // ----------------
 
-contract StakingPreSetup is StakingPreSetupErc20 {
+contract StakingPreSetup is StakingPreSetupErc20_18_18 {
   // Rewards constants
 
   // Rewards program duration : see StakingPreSetupDuration
@@ -27,13 +27,13 @@ contract StakingPreSetup is StakingPreSetupErc20 {
   // Variable rewards
   // Limit max LP tokens staked
   uint256 internal constant CONSTANT_REWARD_MAXTOTALSUPPLY_LP = 6; // Max LP : 6
-  uint256 internal constant CONSTANT_REWARD_MAXTOTALSUPPLY = CONSTANT_REWARD_MAXTOTALSUPPLY_LP * ONE_TOKEN;
+  uint256 internal constant CONSTANT_REWARD_MAXTOTALSUPPLY = CONSTANT_REWARD_MAXTOTALSUPPLY_LP * ONE_TOKEN_18;
 
   uint256 internal constant APR = 10; // 10%
   uint256 internal constant APR_BASE = 100; // 100%
 
   // per second for one LP token
-  uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = ONE_TOKEN * APR / APR_BASE / REWARD_INITIAL_DURATION;
+  uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = ONE_TOKEN_18 * APR / APR_BASE / REWARD_INITIAL_DURATION;
   // = 1e18 * 10 / 100 / 10 000 = 10 000 000 000 000 = 1e13
 
   function setUp() public virtual override {
@@ -43,7 +43,7 @@ contract StakingPreSetup is StakingPreSetupErc20 {
       fail("StakingSetup: REWARD_INITIAL_DURATION is 0");
     }
 
-    StakingPreSetupErc20.setUp();
+    StakingPreSetupErc20_18_18.setUp();
 
     // Max. budget for rewards
     REWARD_INITIAL_AMOUNT = CONSTANT_REWARD_MAXTOTALSUPPLY * APR / APR_BASE;
@@ -95,7 +95,7 @@ contract StakingPreSetup is StakingPreSetupErc20 {
     uint256 rewardsDuration = Math.min(_rewardDurationReached, _rewardTotalDuration);
     verboseLog("StakingPreSetup:expectedStakingRewards: rewardsDuration= ", rewardsDuration);
     uint256 expectedStakingRewardsAmount =
-      CONSTANT_REWARDRATE_PERTOKENSTORED * _stakedAmount / ONE_TOKEN * rewardsDuration;
+      CONSTANT_REWARDRATE_PERTOKENSTORED * _stakedAmount / ONE_TOKEN_18 * rewardsDuration;
     verboseLog("StakingPreSetup:expectedStakingRewards: expectedStakingRewardsAmount= ", expectedStakingRewardsAmount);
     return expectedStakingRewardsAmount;
   }
