@@ -13,7 +13,7 @@
             "name": "Ether",
             "symbol": "ETH",
             "decimals": 18,
-            "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+            "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
             "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
             "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
@@ -59,7 +59,7 @@
             "name": "USD Coin (Bridged)",
             "symbol": "USDC",
             "decimals": 6,
-            "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+            "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
             "tags": ["pos", "erc20", "swapable", "metaTx", "stablecoin"],
             "extensions": {
@@ -90,7 +90,7 @@
             "name": "Tether USD",
             "symbol": "USDT",
             "decimals": 6,
-            "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+            "address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
             "logoURI": "https://assets.polygon.technology/tokenAssets/usdt.svg",
             "tags": ["pos", "stablecoin", "erc20", "swapable", "metaTx"],
             "extensions": {
@@ -109,7 +109,7 @@
             "name": "Dai",
             "symbol": "DAI",
             "decimals": 18,
-            "address": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
+            "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
             "logoURI": "https://assets.polygon.technology/tokenAssets/dai.svg",
             "tags": ["pos", "stablecoin", "erc20", "swapable", "metaTx"],
             "extensions": {
@@ -128,7 +128,7 @@
             "name": "ChainLink Token",
             "symbol": "LINK",
             "decimals": 18,
-            "address": "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+            "address": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
             "logoURI": "https://assets.polygon.technology/tokenAssets/link.svg",
             "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
@@ -147,7 +147,7 @@
             "name": "Wrapped BTC",
             "symbol": "WBTC",
             "decimals": 8,
-            "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
+            "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
             "logoURI": "https://assets.polygon.technology/tokenAssets/wbtc.svg",
             "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
@@ -166,7 +166,7 @@
             "name": "Quickswap - old",
             "symbol": "QUICK",
             "decimals": 18,
-            "address": "0x831753DD7087CaC61aB5644b308642cc1c33Dc13",
+            "address": "0x831753dd7087cac61ab5644b308642cc1c33dc13",
             "logoURI": "https://assets.polygon.technology/tokenAssets/quick.svg",
             "tags": ["pos", "erc20", "swapable"],
             "extensions": {
@@ -204,7 +204,7 @@
             "name": "Aavegotchi GHST Token",
             "symbol": "GHST",
             "decimals": 18,
-            "address": "0x385Eeac5cB85A38A9a07A70c73e0a3271CfB54A7",
+            "address": "0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7",
             "logoURI": "https://polygonscan.com/token/images/aavegotchighst_32.png",
             "tags": ["pos", "erc20", "swapable", "metaTx"],
             "extensions": {
@@ -223,7 +223,7 @@
             "name": "Balancer",
             "symbol": "BAL",
             "decimals": 18,
-            "address": "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3",
+            "address": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
             "logoURI": "https://assets.polygon.technology/tokenAssets/bal.svg",
             "tags": ["pos", "erc20", "swapable"],
             "extensions": {
@@ -242,7 +242,7 @@
             "name": "Staked MATIC",
             "symbol": "stMATIC",
             "decimals": 18,
-            "address": "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4",
+            "address": "0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4",
             "logoURI": "https://raw.githubusercontent.com/Le-Rucher-d-Apidae/swapi-finance-contracts/master/tokenlist/logos/stMATIC.svg",
             "tags": ["pos", "erc20", "swapable"],
             "extensions": {
@@ -255,7 +255,7 @@
             "name": "Liquid Staked Matic by Stader",
             "symbol": "MaticX",
             "decimals": 18,
-            "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
+            "address": "0xfa68fb4628dff1028cfec22b4162fccd0d45efb6",
             "logoURI": "https://user-images.githubusercontent.com/19915413/198746681-bcfd16fd-72e5-41b3-bcb8-5494d77195e0.svg",
             "tags": ["pos", "erc20"],
             "extensions": {
