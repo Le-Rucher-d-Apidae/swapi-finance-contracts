@@ -81,7 +81,7 @@
     "test:HH": "npm run hardhat:test",
     "test:Forge": "npm run forge:test",
     "prepublishOnly": "pnpm test",
-    "publishPublic": "pnpm publish --access public",
+    "publishPublic": "npm publish --access public",
     "PUBLISH": "pnpm run clean && pnpm run compile && pnpm run publishPublic",
     "PUBLISH:quick": "pnpm run publishPublic"
   },
