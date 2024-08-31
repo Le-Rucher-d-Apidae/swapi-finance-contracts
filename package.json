@@ -19,7 +19,7 @@
     "@openzeppelin/contracts-3.4.1": "npm:@openzeppelin/contracts@3.4.1",
     "@openzeppelin/contracts-5.0.2": "npm:@openzeppelin/contracts@5.0.2"
   },
-  "version": "0.8.7",
+  "version": "0.8.8",
   "description": "Contracts for Swapi Finance 🐝",
   "main": "index.js",
   "repository": {
