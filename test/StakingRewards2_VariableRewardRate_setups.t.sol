@@ -33,7 +33,8 @@ contract StakingPreSetup is StakingPreSetupErc20_18_18 {
   uint256 internal constant APR_BASE = 100; // 100%
 
   // per second for one LP token
-  uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = ONE_TOKEN_18 * APR / APR_BASE / REWARD_INITIAL_DURATION;
+  uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED =
+    ONE_TOKEN_18 * APR / APR_BASE / REWARD_INITIAL_DURATION;
   // = 1e18 * 10 / 100 / 10 000 = 10 000 000 000 000 = 1e13
 
   function setUp() public virtual override {

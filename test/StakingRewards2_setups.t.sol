@@ -161,7 +161,8 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     uint256 expectedRewardPerToken = (
       getRewardDurationReached() == REWARD_INITIAL_DURATION
         ? REWARD_INITIAL_AMOUNT * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT
-        : REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
+        : REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT
+          / REWARD_INITIAL_DURATION
     );
     checkRewardPerToken(expectedRewardPerToken, 0, 0); // no delta needed
     checkRewardForDuration(DELTA_0_00000000022);
@@ -239,7 +240,8 @@ contract DuringStaking2WithoutWithdral is StakingPreSetup {
     uint256 expectedRewardPerToken = (
       getRewardDurationReached() == REWARD_INITIAL_DURATION
         ? REWARD_INITIAL_AMOUNT * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT
-        : REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
+        : REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT
+          / REWARD_INITIAL_DURATION
     );
     checkRewardPerToken(expectedRewardPerToken, DELTA_0_015, 0);
     checkRewardForDuration(DELTA_0_00000000022);
@@ -355,7 +357,8 @@ contract DuringStaking3WithoutWithdral is StakingPreSetup {
     uint256 expectedRewardPerToken = (
       getRewardDurationReached() == REWARD_INITIAL_DURATION
         ? REWARD_INITIAL_AMOUNT * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT
-        : REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
+        : REWARD_INITIAL_AMOUNT * getRewardDurationReached() * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT
+          / REWARD_INITIAL_DURATION
     );
     debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 

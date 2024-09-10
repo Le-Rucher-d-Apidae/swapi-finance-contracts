@@ -531,13 +531,7 @@ contract CheckStakingConstantRewardCustom1 is StakingPreSetupErc20_18_18 {
     checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0, 0);
     checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0, 0);
   }
-
 } // CheckStakingConstantRewardCustom1
-
-
-
-
-
 
 contract CheckStakingConstantRewardCustom2 is StakingPreSetupErc20_18_8 {
   // Reward rate : 10% yearly
@@ -548,7 +542,7 @@ contract CheckStakingConstantRewardCustom2 is StakingPreSetupErc20_18_8 {
   uint256 internal constant APR_BASE = 100; // 100%
   uint256 internal constant MAX_DEPOSIT_TOKEN_AMOUNT = 100;
   uint256 internal constant ONE_TOKEN_REWARD = ONE_TOKEN_8;
-  
+
   uint256 internal constant MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18;
   // 100 token = 100 000 000 000 000 000 000 = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
   uint256 internal constant REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
@@ -592,7 +586,7 @@ contract CheckStakingConstantRewardCustom2 is StakingPreSetupErc20_18_8 {
     return expectedStakingRewardsAmount;
   }
 
-function testStakingRewardsERC20_8() public {
+  function testStakingRewardsERC20_8() public {
     gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
 
     // Mint 10 * 10^18 token as reward
@@ -695,12 +689,4 @@ function testStakingRewardsERC20_8() public {
     checkStakingRewards(userAlice, "Alice", aliceTotalExpectedRewards, DELTA_0_015, 0);
     checkStakingRewards(userBob, "Bob", bobTotalExpectedRewards, DELTA_0_015, 0);
   }
-
-
-
-
-
-
-
-  } // CheckStakingConstantRewardCustom2
-
+} // CheckStakingConstantRewardCustom2
