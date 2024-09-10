@@ -2,7 +2,7 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingPreSetupErc20 } from "./StakingRewards2_commonbase.t.sol";
+import { StakingPreSetupErc20_18_18 } from "./StakingRewards2_commonbase.t.sol";
 import {
   DELTA_0_00000000022,
   DELTA_0_00000000000002,
@@ -12,14 +12,14 @@ import {
   PERCENT_100,
   PERCENT_220,
   DELTA_0,
-  ONE_TOKEN
+  ONE_TOKEN_18
 } from "./TestsConstants.sol";
 
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 
 // ----------------
 
-contract StakingPreSetup is StakingPreSetupErc20 {
+contract StakingPreSetup is StakingPreSetupErc20_18_18 {
   // Rewards constants
 
   // Rewards program duration : see StakingPreSetupDuration
@@ -31,7 +31,7 @@ contract StakingPreSetup is StakingPreSetupErc20 {
       fail("StakingSetup: REWARD_INITIAL_DURATION is 0");
     }
 
-    StakingPreSetupErc20.setUp();
+    StakingPreSetupErc20_18_18.setUp();
 
     // Constant reward amount allocated to the staking program during the reward duration
     // Same reward amount is distributed at each block
@@ -275,8 +275,8 @@ contract DuringStaking1WithoutWithdral is StakingPreSetup {
     if (TOTAL_STAKED_AMOUNT > 0) {
       uint256 expectedRewardPerToken = (
         stakingElapsedTime == REWARD_INITIAL_DURATION
-          ? REWARD_INITIAL_AMOUNT * ONE_TOKEN / TOTAL_STAKED_AMOUNT
-          : REWARD_INITIAL_AMOUNT * stakingElapsedTime * ONE_TOKEN / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
+          ? REWARD_INITIAL_AMOUNT * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT
+          : REWARD_INITIAL_AMOUNT * stakingElapsedTime * ONE_TOKEN_18 / TOTAL_STAKED_AMOUNT / REWARD_INITIAL_DURATION
       );
       debugLog("expectedRewardPerToken = ", expectedRewardPerToken);
 

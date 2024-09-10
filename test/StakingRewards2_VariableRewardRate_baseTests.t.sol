@@ -4,7 +4,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 
 import { StakingPreSetup } from "./StakingRewards2_VariableRewardRate_setups.t.sol";
 
-import { ONE_TOKEN } from "./TestsConstants.sol";
+import { ONE_TOKEN_18 } from "./TestsConstants.sol";
 
 import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import {
@@ -297,7 +297,7 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
     uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
     uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
-    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
+    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN_18;
     for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
       if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
         debugLog("testStakingNotifyVariableRewardAmountSuccess1: i   = ", i);
@@ -331,7 +331,7 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
     uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
     uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
-    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
+    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN_18;
     for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
       if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
         debugLog("testStakingNotifyVariableRewardAmountSuccess1: i   = ", i);
@@ -369,7 +369,7 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
     uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
     uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
-    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
+    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN_18;
     /* solhint-enable var-name-mixedcase */
 
     for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
@@ -414,7 +414,7 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
     // Find the MAXTOTALSUPPLY_EXTRA_OVERFLOW that will overflow the balance
     uint256 MAXTOTALSUPPLY_EXTRA_OVERFLOW = CONSTANT_REWARD_MAXTOTALSUPPLY;
     uint256 TOTAL_REWARD_PERTOKENSTORED = CONSTANT_REWARDRATE_PERTOKENSTORED * REWARD_INITIAL_DURATION;
-    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN;
+    uint256 BALANCE_E18 = REWARD_INITIAL_AMOUNT * ONE_TOKEN_18;
     for (uint256 i = CONSTANT_REWARD_MAXTOTALSUPPLY;; i += REWARD_INITIAL_DURATION) {
       if (i * TOTAL_REWARD_PERTOKENSTORED > BALANCE_E18) {
         debugLog("testStakingNotifyVariableRewardAmountSuccess1: i   = ", i);
@@ -477,9 +477,9 @@ contract CheckStakingConstantRewardLimits1 is StakingPreSetup {
 
 // 13 tests
 
-// contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup {
+// contract CheckStakingConstantRewardLimits2 is StakingPreSetup, Erc20Setup_18_18 {
 contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
-  // function setUp() public virtual override(Erc20Setup, StakingPreSetup) {
+  // function setUp() public virtual override(Erc20Setup_18_18, StakingPreSetup) {
   function setUp() public virtual override(StakingPreSetup) {
     debugLog("CheckStakingConstantRewardLimits2 setUp() start");
     StakingPreSetup.setUp();
@@ -572,7 +572,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE;
     // 317 100 000 000 000 * 31 536 000 / 1e18 = 100
 
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     // = 1e18 * 31 536 000 / 1e18 / 31 536 000 = 1
 
     // Mint 99 / 10^18 token as reward
@@ -617,7 +617,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE;
     // 317 100 000 000 000 * 31 536 000 / 1e18 = 100
 
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     // = 1e18 * 31 536 000 / 1 / 31 536 000 = 1e18
 
     // Mint 99 / 10^18 token as reward
@@ -657,7 +657,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 MAX_DEPOSIT_AMOUNT = 100; // 100 / 1e18
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     // REWARD_PER_TOKEN_STORED = 1e18 * 10 / APR_BASE / 31_536_000 = 1e17 / 315_360 = 3170979198
     // (3 170 979 198,376...)
     /* solhint-enable var-name-mixedcase */
@@ -684,7 +684,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 MAX_DEPOSIT_AMOUNT = 100; // 100
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     // REWARD_PER_TOKEN_STORED = 1e18 * 10 / 100 / 31_536_000 = 1e17 / 315_360 = 3170979198 (3 170 979 198,376...)
     // Mint insufficient reward
     uint256 INSUFFICIENT_MINTED_AMOUNT = REWARD_AMOUNT - 1;
@@ -724,7 +724,7 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 MAX_DEPOSIT_AMOUNT = 100; // 100
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT / APR;
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     // REWARD_PER_TOKEN_STORED = 1e18 * 10 / 100 / 31_536_000 = 1e17 / 315_360 = 3170979198 (3 170 979 198,376...)
     uint256 EXCESSIVE_MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + 1;
     /* solhint-enable var-name-mixedcase */
@@ -762,18 +762,18 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
 
-    // uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / ONE_TOKEN / REWARD_DURATION; //
+    // uint256 REWARD_PER_TOKEN_STORED = REWARD_AMOUNT / ONE_TOKEN_18 / REWARD_DURATION; //
     // 0,000 000 317 097 919 837 645 865 043 125 32
-    // REWARD_PER_TOKEN_STORED = 100 * ONE_TOKEN / 10 / ONE_TOKEN / REWARD_DURATION
+    // REWARD_PER_TOKEN_STORED = 100 * ONE_TOKEN_18 / 10 / ONE_TOKEN_18 / REWARD_DURATION
     // REWARD_PER_TOKEN_STORED = 10 / 31 536 000 = 0
 
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
-    // ONE_TOKEN * 10 / 100 / REWARD_DURATION
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
+    // ONE_TOKEN_18 * 10 / 100 / REWARD_DURATION
     // 1e18 * 10 / 100 / 31536000 = 3170979198 (3 170 979 198,376 458 650 431 253 170 979 2)
     /* solhint-enable var-name-mixedcase */
 
@@ -796,12 +796,12 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
 
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     /* solhint-enable var-name-mixedcase */
 
     // Mint 10 * 10^18 token as reward
@@ -836,11 +836,11 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     uint256 MINTED_REWARD_AMOUNT = REWARD_AMOUNT;
     /* solhint-enable var-name-mixedcase */
 
@@ -888,11 +888,11 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
 
     uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
     /* solhint-enable var-name-mixedcase */
@@ -932,12 +932,12 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token //
+    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token //
       // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
 
     uint256 ALICE_INITIAL_DEPOSIT_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT;
     uint256 ALICE_ADDITIONNAL_DEPOSIT_AMOUNT = 1;
@@ -1016,12 +1016,12 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token //
+    uint256 MAX_DEPOSIT_INITIAL_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token //
       // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
 
     uint256 ALICE_INITIAL_DEPOSIT_AMOUNT = MAX_DEPOSIT_INITIAL_AMOUNT;
     uint256 ALICE_ADDITIONNAL_DEPOSIT_AMOUNT = 1;
@@ -1110,11 +1110,11 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
 
     uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT + 100;
     /* solhint-enable var-name-mixedcase */
@@ -1164,11 +1164,11 @@ contract CheckStakingConstantRewardLimits2 is StakingPreSetup {
     uint256 APR = 10; // 10%
     uint256 APR_BASE = 100; // 100%
     uint256 MAX_DEPOSIT_TOKEN_AMOUNT = 100;
-    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN; // 100 token // 100 000 000 000 000 000 000
+    uint256 MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18; // 100 token // 100 000 000 000 000 000 000
       // = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
     // uint256 REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
     uint256 REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN * APR / APR_BASE) / REWARD_DURATION;
+    uint256 REWARD_PER_TOKEN_STORED = (ONE_TOKEN_18 * APR / APR_BASE) / REWARD_DURATION;
     uint256 MINTED_REWARD_AMOUNT = 0;
     uint256 ALICE_DEPOSIT_AMOUNT = MAX_DEPOSIT_AMOUNT;
     /* solhint-enable var-name-mixedcase */

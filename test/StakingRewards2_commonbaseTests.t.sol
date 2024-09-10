@@ -2,12 +2,12 @@
 // pragma solidity >=0.8.0;
 pragma solidity >= 0.8.0 < 0.9.0;
 
-import { StakingPreSetupErc20 } from "./StakingRewards2_commonbase.t.sol";
+import { StakingPreSetupErc20_18_18 } from "./StakingRewards2_commonbase.t.sol";
 import { StakeZero, WithdrawZero } from "../src/contracts/StakingRewards2Errors.sol";
 
 // ----------------
 
-contract StakingPreSetup is StakingPreSetupErc20 {
+contract StakingPreSetup is StakingPreSetupErc20_18_18 {
   // Rewards constants
 
   // Rewards program duration : see StakingPreSetupDuration
@@ -19,7 +19,7 @@ contract StakingPreSetup is StakingPreSetupErc20 {
       fail("StakingSetup: REWARD_INITIAL_DURATION is 0");
     }
 
-    StakingPreSetupErc20.setUp();
+    StakingPreSetupErc20_18_18.setUp();
 
     // Constant reward amount allocated to the staking program during the reward duration
     // Same reward amount is distributed at each block
