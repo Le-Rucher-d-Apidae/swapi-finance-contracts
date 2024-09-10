@@ -249,7 +249,7 @@ contract Erc20Setup_18_18 is UsersSetup {
 
     debugLog("Erc20Setup_18_18 setUp() minting Alice : %s", ALICE_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
-    debugLog("Erc20Setup_18_18 setUp() minting Bon : %s", BOB_STAKINGERC20_MINTEDAMOUNT);
+    debugLog("Erc20Setup_18_18 setUp() minting Bob : %s", BOB_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
     debugLog("Erc20Setup_18_18 setUp() minting Cherry : %s", CHERRY_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userCherry, CHERRY_STAKINGERC20_MINTEDAMOUNT);
@@ -286,7 +286,7 @@ contract Erc20Setup_18_8 is UsersSetup {
 
     debugLog("Erc20Setup_18_8 setUp() minting Alice : %s", ALICE_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
-    debugLog("Erc20Setup_18_8 setUp() minting Bon : %s", BOB_STAKINGERC20_MINTEDAMOUNT);
+    debugLog("Erc20Setup_18_8 setUp() minting Bob : %s", BOB_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
     debugLog("Erc20Setup_18_8 setUp() minting Cherry : %s", CHERRY_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userCherry, CHERRY_STAKINGERC20_MINTEDAMOUNT);
