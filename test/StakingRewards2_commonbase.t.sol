@@ -28,13 +28,15 @@ import {
   DELTA_0_4,
   DELTA_0_5,
   DELTA_5,
-  ONE_TOKEN_18
+  ONE_TOKEN_18,
+  LOGS_DEBUG,
+  LOGS_VERBOSE
 } from "./TestsConstants.sol";
 
 // TODO : move to utils
 contract TestLog is Test {
-  bool internal debug = false; // TODO : set to false
-  bool internal verbose = false; // TODO : set to false
+  bool internal debug = LOGS_DEBUG;
+  bool internal verbose = LOGS_VERBOSE;
   Utils internal utils;
 
   function debugLog(string memory _msg) public view {
@@ -220,6 +222,8 @@ contract UsersSetup is TestLog {
   }
 } // UsersSetup
 
+/* solhint-disable contract-name-camelcase */
+
 // Staking ERC20: 18 decimals, Rewards ERC20: 18 decimals
 contract Erc20Setup_18_18 is UsersSetup {
   RewardERC20_18 internal rewardErc20;
@@ -256,6 +260,7 @@ contract Erc20Setup_18_18 is UsersSetup {
   }
 } // Erc20Setup_18_18
 
+/* solhint-disable contract-name-camelcase */
 // Staking ERC20: 18 decimals, Rewards ERC20: 8 decimals
 contract Erc20Setup_18_8 is UsersSetup {
   RewardERC20_8 internal rewardErc20;
@@ -884,7 +889,6 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
   }
 } // StakingPreSetupUtils
 
-
 /* TODO: create intermediary contract for StakingPreSetupErc20_18_18 and StakingPreSetupErc20_18_8 common properties */
 
 // Staking Rewards 2 : Staking ERC20: 18 decimals, Rewards ERC20: 18 decimals
@@ -1090,7 +1094,6 @@ abstract contract StakingPreSetupErc20_18_18 is StakingPreSetupUtils, Erc20Setup
   }
 } // StakingPreSetupErc20_18_18
 
-
 // Staking Rewards 2 : Staking ERC20: 18 decimals, Rewards ERC20: 18 decimals
 abstract contract StakingPreSetupErc20_18_8 is StakingPreSetupUtils, Erc20Setup_18_8 {
   /* solhint-disable var-name-mixedcase */
@@ -1293,6 +1296,5 @@ abstract contract StakingPreSetupErc20_18_8 is StakingPreSetupUtils, Erc20Setup_
     itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
   }
 } // StakingPreSetupErc20_18_8
-
 
 /* solhint-enable contract-name-camelcase */

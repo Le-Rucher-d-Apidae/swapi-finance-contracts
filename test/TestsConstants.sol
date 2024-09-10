@@ -80,3 +80,6 @@ uint256 constant DELTA_5 = 5e16; // % Delta: 5.000000000000000000
 
 uint256 constant ONE_TOKEN_8 = 1e8;
 uint256 constant ONE_TOKEN_18 = 1e18;
+
+bool constant LOGS_VERBOSE = true;
+bool constant LOGS_DEBUG = true;
