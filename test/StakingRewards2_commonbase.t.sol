@@ -12,8 +12,9 @@ import { StakingRewards2 } from "../src/contracts/StakingRewards2.sol";
 import { StakingRewards2Events } from "../src/contracts/StakingRewards2Events.sol";
 import { StakeZero, WithdrawZero } from "../src/contracts/StakingRewards2Errors.sol";
 
-import { RewardERC20 } from "./contracts/RewardERC20.sol";
-import { StakingERC20 } from "./contracts/StakingERC20.sol";
+import { RewardERC20_18 } from "./contracts/RewardERC20_18.sol";
+import { RewardERC20_8 } from "./contracts/RewardERC20_8.sol";
+import { StakingERC20_18 } from "./contracts/StakingERC20_18.sol";
 
 import {
   PERCENT_1,
@@ -27,13 +28,15 @@ import {
   DELTA_0_4,
   DELTA_0_5,
   DELTA_5,
-  ONE_TOKEN
+  ONE_TOKEN_18,
+  LOGS_DEBUG,
+  LOGS_VERBOSE
 } from "./TestsConstants.sol";
 
 // TODO : move to utils
 contract TestLog is Test {
-  bool internal debug = false; // TODO : set to false
-  bool internal verbose = false; // TODO : set to false
+  bool internal debug = LOGS_DEBUG;
+  bool internal verbose = LOGS_VERBOSE;
   Utils internal utils;
 
   function debugLog(string memory _msg) public view {
@@ -219,38 +222,80 @@ contract UsersSetup is TestLog {
   }
 } // UsersSetup
 
-contract Erc20Setup is UsersSetup {
-  RewardERC20 internal rewardErc20;
-  StakingERC20 internal stakingERC20;
+/* solhint-disable contract-name-camelcase */
+
+// Staking ERC20: 18 decimals, Rewards ERC20: 18 decimals
+contract Erc20Setup_18_18 is UsersSetup {
+  RewardERC20_18 internal rewardErc20;
+  StakingERC20_18 internal stakingERC20;
 
   /* solhint-disable var-name-mixedcase */
-  uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN;
-  uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN;
-  uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN;
+  uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN_18;
+  uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN_18;
+  uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN_18;
   /* solhint-enable var-name-mixedcase */
 
   function setUp() public virtual override(UsersSetup) {
-    debugLog("Erc20Setup0 setUp() start");
-    verboseLog("Erc20Setup0 setUp()");
+    debugLog("Erc20Setup_18_18 setUp() start");
+    verboseLog("Erc20Setup_18_18 setUp()");
     UsersSetup.setUp();
 
     // Create ERC20 contracts
-    rewardErc20 = new RewardERC20(erc20Admin, erc20Minter, "TestReward", "TSTRWD");
-    stakingERC20 = new StakingERC20(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+    rewardErc20 = new RewardERC20_18(erc20Admin, erc20Minter, "TestReward18", "TSTRWD18");
+    stakingERC20 = new StakingERC20_18(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
 
     // Mint ERC20 tokens
     vm.startPrank(erc20Minter);
 
-    debugLog("Erc20Setup1 setUp() minting Alice : %s", ALICE_STAKINGERC20_MINTEDAMOUNT);
+    debugLog("Erc20Setup_18_18 setUp() minting Alice : %s", ALICE_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
+    debugLog("Erc20Setup_18_18 setUp() minting Bob : %s", BOB_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
+    debugLog("Erc20Setup_18_18 setUp() minting Cherry : %s", CHERRY_STAKINGERC20_MINTEDAMOUNT);
     stakingERC20.mint(userCherry, CHERRY_STAKINGERC20_MINTEDAMOUNT);
 
     vm.stopPrank();
 
-    debugLog("Erc20Setup0 setUp() end");
+    debugLog("Erc20Setup_18_18 setUp() end");
   }
-} // Erc20Setup
+} // Erc20Setup_18_18
+
+/* solhint-disable contract-name-camelcase */
+// Staking ERC20: 18 decimals, Rewards ERC20: 8 decimals
+contract Erc20Setup_18_8 is UsersSetup {
+  RewardERC20_8 internal rewardErc20;
+  StakingERC20_18 internal stakingERC20;
+
+  /* solhint-disable var-name-mixedcase */
+  uint256 internal constant ALICE_STAKINGERC20_MINTEDAMOUNT = 3 * ONE_TOKEN_18;
+  uint256 internal constant BOB_STAKINGERC20_MINTEDAMOUNT = 2 * ONE_TOKEN_18;
+  uint256 internal constant CHERRY_STAKINGERC20_MINTEDAMOUNT = 1 * ONE_TOKEN_18;
+  /* solhint-enable var-name-mixedcase */
+
+  function setUp() public virtual override(UsersSetup) {
+    debugLog("Erc20Setup_18_8 setUp() start");
+    verboseLog("Erc20Setup_18_8 setUp()");
+    UsersSetup.setUp();
+
+    // Create ERC20 contracts
+    rewardErc20 = new RewardERC20_8(erc20Admin, erc20Minter, "TestReward8", "TSTRWD8");
+    stakingERC20 = new StakingERC20_18(erc20Admin, erc20Minter, "Uniswap V2 Staking", "UNI-V2 Staking");
+
+    // Mint ERC20 tokens
+    vm.startPrank(erc20Minter);
+
+    debugLog("Erc20Setup_18_8 setUp() minting Alice : %s", ALICE_STAKINGERC20_MINTEDAMOUNT);
+    stakingERC20.mint(userAlice, ALICE_STAKINGERC20_MINTEDAMOUNT);
+    debugLog("Erc20Setup_18_8 setUp() minting Bob : %s", BOB_STAKINGERC20_MINTEDAMOUNT);
+    stakingERC20.mint(userBob, BOB_STAKINGERC20_MINTEDAMOUNT);
+    debugLog("Erc20Setup_18_8 setUp() minting Cherry : %s", CHERRY_STAKINGERC20_MINTEDAMOUNT);
+    stakingERC20.mint(userCherry, CHERRY_STAKINGERC20_MINTEDAMOUNT);
+
+    vm.stopPrank();
+
+    debugLog("Erc20Setup_18_8 setUp() end");
+  }
+} // Erc20Setup_18_8
 
 // --------------------------------------------------------
 
@@ -522,7 +567,7 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     uint256 _stakeAmount,
     string memory _userName,
     uint256 _delta,
-    RewardERC20 rewardErc20
+    RewardERC20_18 rewardErc20
   )
     internal
     returns (uint256 claimedRewards_)
@@ -574,7 +619,7 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
     uint256 userStakingElapsedTime,
     string memory _userName,
     uint256 _delta,
-    RewardERC20 rewardErc20
+    RewardERC20_18 rewardErc20
   )
     internal
     returns (uint256 claimedRewards_)
@@ -834,8 +879,8 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
   }
 
   function displayEarned(address _staker, string memory _stakerName, bool _displayTime) internal view {
-    debugLog("StakingPreSetupUtils:displayEarned: %s ", _staker);
     debugLog("StakingPreSetupUtils:displayEarned: %s ", _stakerName);
+    debugLog("StakingPreSetupUtils:displayEarned: %s ", _staker);
     if (_displayTime) {
       displayTime();
     }
@@ -844,17 +889,20 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
   }
 } // StakingPreSetupUtils
 
-abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
+/* TODO: create intermediary contract for StakingPreSetupErc20_18_18 and StakingPreSetupErc20_18_8 common properties */
+
+// Staking Rewards 2 : Staking ERC20: 18 decimals, Rewards ERC20: 18 decimals
+abstract contract StakingPreSetupErc20_18_18 is StakingPreSetupUtils, Erc20Setup_18_18 {
   /* solhint-disable var-name-mixedcase */
   uint256 internal ALICE_STAKINGERC20_STAKEDAMOUNT;
   uint256 internal BOB_STAKINGERC20_STAKEDAMOUNT;
   uint256 internal CHERRY_STAKINGERC20_STAKEDAMOUNT;
   /* solhint-enable var-name-mixedcase */
 
-  function setUp() public virtual override(StakingPreSetupUtils, Erc20Setup) {
-    debugLog("StakingPreSetupErc20 setUp() start");
+  function setUp() public virtual override(StakingPreSetupUtils, Erc20Setup_18_18) {
+    debugLog("StakingPreSetupErc20_18_18 setUp() start");
     StakingPreSetupUtils.setUp();
-    Erc20Setup.setUp();
+    Erc20Setup_18_18.setUp();
 
     // Create StakingRewards2 contract
     vm.prank(userStakingRewardAdmin);
@@ -865,8 +913,8 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
     vm.prank(userStakingRewardAdmin);
     setRewardsDuration(REWARD_INITIAL_DURATION);
 
-    verboseLog("StakingPreSetupErc20 setUp()");
-    debugLog("StakingPreSetupErc20 setUp() end");
+    verboseLog("StakingPreSetupErc20_18_18 setUp()");
+    debugLog("StakingPreSetupErc20_18_18 setUp() end");
   }
 
   function checkRewardForDuration(uint256 _delta) internal virtual override {
@@ -875,19 +923,19 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
   }
 
   function _userStakes(address _userAddress, string memory _userName, uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 _userStakes() start");
-    debugLog("StakingPreSetupErc20 _userStakes userAddress", _userAddress);
-    debugLog("StakingPreSetupErc20 _userStakes userName", _userName);
-    debugLog("StakingPreSetupErc20 _userStakes amount", _amount);
+    debugLog("StakingPreSetupErc20_18_18 _userStakes() start");
+    debugLog("StakingPreSetupErc20_18_18 _userStakes userAddress", _userAddress);
+    debugLog("StakingPreSetupErc20_18_18 _userStakes userName", _userName);
+    debugLog("StakingPreSetupErc20_18_18 _userStakes amount", _amount);
 
     uint256 stakingRewardsBalanceOfUserBeforeDeposit = stakingRewards2.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:_userStakes: stakingRewardsBalanceOfUserBeforeDeposit = ",
+      "StakingPreSetupErc20_18_18:_userStakes: stakingRewardsBalanceOfUserBeforeDeposit = ",
       stakingRewardsBalanceOfUserBeforeDeposit
     );
     uint256 stakingERC20BalanceOfUserBeforeDeposit = stakingERC20.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:_userStakes: stakingERC20BalanceOfUserBeforeDeposit = ",
+      "StakingPreSetupErc20_18_18:_userStakes: stakingERC20BalanceOfUserBeforeDeposit = ",
       stakingERC20BalanceOfUserBeforeDeposit
     );
 
@@ -898,15 +946,15 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
     } else {
       stakingERC20.approve(address(stakingRewards2), _amount);
 
-      debugLog("StakingPreSetupErc20 _userStakes stakingERC20 address: %s", address(stakingERC20));
-      debugLog("StakingPreSetupErc20 _userStakes stakingRewards2 address: %s", address(stakingRewards2));
+      debugLog("StakingPreSetupErc20_18_18 _userStakes stakingERC20 address: %s", address(stakingERC20));
+      debugLog("StakingPreSetupErc20_18_18 _userStakes stakingRewards2 address: %s", address(stakingRewards2));
       debugLog(
-        "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
+        "StakingPreSetupErc20_18_18 _userStakes _userAddress stakingERC20 allowance",
         stakingERC20.allowance(_userAddress, address(stakingRewards2))
       );
-      debugLog("StakingPreSetupErc20 _userStakes stakingERC20 balanceOf", stakingERC20.balanceOf(_userAddress));
+      debugLog("StakingPreSetupErc20_18_18 _userStakes stakingERC20 balanceOf", stakingERC20.balanceOf(_userAddress));
       debugLog(
-        "StakingPreSetupErc20 _userStakes _userAddress stakingERC20 allowance",
+        "StakingPreSetupErc20_18_18 _userStakes _userAddress stakingERC20 allowance",
         stakingERC20.allowance(_userAddress, address(stakingRewards2))
       );
 
@@ -919,48 +967,48 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
 
     uint256 stakingRewardsBalanceOfUserAfterDeposit = stakingRewards2.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:_userStakes: stakingRewardsBalanceOfUserAfterDeposit = ",
+      "StakingPreSetupErc20_18_18:_userStakes: stakingRewardsBalanceOfUserAfterDeposit = ",
       stakingRewardsBalanceOfUserAfterDeposit
     );
     assertEq(stakingRewardsBalanceOfUserBeforeDeposit + _amount, stakingRewardsBalanceOfUserAfterDeposit);
 
     uint256 stakingERC20BalanceOfUserAfterDeposit = stakingERC20.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:_userStakes: stakingERC20BalanceOfUserAfterDeposit = ",
+      "StakingPreSetupErc20_18_18:_userStakes: stakingERC20BalanceOfUserAfterDeposit = ",
       stakingERC20BalanceOfUserAfterDeposit
     );
     assertEq(stakingERC20BalanceOfUserBeforeDeposit - _amount, stakingERC20BalanceOfUserAfterDeposit);
 
     TOTAL_STAKED_AMOUNT += _amount;
-    debugLog("StakingPreSetupErc20 _userStakes() end");
+    debugLog("StakingPreSetupErc20_18_18 _userStakes() end");
   }
 
   function _userUnstakes(address _userAddress, string memory _userName, uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 _userUnstakes() start");
+    debugLog("StakingPreSetupErc20_18_18 _userUnstakes() start");
     displayTime();
-    debugLog("StakingPreSetupErc20 _userUnstakes userAddress", _userAddress);
-    debugLog("StakingPreSetupErc20 _userUnstakes userName", _userName);
-    debugLog("StakingPreSetupErc20 _userUnstakes amount", _amount);
+    debugLog("StakingPreSetupErc20_18_18 _userUnstakes userAddress", _userAddress);
+    debugLog("StakingPreSetupErc20_18_18 _userUnstakes userName", _userName);
+    debugLog("StakingPreSetupErc20_18_18 _userUnstakes amount", _amount);
 
     uint256 stakingRewardsBalanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:_userUnstakes: stakingRewardsBalanceOfUserBeforeWithdrawal = ",
+      "StakingPreSetupErc20_18_18:_userUnstakes: stakingRewardsBalanceOfUserBeforeWithdrawal = ",
       stakingRewardsBalanceOfUserBeforeWithdrawal
     );
     uint256 stakingERC20BalanceOfUserBeforeWithdrawal = stakingERC20.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:_userUnstakes: stakingERC20BalanceOfUserBeforeWithdrawal = ",
+      "StakingPreSetupErc20_18_18:_userUnstakes: stakingERC20BalanceOfUserBeforeWithdrawal = ",
       stakingERC20BalanceOfUserBeforeWithdrawal
     );
 
     if (_amount > stakingRewardsBalanceOfUserBeforeWithdrawal) {
-      debugLog("StakingPreSetupErc20 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
-      fail("StakingPreSetupErc20 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
+      debugLog("StakingPreSetupErc20_18_18 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
+      fail("StakingPreSetupErc20_18_18 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
     }
 
     if (_amount == 0) {
-      debugLog("StakingPreSetupErc20 _userUnstakes: _amount == ZERO");
-      warningLog("StakingPreSetupErc20 _userUnstakes: _amount == ZERO");
+      debugLog("StakingPreSetupErc20_18_18 _userUnstakes: _amount == ZERO");
+      warningLog("StakingPreSetupErc20_18_18 _userUnstakes: _amount == ZERO");
     }
 
     // Check emitted event
@@ -975,62 +1023,62 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
 
     uint256 stakingRewardsBalanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:withdrawStake: stakingRewardsBalanceOfUserAfterWithdrawal = ",
+      "StakingPreSetupErc20_18_18:withdrawStake: stakingRewardsBalanceOfUserAfterWithdrawal = ",
       stakingRewardsBalanceOfUserAfterWithdrawal
     );
     assertEq(stakingRewardsBalanceOfUserBeforeWithdrawal - _amount, stakingRewardsBalanceOfUserAfterWithdrawal);
 
     uint256 stakingERC20BalanceOfUseAfterWithdrawal = stakingERC20.balanceOf(_userAddress);
     debugLog(
-      "StakingPreSetupErc20:_userUnstakes: stakingERC20BalanceOfUseAfterWithdrawal = ",
+      "StakingPreSetupErc20_18_18:_userUnstakes: stakingERC20BalanceOfUseAfterWithdrawal = ",
       stakingERC20BalanceOfUseAfterWithdrawal
     );
     assertEq(stakingERC20BalanceOfUserBeforeWithdrawal + _amount, stakingERC20BalanceOfUseAfterWithdrawal);
 
     TOTAL_STAKED_AMOUNT -= _amount;
-    debugLog("StakingPreSetupErc20 _userUnstakes() end");
+    debugLog("StakingPreSetupErc20_18_18 _userUnstakes() end");
   }
 
   function AliceStakes(uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 AliceStakes() start");
+    debugLog("StakingPreSetupErc20_18_18 AliceStakes() start");
     _userStakes(userAlice, "Alice", _amount);
     ALICE_STAKINGERC20_STAKEDAMOUNT += _amount;
-    debugLog("StakingPreSetupErc20 AliceStakes() end");
+    debugLog("StakingPreSetupErc20_18_18 AliceStakes() end");
   }
 
   function BobStakes(uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 BobStakes() start");
+    debugLog("StakingPreSetupErc20_18_18 BobStakes() start");
     _userStakes(userBob, "Bob", _amount);
     BOB_STAKINGERC20_STAKEDAMOUNT += _amount;
-    debugLog("StakingPreSetupErc20 BobStakes() end");
+    debugLog("StakingPreSetupErc20_18_18 BobStakes() end");
   }
 
   function CherryStakes(uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 CherryStakes() start");
+    debugLog("StakingPreSetupErc20_18_18 CherryStakes() start");
     _userStakes(userCherry, "Cherry", _amount);
     CHERRY_STAKINGERC20_STAKEDAMOUNT += _amount;
-    debugLog("StakingPreSetupErc20 CherryStakes() end");
+    debugLog("StakingPreSetupErc20_18_18 CherryStakes() end");
   }
 
   function AliceUnstakes(uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 AliceUnstakes() start");
+    debugLog("StakingPreSetupErc20_18_18 AliceUnstakes() start");
     _userUnstakes(userAlice, "Alice", _amount);
     ALICE_STAKINGERC20_STAKEDAMOUNT -= _amount;
-    debugLog("StakingPreSetupErc20 AliceUnstakes() end");
+    debugLog("StakingPreSetupErc20_18_18 AliceUnstakes() end");
   }
 
   function BobUnstakes(uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 BobUnstakes() start");
+    debugLog("StakingPreSetupErc20_18_18 BobUnstakes() start");
     _userUnstakes(userBob, "Bob", _amount);
     BOB_STAKINGERC20_STAKEDAMOUNT -= _amount;
-    debugLog("StakingPreSetupErc20 BobUnstakes() end");
+    debugLog("StakingPreSetupErc20_18_18 BobUnstakes() end");
   }
 
   function CherryUnstakes(uint256 _amount) internal {
-    debugLog("StakingPreSetupErc20 CherryUnstakes() start");
+    debugLog("StakingPreSetupErc20_18_18 CherryUnstakes() start");
     _userUnstakes(userCherry, "Cherry", _amount);
     CHERRY_STAKINGERC20_STAKEDAMOUNT -= _amount;
-    debugLog("StakingPreSetupErc20 CherryUnstakes() end");
+    debugLog("StakingPreSetupErc20_18_18 CherryUnstakes() end");
   }
 
   function checkAliceStake() internal {
@@ -1044,6 +1092,209 @@ abstract contract StakingPreSetupErc20 is StakingPreSetupUtils, Erc20Setup {
   function checkCherryStake() internal {
     itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
   }
-} // StakingPreSetupErc20
+} // StakingPreSetupErc20_18_18
+
+// Staking Rewards 2 : Staking ERC20: 18 decimals, Rewards ERC20: 18 decimals
+abstract contract StakingPreSetupErc20_18_8 is StakingPreSetupUtils, Erc20Setup_18_8 {
+  /* solhint-disable var-name-mixedcase */
+  uint256 internal ALICE_STAKINGERC20_STAKEDAMOUNT;
+  uint256 internal BOB_STAKINGERC20_STAKEDAMOUNT;
+  uint256 internal CHERRY_STAKINGERC20_STAKEDAMOUNT;
+  /* solhint-enable var-name-mixedcase */
+
+  function setUp() public virtual override(StakingPreSetupUtils, Erc20Setup_18_8) {
+    debugLog("StakingPreSetupErc20_18_8 setUp() start");
+    StakingPreSetupUtils.setUp();
+    Erc20Setup_18_8.setUp();
+
+    // Create StakingRewards2 contract
+    vm.prank(userStakingRewardAdmin);
+    stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
+    assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
+
+    // Set rewards duration
+    vm.prank(userStakingRewardAdmin);
+    setRewardsDuration(REWARD_INITIAL_DURATION);
+
+    verboseLog("StakingPreSetupErc20_18_8 setUp()");
+    debugLog("StakingPreSetupErc20_18_8 setUp() end");
+  }
+
+  function checkRewardForDuration(uint256 _delta) internal virtual override {
+    debugLog("StakingPreSetupVRR: checkRewardForDuration");
+    _checkRewardForDuration(_delta);
+  }
+
+  function _userStakes(address _userAddress, string memory _userName, uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 _userStakes() start");
+    debugLog("StakingPreSetupErc20_18_8 _userStakes userAddress", _userAddress);
+    debugLog("StakingPreSetupErc20_18_8 _userStakes userName", _userName);
+    debugLog("StakingPreSetupErc20_18_8 _userStakes amount", _amount);
+
+    uint256 stakingRewardsBalanceOfUserBeforeDeposit = stakingRewards2.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:_userStakes: stakingRewardsBalanceOfUserBeforeDeposit = ",
+      stakingRewardsBalanceOfUserBeforeDeposit
+    );
+    uint256 stakingERC20BalanceOfUserBeforeDeposit = stakingERC20.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:_userStakes: stakingERC20BalanceOfUserBeforeDeposit = ",
+      stakingERC20BalanceOfUserBeforeDeposit
+    );
+
+    vm.startPrank(_userAddress);
+    if (_amount == 0) {
+      // Check expected events
+      vm.expectRevert(abi.encodeWithSelector(StakeZero.selector));
+    } else {
+      stakingERC20.approve(address(stakingRewards2), _amount);
+
+      debugLog("StakingPreSetupErc20_18_8 _userStakes stakingERC20 address: %s", address(stakingERC20));
+      debugLog("StakingPreSetupErc20_18_8 _userStakes stakingRewards2 address: %s", address(stakingRewards2));
+      debugLog(
+        "StakingPreSetupErc20_18_8 _userStakes _userAddress stakingERC20 allowance",
+        stakingERC20.allowance(_userAddress, address(stakingRewards2))
+      );
+      debugLog("StakingPreSetupErc20_18_8 _userStakes stakingERC20 balanceOf", stakingERC20.balanceOf(_userAddress));
+      debugLog(
+        "StakingPreSetupErc20_18_8 _userStakes _userAddress stakingERC20 allowance",
+        stakingERC20.allowance(_userAddress, address(stakingRewards2))
+      );
+
+      // Check expected events
+      vm.expectEmit(true, true, false, false, address(stakingRewards2));
+      emit StakingRewards2Events.Staked(_userAddress, _amount);
+    }
+    stakingRewards2.stake(_amount);
+    vm.stopPrank();
+
+    uint256 stakingRewardsBalanceOfUserAfterDeposit = stakingRewards2.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:_userStakes: stakingRewardsBalanceOfUserAfterDeposit = ",
+      stakingRewardsBalanceOfUserAfterDeposit
+    );
+    assertEq(stakingRewardsBalanceOfUserBeforeDeposit + _amount, stakingRewardsBalanceOfUserAfterDeposit);
+
+    uint256 stakingERC20BalanceOfUserAfterDeposit = stakingERC20.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:_userStakes: stakingERC20BalanceOfUserAfterDeposit = ",
+      stakingERC20BalanceOfUserAfterDeposit
+    );
+    assertEq(stakingERC20BalanceOfUserBeforeDeposit - _amount, stakingERC20BalanceOfUserAfterDeposit);
+
+    TOTAL_STAKED_AMOUNT += _amount;
+    debugLog("StakingPreSetupErc20_18_8 _userStakes() end");
+  }
+
+  function _userUnstakes(address _userAddress, string memory _userName, uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 _userUnstakes() start");
+    displayTime();
+    debugLog("StakingPreSetupErc20_18_8 _userUnstakes userAddress", _userAddress);
+    debugLog("StakingPreSetupErc20_18_8 _userUnstakes userName", _userName);
+    debugLog("StakingPreSetupErc20_18_8 _userUnstakes amount", _amount);
+
+    uint256 stakingRewardsBalanceOfUserBeforeWithdrawal = stakingRewards2.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:_userUnstakes: stakingRewardsBalanceOfUserBeforeWithdrawal = ",
+      stakingRewardsBalanceOfUserBeforeWithdrawal
+    );
+    uint256 stakingERC20BalanceOfUserBeforeWithdrawal = stakingERC20.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:_userUnstakes: stakingERC20BalanceOfUserBeforeWithdrawal = ",
+      stakingERC20BalanceOfUserBeforeWithdrawal
+    );
+
+    if (_amount > stakingRewardsBalanceOfUserBeforeWithdrawal) {
+      debugLog("StakingPreSetupErc20_18_8 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
+      fail("StakingPreSetupErc20_18_8 _userUnstakes: _amount > stakingRewardsBalanceOfUserBeforeWithdrawal");
+    }
+
+    if (_amount == 0) {
+      debugLog("StakingPreSetupErc20_18_8 _userUnstakes: _amount == ZERO");
+      warningLog("StakingPreSetupErc20_18_8 _userUnstakes: _amount == ZERO");
+    }
+
+    // Check emitted event
+    vm.prank(_userAddress);
+    if (_amount == 0) {
+      vm.expectRevert(abi.encodeWithSelector(WithdrawZero.selector));
+    } else {
+      vm.expectEmit(true, true, false, false, address(stakingRewards2));
+      emit StakingRewards2Events.Withdrawn(_userAddress, _amount);
+    }
+    stakingRewards2.withdraw(_amount);
+
+    uint256 stakingRewardsBalanceOfUserAfterWithdrawal = stakingRewards2.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:withdrawStake: stakingRewardsBalanceOfUserAfterWithdrawal = ",
+      stakingRewardsBalanceOfUserAfterWithdrawal
+    );
+    assertEq(stakingRewardsBalanceOfUserBeforeWithdrawal - _amount, stakingRewardsBalanceOfUserAfterWithdrawal);
+
+    uint256 stakingERC20BalanceOfUseAfterWithdrawal = stakingERC20.balanceOf(_userAddress);
+    debugLog(
+      "StakingPreSetupErc20_18_8:_userUnstakes: stakingERC20BalanceOfUseAfterWithdrawal = ",
+      stakingERC20BalanceOfUseAfterWithdrawal
+    );
+    assertEq(stakingERC20BalanceOfUserBeforeWithdrawal + _amount, stakingERC20BalanceOfUseAfterWithdrawal);
+
+    TOTAL_STAKED_AMOUNT -= _amount;
+    debugLog("StakingPreSetupErc20_18_8 _userUnstakes() end");
+  }
+
+  function AliceStakes(uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 AliceStakes() start");
+    _userStakes(userAlice, "Alice", _amount);
+    ALICE_STAKINGERC20_STAKEDAMOUNT += _amount;
+    debugLog("StakingPreSetupErc20_18_8 AliceStakes() end");
+  }
+
+  function BobStakes(uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 BobStakes() start");
+    _userStakes(userBob, "Bob", _amount);
+    BOB_STAKINGERC20_STAKEDAMOUNT += _amount;
+    debugLog("StakingPreSetupErc20_18_8 BobStakes() end");
+  }
+
+  function CherryStakes(uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 CherryStakes() start");
+    _userStakes(userCherry, "Cherry", _amount);
+    CHERRY_STAKINGERC20_STAKEDAMOUNT += _amount;
+    debugLog("StakingPreSetupErc20_18_8 CherryStakes() end");
+  }
+
+  function AliceUnstakes(uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 AliceUnstakes() start");
+    _userUnstakes(userAlice, "Alice", _amount);
+    ALICE_STAKINGERC20_STAKEDAMOUNT -= _amount;
+    debugLog("StakingPreSetupErc20_18_8 AliceUnstakes() end");
+  }
+
+  function BobUnstakes(uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 BobUnstakes() start");
+    _userUnstakes(userBob, "Bob", _amount);
+    BOB_STAKINGERC20_STAKEDAMOUNT -= _amount;
+    debugLog("StakingPreSetupErc20_18_8 BobUnstakes() end");
+  }
+
+  function CherryUnstakes(uint256 _amount) internal {
+    debugLog("StakingPreSetupErc20_18_8 CherryUnstakes() start");
+    _userUnstakes(userCherry, "Cherry", _amount);
+    CHERRY_STAKINGERC20_STAKEDAMOUNT -= _amount;
+    debugLog("StakingPreSetupErc20_18_8 CherryUnstakes() end");
+  }
+
+  function checkAliceStake() internal {
+    itStakesCorrectly(userAlice, ALICE_STAKINGERC20_STAKEDAMOUNT, "Alice");
+  }
+
+  function checkBobStake() internal {
+    itStakesCorrectly(userBob, BOB_STAKINGERC20_STAKEDAMOUNT, "Bob");
+  }
+
+  function checkCherryStake() internal {
+    itStakesCorrectly(userCherry, CHERRY_STAKINGERC20_STAKEDAMOUNT, "Cherry");
+  }
+} // StakingPreSetupErc20_18_8
 
 /* solhint-enable contract-name-camelcase */

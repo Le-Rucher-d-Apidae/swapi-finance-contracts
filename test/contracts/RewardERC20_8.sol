@@ -9,7 +9,8 @@ import { ERC20Burnable } from "@openzeppelin/contracts@5.0.2/token/ERC20/extensi
 import { AccessControl } from "@openzeppelin/contracts@5.0.2/access/AccessControl.sol";
 import { ERC20Permit } from "@openzeppelin/contracts@5.0.2/token/ERC20/extensions/ERC20Permit.sol";
 
-contract RewardERC20 is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
+/* solhint-disable contract-name-camelcase */
+contract RewardERC20_8 is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
   constructor(
@@ -27,5 +28,9 @@ contract RewardERC20 is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
 
   function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
     _mint(to, amount);
+  }
+
+  function decimals() public view virtual override returns (uint8) {
+    return 8;
   }
 }
