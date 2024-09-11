@@ -879,8 +879,8 @@ abstract contract StakingPreSetupUtils is StakingPreSetupDuration {
   }
 
   function displayEarned(address _staker, string memory _stakerName, bool _displayTime) internal view {
-    debugLog("StakingPreSetupUtils:displayEarned: %s ", _staker);
     debugLog("StakingPreSetupUtils:displayEarned: %s ", _stakerName);
+    debugLog("StakingPreSetupUtils:displayEarned: %s ", _staker);
     if (_displayTime) {
       displayTime();
     }
