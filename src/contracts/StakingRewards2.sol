@@ -3,10 +3,33 @@
 // pragma solidity ^0.8.23;
 pragma solidity >=0.8.20 < 0.9.0;
 
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+import { console } from "forge-std/src/console.sol";
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+// DEBUG
+
 /* solhint-disable max-states-count */
 /* warning  Contract has 18 states declarations */
 
-import { IERC20, SafeERC20 } from "@openzeppelin/contracts@5.0.2/token/ERC20/utils/SafeERC20.sol";
+import { SafeERC20 } from "@openzeppelin/contracts@5.0.2/token/ERC20/utils/SafeERC20.sol";
+import { IERC20Metadata } from "@openzeppelin/contracts@5.0.2/token/ERC20/extensions/IERC20Metadata.sol";
 import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 import { Ownable } from "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
 import { Pausable } from "@openzeppelin/contracts@5.0.2/utils/Pausable.sol";
@@ -35,19 +58,19 @@ import { IUniswapV2ERC20 } from "./Uniswap/v2-core/interfaces/IUniswapV2ERC20.so
 
 // https://docs.synthetix.io/contracts/source/contracts/stakingrewards
 contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, StakingRewards2Events {
-  uint256 internal constant ONE_TOKEN = 1e18;
-
-  using SafeERC20 for IERC20;
+  using SafeERC20 for IERC20Metadata;
 
   /* ========== STATE VARIABLES ========== */
 
-  IERC20 public rewardsToken;
-  IERC20 public stakingToken;
+  IERC20Metadata public rewardsToken;
+  IERC20Metadata public stakingToken;
   uint256 public periodFinish = 0;
   uint256 public rewardRate = 0;
   uint256 public rewardsDuration = 1 days;
   uint256 public lastUpdateTime;
   uint256 public rewardPerTokenStored;
+  uint256 public ONE_TOKEN_REWARDS;
+  uint256 public ONE_TOKEN_STAKING;
 
   mapping(address user => uint256 amount) public userRewardPerTokenPaid;
   mapping(address user => uint256 amount) public rewards;
@@ -75,8 +98,10 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
   constructor(address _rewardsToken, address _stakingToken) {
     if (_rewardsToken == address(0)) revert RewardTokenZeroAddress();
     if (_stakingToken == address(0)) revert StakingTokenZeroAddress();
-    rewardsToken = IERC20(_rewardsToken);
-    stakingToken = IERC20(_stakingToken);
+    rewardsToken = IERC20Metadata(_rewardsToken);
+    stakingToken = IERC20Metadata(_stakingToken);
+    ONE_TOKEN_REWARDS = 10**rewardsToken.decimals();
+    ONE_TOKEN_STAKING = 10**stakingToken.decimals();
   }
 
   /* ========== VIEWS ========== */
@@ -101,7 +126,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
       return rewardPerTokenStored;
     }
     return
-      rewardPerTokenStored + ((lastTimeRewardApplicable() - lastUpdateTime) * rewardRate * ONE_TOKEN / _totalSupply);
+      rewardPerTokenStored + ((lastTimeRewardApplicable() - lastUpdateTime) * rewardRate * ONE_TOKEN_REWARDS / _totalSupply);
   }
 
   function getUserLastUpdateTime(address account) internal view returns (uint256) {
@@ -117,15 +142,15 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
   function earned(address account) public view returns (uint256) {
     if (isVariableRewardRate) {
       return _balances[account] * constantRewardRatePerTokenStored
-        * (lastTimeRewardApplicable() - getUserLastUpdateTime(account)) / ONE_TOKEN + rewards[account];
+        * (lastTimeRewardApplicable() - getUserLastUpdateTime(account)) / ONE_TOKEN_REWARDS + rewards[account];
     }
-    return _balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account]) / ONE_TOKEN + rewards[account];
+    return _balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account]) / ONE_TOKEN_REWARDS + rewards[account];
   }
 
   function getRewardForDuration() external view returns (uint256) {
     if (isVariableRewardRate) {
       // Current MAX possible reward for duration
-      return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN;
+      return constantRewardRatePerTokenStored * variableRewardMaxTotalSupply * rewardsDuration / ONE_TOKEN_REWARDS;
     }
     return rewardRate * rewardsDuration;
   }
@@ -238,15 +263,29 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
     if (stakingToken == rewardsToken) {
       balance = balance - _totalSupply;
     }
-    if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN) {
+    // Reward computation is based on PerTokenStored i.e. in 1e18 unit
+    // if (variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN_REWARDS) {
+
+console.log("========= notifyVariableRewardAmount ===============");
+console.log("- variableRewardMaxTotalSupply", variableRewardMaxTotalSupply);
+console.log("- constantRewardRatePerTokenStored", constantRewardRatePerTokenStored);
+console.log("- rewardsDuration", rewardsDuration);
+console.log("- ONE_TOKEN_STAKING", ONE_TOKEN_STAKING);
+console.log("- ONE_TOKEN_REWARDS", ONE_TOKEN_REWARDS);
+console.log("- balance", balance);
+console.log("- rewards max", variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * ONE_TOKEN_REWARDS * rewardsDuration / ONE_TOKEN_STAKING);
+console.log("- balance * ONE_TOKEN_REWARDS", balance * ONE_TOKEN_REWARDS);
+console.log("- rewards max > balance = error:", variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * ONE_TOKEN_REWARDS * rewardsDuration / ONE_TOKEN_STAKING > balance * ONE_TOKEN_REWARDS);
+
+    if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * ONE_TOKEN_REWARDS * rewardsDuration / ONE_TOKEN_STAKING > balance * ONE_TOKEN_REWARDS) {
       revert ProvidedVariableRewardTooHigh({
         constantRewardPerTokenStored: constantRewardRatePerTokenStored,
         variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
         // minRewardBalance: returns 1e18 too much, should be :
-        // minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored *
-        //                   rewardsDuration / ONE_TOKEN,
-        // keeping it as is for accurracy : dividing by ONE_TOKEN will return 0 if the result is < 1e18
-        minRewardBalance: variableRewardMaxTotalSupply * _constantRewardRatePerTokenStored * rewardsDuration,
+        // minRewardBalance: variableRewardMaxTotalSupply * constantRewardRatePerTokenStored *
+        //                   rewardsDuration / ONE_TOKEN_REWARDS,
+        // keeping it as is for accurracy : dividing by ONE_TOKEN_REWARDS will return 0 if the result is < 1e18
+        minRewardBalance: variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * rewardsDuration,
         currentRewardBalance: balance
       });
     }
@@ -281,7 +320,8 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
       balance = balance - _totalSupply;
     }
 
-    if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN) {
+    // if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * rewardsDuration > balance * ONE_TOKEN_REWARDS) {
+    if (variableRewardMaxTotalSupply * constantRewardRatePerTokenStored * ONE_TOKEN_STAKING * rewardsDuration / ONE_TOKEN_REWARDS > balance * ONE_TOKEN_REWARDS) {
       revert UpdateVariableRewardMaxTotalSupply({
         variableRewardMaxTotalSupply: variableRewardMaxTotalSupply,
         rewardsBalance: balance
@@ -321,7 +361,7 @@ contract StakingRewards2 is ReentrancyGuard, Ownable(msg.sender), Pausable, Stak
   // Added to support recovering LP Rewards from other systems such as BAL to be distributed to holders
   function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyOwner {
     if (tokenAddress == address(stakingToken)) revert CantWithdrawStakingToken();
-    IERC20(tokenAddress).safeTransfer(owner(), tokenAmount);
+    IERC20Metadata(tokenAddress).safeTransfer(owner(), tokenAmount);
     emit Recovered(tokenAddress, tokenAmount);
   }
 
