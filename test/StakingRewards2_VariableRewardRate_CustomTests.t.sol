@@ -38,7 +38,7 @@ import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 //     vm.prank(userStakingRewardAdmin);
 //     stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
 //     assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
-
+//     verboseLog("CONSTANT_REWARDRATE_PERTOKENSTORED = ", CONSTANT_REWARDRATE_PERTOKENSTORED);
 //     debugLog("CheckStakingConstantRewardLimits setUp() end");
 //   }
 
@@ -69,7 +69,7 @@ import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 //   function testStakingVRR2Deposit1BeforeRewardStart1AfterRewardStart() public {
 //     gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
 
-//     // Mint 10 * 10^18 token as reward
+//     // Mint rewards
 //     vm.startPrank(erc20Minter);
 //     rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
 
@@ -533,6 +533,7 @@ import { Math } from "@openzeppelin/contracts@5.0.2/utils/math/Math.sol";
 //   }
 // } // CheckStakingConstantRewardCustom1
 
+
 contract CheckStakingConstantRewardCustom2 is StakingPreSetupErc20_18_8 {
   // Reward rate : 10% yearly
   // Depositing 1 Token should give 0.1 of 1e8 ( = 1e7) token reward per year
@@ -541,16 +542,27 @@ contract CheckStakingConstantRewardCustom2 is StakingPreSetupErc20_18_8 {
   uint256 internal constant APR = 10; // 10%
   uint256 internal constant APR_BASE = 100; // 100%
   uint256 internal constant MAX_DEPOSIT_TOKEN_AMOUNT = 100;
+
+  uint256 internal constant ONE_TOKEN_DEPOSIT = ONE_TOKEN_18;
   uint256 internal constant ONE_TOKEN_REWARD = ONE_TOKEN_8;
 
-  uint256 internal constant MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_18;
-  // 100 token = 100 000 000 000 000 000 000 = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
-  uint256 internal constant REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
-  uint256 internal constant REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
-  uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = (ONE_TOKEN_REWARD * APR / APR_BASE) / REWARD_DURATION;
+  uint256 internal constant MULTIPLY_FACTOR = ONE_TOKEN_18 / ONE_TOKEN_8;
 
-  uint256 internal constant ALICE_DEPOSIT_AMOUNT = 20 * ONE_TOKEN_18; // 20 tokens
-  uint256 internal constant BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN_18; // 10 tokens
+  uint256 internal constant MAX_DEPOSIT_AMOUNT = MAX_DEPOSIT_TOKEN_AMOUNT * ONE_TOKEN_DEPOSIT;
+  // 100 token = 100 000 000 000 000 000 000 = 1e20 = 100 * 1e18 (1 000 000 000 000 000 000)
+
+//   uint256 internal constant REWARD_AMOUNT = MAX_DEPOSIT_AMOUNT * APR / APR_BASE; // 10 token
+  uint256 internal constant REWARD_AMOUNT =
+    MAX_DEPOSIT_AMOUNT * APR
+    * ONE_TOKEN_REWARD // 1e8 reward
+    / APR_BASE
+    / ONE_TOKEN_DEPOSIT; // 1e18 deposit
+
+  uint256 internal constant REWARD_DURATION = 31_536_000; // 31 536 000 s. = 1 year
+  uint256 internal constant CONSTANT_REWARDRATE_PERTOKENSTORED = (ONE_TOKEN_REWARD * MULTIPLY_FACTOR * APR / APR_BASE) / REWARD_DURATION;
+
+  uint256 internal constant ALICE_DEPOSIT_AMOUNT = 20 * ONE_TOKEN_DEPOSIT; // 20 tokens
+  uint256 internal constant BOB_DEPOSIT_AMOUNT = 10 * ONE_TOKEN_DEPOSIT; // 10 tokens
   /* solhint-enable var-name-mixedcase */
 
   function setUp() public virtual override(StakingPreSetupErc20_18_8) {
@@ -561,8 +573,10 @@ contract CheckStakingConstantRewardCustom2 is StakingPreSetupErc20_18_8 {
     stakingRewards2 = new StakingRewards2(address(rewardErc20), address(stakingERC20));
     assertEq(userStakingRewardAdmin, stakingRewards2.owner(), "stakingRewards2: Wrong owner");
 
+    verboseLog("CONSTANT_REWARDRATE_PERTOKENSTORED = ", CONSTANT_REWARDRATE_PERTOKENSTORED);
+
     debugLog("CheckStakingConstantRewardLimits setUp() end");
-  }
+  } // setUp
 
   function expectedStakingRewards(
     uint256 _stakedAmount,
@@ -580,23 +594,26 @@ contract CheckStakingConstantRewardCustom2 is StakingPreSetupErc20_18_8 {
     debugLog("expectedStakingRewards: _rewardTotalDuration = ", _rewardTotalDuration);
     uint256 rewardsDuration = Math.min(_rewardDurationReached, _rewardTotalDuration);
     verboseLog("expectedStakingRewards: rewardsDuration= ", rewardsDuration);
+    // uint256 expectedStakingRewardsAmount =
+    //   CONSTANT_REWARDRATE_PERTOKENSTORED * _stakedAmount / ONE_TOKEN_REWARD * rewardsDuration;
     uint256 expectedStakingRewardsAmount =
       CONSTANT_REWARDRATE_PERTOKENSTORED * _stakedAmount / ONE_TOKEN_REWARD * rewardsDuration;
     verboseLog("expectedStakingRewards: expectedStakingRewardsAmount= ", expectedStakingRewardsAmount);
     return expectedStakingRewardsAmount;
-  }
+  } // expectedStakingRewards
 
   function testStakingRewardsERC20_8() public {
     gotoTimestamp(INITIAL_BLOCK_TIMESTAMP); // Go to the start of the test // init block.number
 
-    // Mint 10 * 10^18 token as reward
+    // Mint rewards
     vm.startPrank(erc20Minter);
+    debugLog("REWARD_AMOUNT :", REWARD_AMOUNT);
     rewardErc20.mint(address(stakingRewards2), REWARD_AMOUNT);
 
-    // Mint Alice tokens
-    stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
-    // Mint Bob tokens
-    stakingERC20.mint(userBob, BOB_DEPOSIT_AMOUNT);
+    // // Mint Alice tokens
+    // stakingERC20.mint(userAlice, ALICE_DEPOSIT_AMOUNT);
+    // // Mint Bob tokens
+    // stakingERC20.mint(userBob, BOB_DEPOSIT_AMOUNT);
 
     // Check Alice and Bob staking balances
     // Nobody should have staked yet
